@@ -1,0 +1,120 @@
+// Skyora Group of Institutes — database schema
+// NOTE: SQLite does not support Prisma enums. String fields that act as enums
+// (role, status, track, type, jobType) are enforced server-side via Zod schemas.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                 String   @id @default(cuid())
+  name               String
+  email              String   @unique
+  passwordHash       String
+  role               String   @default("ADMIN") // SUPER_ADMIN | ADMIN (zod-enforced)
+  isActive           Boolean  @default(true)
+  mustChangePassword Boolean  @default(false)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  sessions    Session[]
+  assignments Enquiry[]  @relation("AssignedEnquiries")
+  followUps   FollowUp[]
+  auditLogs   AuditLog[]
+}
+
+// Server-side session store. The cookie only carries a random token;
+// the DB stores its SHA-256 hash. Logout deletes the row (invalidation).
+model Session {
+  id        String   @id @default(cuid())
+  tokenHash String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  ip        String?
+  userAgent String?
+  createdAt DateTime @default(now())
+}
+
+model Enquiry {
+  id           String   @id @default(cuid())
+  name         String
+  phone        String
+  email        String
+  courseId     String?
+  course       Course?  @relation(fields: [courseId], references: [id])
+  source       String   @default("website")
+  status       String   @default("NEW") // NEW | CONTACTED | FOLLOWUP | DEMO | ENROLLED | LOST (zod-enforced)
+  message      String?
+  assignedToId String?
+  assignedTo   User?    @relation("AssignedEnquiries", fields: [assignedToId], references: [id])
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  followUps FollowUp[]
+}
+
+model FollowUp {
+  id             String    @id @default(cuid())
+  enquiryId      String
+  enquiry        Enquiry   @relation(fields: [enquiryId], references: [id], onDelete: Cascade)
+  note           String
+  nextActionDate DateTime?
+  createdById    String?
+  createdBy      User?     @relation(fields: [createdById], references: [id])
+  createdAt      DateTime  @default(now())
+}
+
+model Course {
+  id          String   @id @default(cuid())
+  title       String
+  track       String // AVIATION | IT (zod-enforced)
+  slug        String   @unique
+  duration    String
+  description String
+  syllabus    String // newline-separated syllabus highlight bullets
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  enquiries Enquiry[]
+}
+
+model Achievement {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  type        String // HACKATHON | CERTIFICATION | PROJECT | PLACEMENT (zod-enforced)
+  link        String?
+  date        DateTime
+  createdAt   DateTime @default(now())
+}
+
+model Vacancy {
+  id          String   @id @default(cuid())
+  title       String
+  company     String
+  location    String
+  jobType     String // FULL_TIME | PART_TIME | INTERNSHIP | CONTRACT (zod-enforced)
+  description String
+  applyLink   String
+  isOpen      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id])
+  action    String
+  entity    String
+  entityId  String?
+  ipAddress String?
+  meta      String?
+  createdAt DateTime @default(now())
+}

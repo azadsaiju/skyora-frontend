@@ -1,0 +1,159 @@
+"use client";
+
+/**
+ * Admin login — full-screen brutalist card with show/hide password.
+ * Errors (401 invalid creds, 429 lockout, 403 deactivated) are toasted
+ * with the server's own message.
+ */
+
+import * as React from "react";
+import { Eye, EyeOff, Loader2, Lock } from "lucide-react";
+import { toast } from "sonner";
+
+import { api } from "@/lib/client";
+import type { SessionUser } from "@/lib/types";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { FIELD_CLASS } from "@/components/admin/admin-ui";
+
+export function LoginView({
+  onSuccess,
+}: {
+  onSuccess: (user: SessionUser) => void;
+}) {
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
+  const [showPassword, setShowPassword] = React.useState(false);
+  const [submitting, setSubmitting] = React.useState(false);
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if (submitting) return;
+    setSubmitting(true);
+    try {
+      const res = await api<{ user: SessionUser }>("/api/auth/login", {
+        method: "POST",
+        body: JSON.stringify({ email: email.trim(), password }),
+      });
+      toast.success(`Welcome back, ${res.user.name}`);
+      onSuccess(res.user);
+    } catch (err) {
+      const e2 = err as Error & { status?: number };
+      toast.error(e2.message || "Sign in failed. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  return (
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-cream p-4">
+      <div
+        className="dot-grid pointer-events-none absolute inset-0 opacity-[0.06]"
+        aria-hidden="true"
+      />
+
+      <main className="relative w-full max-w-[420px]">
+        <div className="brutal-card w-[min(420px,calc(100vw-2rem))] p-8">
+          <div className="flex items-center gap-3">
+            <span
+              className="flex size-12 shrink-0 items-center justify-center rounded-lg border-2 border-ink bg-ink font-display text-xl text-white shadow-hard-sm"
+              aria-hidden="true"
+            >
+              S
+            </span>
+            <div className="min-w-0">
+              <p className="font-display text-2xl leading-none">SKYORA</p>
+              <p className="mt-1.5 flex items-center gap-1.5 font-grotesk text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
+                <Lock className="size-3" aria-hidden="true" />
+                Secure Admin Portal
+              </p>
+            </div>
+          </div>
+
+          <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+            <div className="space-y-1.5">
+              <Label
+                htmlFor="admin-login-email"
+                className="font-grotesk text-xs font-bold uppercase"
+              >
+                Email
+              </Label>
+              <Input
+                id="admin-login-email"
+                type="email"
+                required
+                autoComplete="email"
+                placeholder="you@skyora.edu.in"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                disabled={submitting}
+                className={FIELD_CLASS}
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <Label
+                htmlFor="admin-login-password"
+                className="font-grotesk text-xs font-bold uppercase"
+              >
+                Password
+              </Label>
+              <div className="relative">
+                <Input
+                  id="admin-login-password"
+                  type={showPassword ? "text" : "password"}
+                  required
+                  autoComplete="current-password"
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  disabled={submitting}
+                  className={`${FIELD_CLASS} pr-10`}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((v) => !v)}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-cream hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  {showPassword ? (
+                    <EyeOff className="size-4" aria-hidden="true" />
+                  ) : (
+                    <Eye className="size-4" aria-hidden="true" />
+                  )}
+                </button>
+              </div>
+            </div>
+
+            <Button
+              type="submit"
+              disabled={submitting}
+              className="w-full font-grotesk font-bold uppercase shadow-hard-sm"
+            >
+              {submitting ? (
+                <Loader2 className="size-4 animate-spin" aria-hidden="true" />
+              ) : (
+                <Lock className="size-4" aria-hidden="true" />
+              )}
+              {submitting ? "Signing In…" : "Sign In"}
+            </Button>
+          </form>
+
+          <div className="mt-6 space-y-1.5 border-t-2 border-dashed border-ink/20 pt-4 text-center">
+            <p className="text-xs text-muted-foreground">
+              Sessions are httpOnly + SameSite=Strict. 5 failed attempts = 15
+              min lockout.
+            </p>
+            <a
+              href="/"
+              className="inline-block font-grotesk text-xs font-bold uppercase tracking-wide underline underline-offset-4 hover:text-brand-pink"
+            >
+              ← Back to site
+            </a>
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+}

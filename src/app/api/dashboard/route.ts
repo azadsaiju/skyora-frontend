@@ -1,0 +1,98 @@
+import { NextRequest, NextResponse } from "next/server";
+import { handleApiError } from "@/lib/validators";
+import { requireAuth } from "@/lib/auth";
+import { db } from "@/lib/db";
+import { startOfToday, endOfToday } from "@/lib/enquiry-filters";
+import type { DashboardDataDTO, EnquiryStatus } from "@/lib/types";
+
+export const dynamic = "force-dynamic";
+
+/** GET /api/dashboard — headline stats + chart data for the admin home. */
+export async function GET(req: NextRequest) {
+  try {
+    await requireAuth(req);
+
+    const startToday = startOfToday();
+    const endToday = endOfToday();
+
+    const [
+      todayFollowUps,
+      overdueFollowUps,
+      newEnquiries,
+      newEnquiriesToday,
+      enrolledCount,
+      totalEnquiries,
+      openVacancies,
+      statusGroups,
+      recentEnquiries,
+    ] = await Promise.all([
+      db.enquiry.count({
+        where: {
+          followUps: { some: { nextActionDate: { gte: startToday, lt: endToday } } },
+        },
+      }),
+      db.enquiry.count({
+        where: { followUps: { some: { nextActionDate: { lt: startToday } } } },
+      }),
+      db.enquiry.count({ where: { status: "NEW" } }),
+      db.enquiry.count({ where: { status: "NEW", createdAt: { gte: startToday } } }),
+      db.enquiry.count({ where: { status: "ENROLLED" } }),
+      db.enquiry.count(),
+      db.vacancy.count({ where: { isOpen: true } }),
+      db.enquiry.groupBy({ by: ["status"], _count: { _all: true } }),
+      // last 7 days of enquiries for the bar chart
+      db.enquiry.findMany({
+        where: { createdAt: { gte: new Date(startToday.getTime() - 6 * 86_400_000) } },
+        select: { createdAt: true },
+      }),
+    ]);
+
+    const statusBreakdown: Record<EnquiryStatus, number> = {
+      NEW: 0,
+      CONTACTED: 0,
+      FOLLOWUP: 0,
+      DEMO: 0,
+      ENROLLED: 0,
+      LOST: 0,
+    };
+    for (const group of statusGroups) {
+      if (group.status in statusBreakdown) {
+        statusBreakdown[group.status as EnquiryStatus] = group._count._all;
+      }
+    }
+
+    // bucket last 7 days
+    const enquiriesByDay: DashboardDataDTO["enquiriesByDay"] = [];
+    const dayLabels = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    for (let i = 6; i >= 0; i--) {
+      const dayStart = new Date(startToday.getTime() - i * 86_400_000);
+      const dayEnd = new Date(dayStart.getTime() + 86_400_000);
+      const count = recentEnquiries.filter(
+        (e) =>
+          e.createdAt.getTime() >= dayStart.getTime() &&
+          e.createdAt.getTime() < dayEnd.getTime()
+      ).length;
+      enquiriesByDay.push({
+        date: dayStart.toISOString().slice(0, 10),
+        label: dayLabels[dayStart.getDay()]!,
+        count,
+      });
+    }
+
+    const data: DashboardDataDTO = {
+      todayFollowUps,
+      overdueFollowUps,
+      newEnquiries,
+      newEnquiriesToday,
+      enrolledCount,
+      totalEnquiries,
+      openVacancies,
+      statusBreakdown,
+      enquiriesByDay,
+    };
+
+    return NextResponse.json(data);
+  } catch (e) {
+    return handleApiError(e);
+  }
+}
