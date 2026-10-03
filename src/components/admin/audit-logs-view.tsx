@@ -38,6 +38,9 @@ function actionColor(action: string): string {
   if (a.includes("FAILED")) return "#DC2626"; // red
   if (a.startsWith("MFA") || a.startsWith("RECOVERY_CODE"))
     return "#A855F7"; // purple — 2FA lifecycle events
+  if (a.startsWith("WHATSAPP")) return "#16A34A"; // green — deep-link clicks
+  if (a.startsWith("REMINDER")) return "#FF7A00"; // orange — digest runs
+  if (a.includes("IMPORT")) return "#00B8D9"; // cyan — bulk imports
   if (a.includes("LOGIN")) return "#16A34A"; // green
   if (a.includes("EXPORT")) return "#2563EB"; // blue
   if (a.includes("DELETE")) return "#FF2E63"; // pink

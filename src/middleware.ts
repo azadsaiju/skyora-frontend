@@ -10,7 +10,7 @@ import { NextRequest, NextResponse } from "next/server";
  * RBAC are enforced inside each API route via `requireAuth`/`requireSuperAdmin`.
  */
 
-const PUBLIC_API_PATHS = ["/api/auth/login", "/api/auth/mfa", "/api/enquiry", "/api/public"];
+const PUBLIC_API_PATHS = ["/api/auth/login", "/api/auth/mfa", "/api/enquiry", "/api/public", "/api/track"];
 const ADMIN_API_PREFIXES = [
   "/api/auth/me",
   "/api/auth/logout",

@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { siteConfig } from "@/config/site.config";
+import { trackWhatsApp } from "@/lib/track-whatsapp";
 import { Skeleton } from "@/components/ui/skeleton";
 import { EnquiryForm } from "@/components/public/enquiry-form";
 import { usePublicContent } from "@/components/public/use-public-content";
@@ -139,6 +140,9 @@ export function ContactSection() {
             href={href}
             target={external ? "_blank" : undefined}
             rel="noopener noreferrer"
+            onClick={() => {
+              if (label === "WhatsApp") trackWhatsApp("contact_card");
+            }}
             variants={GRID_ITEM}
             className="brutal-card brutal-hover block min-w-0 p-5"
           >

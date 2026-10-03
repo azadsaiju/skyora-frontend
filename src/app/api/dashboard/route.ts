@@ -25,6 +25,7 @@ export async function GET(req: NextRequest) {
       openVacancies,
       statusGroups,
       recentEnquiries,
+      whatsappRows,
     ] = await Promise.all([
       db.enquiry.count({
         where: {
@@ -44,6 +45,16 @@ export async function GET(req: NextRequest) {
       db.enquiry.findMany({
         where: { createdAt: { gte: new Date(startToday.getTime() - 6 * 86_400_000) } },
         select: { createdAt: true },
+      }),
+      // WhatsApp deep-link clicks, last 7 days (Prompt 10)
+      db.auditLog.findMany({
+        where: {
+          action: "WHATSAPP_CLICKED",
+          createdAt: { gte: new Date(startToday.getTime() - 6 * 86_400_000) },
+        },
+        select: { meta: true },
+        orderBy: { createdAt: "desc" },
+        take: 1000,
       }),
     ]);
 
@@ -79,6 +90,25 @@ export async function GET(req: NextRequest) {
       });
     }
 
+    // Tally WhatsApp click contexts from the audit meta JSON.
+    const contextCounts = new Map<string, number>();
+    for (const row of whatsappRows) {
+      let context = "unknown";
+      try {
+        const parsed = JSON.parse(row.meta ?? "{}") as { context?: string };
+        if (typeof parsed.context === "string" && parsed.context) {
+          context = parsed.context;
+        }
+      } catch {
+        // malformed meta → count as unknown
+      }
+      contextCounts.set(context, (contextCounts.get(context) ?? 0) + 1);
+    }
+    const whatsappTopContexts = [...contextCounts.entries()]
+      .map(([context, count]) => ({ context, count }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 5);
+
     const data: DashboardDataDTO = {
       todayFollowUps,
       overdueFollowUps,
@@ -89,6 +119,8 @@ export async function GET(req: NextRequest) {
       openVacancies,
       statusBreakdown,
       enquiriesByDay,
+      whatsappClicks7d: whatsappRows.length,
+      whatsappTopContexts,
     };
 
     return NextResponse.json(data);

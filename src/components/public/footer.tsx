@@ -15,6 +15,7 @@ import {
   Phone,
 } from "lucide-react";
 import { siteConfig } from "@/config/site.config";
+import { trackWhatsApp } from "@/lib/track-whatsapp";
 
 const QUICK_LINKS: { label: string; href: string }[] = [
   { label: "Home", href: "#/" },
@@ -135,6 +136,7 @@ export function Footer() {
                   href={siteConfig.links.whatsapp}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => trackWhatsApp("footer")}
                   className="flex items-center gap-2.5 text-white/60 transition-colors hover:text-brand-pink"
                 >
                   <MessageCircle className="h-4 w-4 shrink-0" aria-hidden />

@@ -8,6 +8,7 @@
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { siteConfig } from "@/config/site.config";
+import { trackWhatsApp } from "@/lib/track-whatsapp";
 import type { PublicRoute } from "@/hooks/use-hash-route";
 import { Button } from "@/components/ui/button";
 
@@ -79,6 +80,7 @@ export function Navbar({ route }: { route: PublicRoute }) {
               href={siteConfig.links.whatsapp}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => trackWhatsApp("navbar")}
             >
               Book Free Call
             </a>
@@ -134,6 +136,7 @@ export function Navbar({ route }: { route: PublicRoute }) {
               href={siteConfig.links.whatsapp}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => trackWhatsApp("navbar_mobile")}
             >
               Book Free Call
             </a>

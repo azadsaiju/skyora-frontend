@@ -8,6 +8,7 @@
 import { motion } from "framer-motion";
 import { MessageCircle, Phone } from "lucide-react";
 import { siteConfig } from "@/config/site.config";
+import { trackWhatsApp } from "@/lib/track-whatsapp";
 
 export function FloatingButtons() {
   return (
@@ -17,6 +18,7 @@ export function FloatingButtons() {
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Chat on WhatsApp"
+        onClick={() => trackWhatsApp("floating")}
         whileHover={{ scale: 1.08 }}
         whileTap={{ scale: 0.94 }}
         className="brutal-hover flex h-14 w-14 items-center justify-center rounded-full border-2 border-ink bg-[#16A34A] text-white shadow-hard-lg"

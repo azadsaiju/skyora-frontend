@@ -21,6 +21,8 @@ export type AuditAction =
   | "EXPORT"
   | "FOLLOWUP_CREATE"
   | "ENQUIRY_DELETE"
+  | "ENQUIRY_IMPORT"
+  | "REMINDER_RUN"
   | "COURSE_CREATE"
   | "COURSE_UPDATE"
   | "COURSE_DELETE"

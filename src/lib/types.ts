@@ -146,6 +146,45 @@ export interface EnquiryListResponseDTO {
   pageSize: number;
 }
 
+// ── CSV IMPORT (Prompt 8) ────────────────────────────────────────────────────
+export interface EnquiryImportFailedRowDTO {
+  /** 1-based CSV row number (2 = first data row, header is row 1) */
+  row: number;
+  name: string;
+  reason: string;
+}
+
+export interface EnquiryImportResultDTO {
+  total: number;
+  imported: number;
+  failed: EnquiryImportFailedRowDTO[];
+}
+
+// ── REMINDERS (Prompt 9) ─────────────────────────────────────────────────────
+export interface ReminderItemDTO {
+  enquiryId: string;
+  studentName: string;
+  phone: string;
+  status: EnquiryStatus;
+  course: string | null;
+  note: string;
+  nextActionDate: string;
+  assignedTo: string | null;
+  overdue: boolean;
+}
+
+export interface ReminderDigestDTO {
+  generatedAt: string;
+  dueToday: ReminderItemDTO[];
+  overdue: ReminderItemDTO[];
+  total: number;
+}
+
+export interface ReminderRunResultDTO {
+  digest: ReminderDigestDTO;
+  mail: { sent: boolean; recipients: number; error?: string };
+}
+
 // ── DASHBOARD ────────────────────────────────────────────────────────────────
 export interface DashboardDataDTO {
   todayFollowUps: number;
@@ -157,6 +196,9 @@ export interface DashboardDataDTO {
   openVacancies: number;
   statusBreakdown: Record<EnquiryStatus, number>;
   enquiriesByDay: { date: string; label: string; count: number }[];
+  /** WhatsApp deep-link clicks in the last 7 days (Prompt 10) */
+  whatsappClicks7d: number;
+  whatsappTopContexts: { context: string; count: number }[];
 }
 
 // ── AUDIT ────────────────────────────────────────────────────────────────────

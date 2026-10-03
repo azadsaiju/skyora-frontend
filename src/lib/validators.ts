@@ -211,6 +211,35 @@ export const mfaDisableSchema = z.object({
   password: z.string().min(1, "Password is required").max(128),
 });
 
+// ── ENQUIRY CSV IMPORT (Prompt 8) ────────────────────────────────────────────
+export const enquiryImportSchema = z.object({
+  /** Raw CSV text (≤ 500 KB) with header row: name,phone,email,course,message */
+  csv: z
+    .string()
+    .min(1, "CSV content is empty")
+    .max(500_000, "CSV file is too large (max 500 KB)"),
+  /** Original file name — audit metadata only */
+  fileName: z.string().trim().max(120).optional().default("pasted.csv"),
+});
+
+// ── WHATSAPP DEEP-LINK TRACKING (Prompt 10) ──────────────────────────────────
+export const whatsappTrackSchema = z.object({
+  /** Where the click happened, e.g. "floating", "navbar", "admin_lead" */
+  context: z
+    .string()
+    .trim()
+    .regex(
+      /^[A-Za-z0-9:_-]{1,40}$/,
+      "Context must be 1-40 chars (letters, digits, : _ -)"
+    ),
+  /** Optional enquiry id when a counsellor opens a lead on WhatsApp */
+  enquiryId: z
+    .string()
+    .trim()
+    .regex(/^[a-zA-Z0-9]{8,64}$/, "Invalid enquiry id")
+    .optional(),
+});
+
 // ── AUDIT LOG QUERY ──────────────────────────────────────────────────────────
 export const auditLogQuerySchema = z.object({
   page: z.coerce.number().int().min(1).optional().default(1),

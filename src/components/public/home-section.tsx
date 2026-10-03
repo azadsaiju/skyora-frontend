@@ -16,6 +16,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { siteConfig } from "@/config/site.config";
+import { trackWhatsApp } from "@/lib/track-whatsapp";
 import type { CourseDTO } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -223,6 +224,7 @@ export function HomeSection() {
                 href={siteConfig.links.whatsapp}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => trackWhatsApp("home_hero")}
               >
                 Book Free Call
               </a>
@@ -391,6 +393,7 @@ export function HomeSection() {
                   href={siteConfig.links.whatsapp}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => trackWhatsApp("home_cta")}
                 >
                   Book Free Call
                 </a>

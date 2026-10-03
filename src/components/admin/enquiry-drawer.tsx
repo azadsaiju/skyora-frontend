@@ -21,6 +21,7 @@ import { format, parseISO } from "date-fns";
 import { toast } from "sonner";
 
 import { api } from "@/lib/client";
+import { trackWhatsApp } from "@/lib/track-whatsapp";
 import {
   ENQUIRY_STATUSES,
   STATUS_COLORS,
@@ -421,6 +422,7 @@ export function EnquiryDrawer({
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Open WhatsApp chat"
+                onClick={() => trackWhatsApp("admin_lead", detail.id)}
               >
                 <MessageCircle className="size-4" aria-hidden="true" />
                 WhatsApp Lead

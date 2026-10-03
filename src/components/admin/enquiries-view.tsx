@@ -17,6 +17,7 @@ import {
   Inbox,
   RefreshCw,
   Search,
+  Upload,
   X,
 } from "lucide-react";
 import { isBefore, parseISO, startOfToday } from "date-fns";
@@ -49,6 +50,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { EnquiryDrawer } from "@/components/admin/enquiry-drawer";
+import { ImportCsvDialog } from "@/components/admin/import-dialog";
 import {
   AdminPageHeader,
   EmptyState,
@@ -130,6 +132,7 @@ export function EnquiriesView({ user }: { user: SessionUser }) {
   const [courses, setCourses] = React.useState<CourseDTO[]>([]);
   const [drawerId, setDrawerId] = React.useState<string | null>(null);
   const [refreshKey, setRefreshKey] = React.useState(0);
+  const [importOpen, setImportOpen] = React.useState(false);
 
   const isMasked = user.role === "ADMIN";
 
@@ -226,6 +229,14 @@ export function EnquiriesView({ user }: { user: SessionUser }) {
         <span className="hidden font-grotesk text-sm font-bold text-muted-foreground sm:inline">
           {data ? `${data.total} total` : "…"}
         </span>
+        <Button
+          variant="outline"
+          onClick={() => setImportOpen(true)}
+          className="border-2 border-ink bg-white font-grotesk font-bold"
+        >
+          <Upload className="size-4" aria-hidden="true" />
+          Import CSV
+        </Button>
         <Button
           variant="outline"
           onClick={() => {
@@ -630,6 +641,12 @@ export function EnquiriesView({ user }: { user: SessionUser }) {
           onChanged={() => setRefreshKey((k) => k + 1)}
         />
       ) : null}
+
+      <ImportCsvDialog
+        open={importOpen}
+        onOpenChange={setImportOpen}
+        onImported={() => setRefreshKey((k) => k + 1)}
+      />
     </div>
   );
 }

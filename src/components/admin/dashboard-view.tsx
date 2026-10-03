@@ -14,6 +14,7 @@ import {
   Briefcase,
   GraduationCap,
   Inbox,
+  MessageCircle,
   RefreshCw,
   Users,
 } from "lucide-react";
@@ -36,6 +37,7 @@ import {
   TableSkeleton,
   toastApiError,
 } from "@/components/admin/admin-ui";
+import { RemindersCard } from "@/components/admin/reminders-card";
 
 export function DashboardView({
   user,
@@ -173,6 +175,13 @@ export function DashboardView({
               icon={Briefcase}
               color="#00B8D9"
             />
+            <AdminStatCard
+              label="WhatsApp Clicks"
+              value={data.whatsappClicks7d}
+              icon={MessageCircle}
+              color="#16A34A"
+              hint="last 7 days"
+            />
           </section>
 
           <section aria-label="Enquiries over the last 7 days" className="brutal-card p-6">
@@ -232,6 +241,42 @@ export function DashboardView({
               ))}
             </div>
           </section>
+
+          {data.whatsappClicks7d > 0 ? (
+            <section
+              aria-label="WhatsApp click sources"
+              className="brutal-card p-6"
+            >
+              <h2 className="font-grotesk text-xs font-bold uppercase tracking-widest text-muted-foreground">
+                WhatsApp Deep Links — Last 7 Days
+              </h2>
+              <ul className="mt-4 space-y-2">
+                {data.whatsappTopContexts.map((c) => {
+                  const pct = Math.max(
+                    (c.count / Math.max(1, data.whatsappClicks7d)) * 100,
+                    6
+                  );
+                  return (
+                    <li key={c.context} className="flex items-center gap-3">
+                      <span className="w-40 shrink-0 truncate font-grotesk text-xs font-bold uppercase">
+                        {c.context.replace(/_/g, " ")}
+                      </span>
+                      <span
+                        className="h-3 rounded-full border-2 border-ink bg-brand-green"
+                        style={{ width: `${pct}%` }}
+                        aria-hidden="true"
+                      />
+                      <span className="font-grotesk text-sm font-bold tabular-nums">
+                        {c.count}
+                      </span>
+                    </li>
+                  );
+                })}
+              </ul>
+            </section>
+          ) : null}
+
+          <RemindersCard isSuperAdmin={user.role === "SUPER_ADMIN"} />
         </>
       ) : (
         <div className="brutal-card">
