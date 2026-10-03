@@ -107,3 +107,20 @@ Stage Summary:
 - ALL acceptance criteria verified: neo-brutalist responsive public site; enquiry → DB → admin instantly; valid .xlsx export with filters; ADMIN 403 on delete/user/audit endpoints even via direct API; lockout + export audit entries work; social links all from site.config.ts; admin edits reflect on public site (no-store content API); lint + tsc clean
 - Admin access: #/admin in the URL; seeded creds admin@skyora.edu.in / counsellor@skyora.edu.in (both ChangeMe@12345, forced change on first login)
 - Remaining false-positive warning: next/font no-page-custom-font (App Router loads layout <head> globally — harmless)
+
+---
+Task ID: 3-b
+Agent: Z.ai Code (lead)
+Task: Session-resume re-verification — confirm environment still healthy after context restart
+
+Work Log:
+- Confirmed dev server running on :3000 (GET / 200); EADDRINUSE in dev.log is a stale duplicate-start artifact, serving instance unaffected
+- DB intact (db/custom.db); GET /api/public/content returns seeded 7-course catalogue
+- agent-browser E2E re-check: public home renders (hero/stats/marquee/two tracks/testimonials/CTA/footer), zero console errors; #/admin login form renders; admin@skyora.edu.in + ChangeMe@12345 login → forced "SET A NEW PASSWORD" gate; password changed → dashboard + enquiries view render with 5 seeded rows, filters and export present; logout
+- Restored pristine seed state: both users passwordHash=ChangeMe@12345 (bcrypt 12) + mustChangePassword=true; sessions cleared (logout invalidated first session; 2 curl-test sessions deleted after)
+- bun run lint: 0 errors, 1 known false-positive warning (no-page-custom-font, App Router layout — harmless)
+
+Stage Summary:
+- Project remains complete and verified after session restart; no code changes required
+- Access: Preview Panel on / ; admin via #/admin (admin@skyora.edu.in / counsellor@skyora.edu.in, both ChangeMe@12345, forced change on first login)
+- Next: user to send follow-up Prompt 1 (design refinements) when ready
