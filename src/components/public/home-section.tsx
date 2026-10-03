@@ -193,7 +193,7 @@ export function HomeSection() {
 
           <motion.h1
             variants={HERO_ITEM}
-            className="mt-6 max-w-5xl font-display text-5xl leading-[0.95] uppercase sm:text-6xl lg:text-7xl xl:text-8xl"
+            className="mt-6 max-w-5xl font-display text-[clamp(3rem,8vw,7rem)] leading-[0.95] uppercase"
           >
             Careers take <span className="text-brand-pink">flight</span> at
             Skyora

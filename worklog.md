@@ -124,3 +124,19 @@ Stage Summary:
 - Project remains complete and verified after session restart; no code changes required
 - Access: Preview Panel on / ; admin via #/admin (admin@skyora.edu.in / counsellor@skyora.edu.in, both ChangeMe@12345, forced change on first login)
 - Next: user to send follow-up Prompt 1 (design refinements) when ready
+
+---
+Task ID: 4
+Agent: Z.ai Code (lead)
+Task: Phase A — Design refinements (Prompts 1–4): hero clamp, count-once stats, marquee spec, 3-breakpoint mobile audit
+
+Work Log:
+- Prompt 1: hero h1 switched from breakpoint sizes (text-5xl…xl:text-8xl) to exact clamp → text-[clamp(3rem,8vw,7rem)]; pink highlight word, staggered fade-in (0.12s) and shadow-displacement hover (brutal-hover) were already compliant — verified, no change
+- Prompt 2: stat cards already useInView(once) + count 0→value with fire-once ref; added tabular-nums to the number line to stop digit jitter during count; browser-verified value settles at 500+ and does NOT re-run on scroll re-entry
+- Prompt 3: marquee verified compliant as built — 30s linear infinite, translateX(-50%) double-copy loop, hover pause, reduced-motion fallback (animation:none + horizontal scroller)
+- Prompt 4 (mobile audit 360/768/1280): programmatic overflow sweep of all 6 public routes × 3 viewports → 0px horizontal overflow everywhere; measured h1 computed sizes 48px@360 / 61.44px@768 (8vw) / clamp verified; footer privacy note vs floating buttons → 0px vertical overlap (20px clear gap, no blocking); hamburger opens/closes at 360; marquee duration 30s confirmed via computed style; screenshots reviewed at 360 hero/footer + 1280 hero/courses; zero console/page errors
+- bun run lint: 0 errors (same single known false-positive font warning); project tsc: 0 errors in src/
+
+Stage Summary:
+- Files changed: src/components/public/home-section.tsx (hero clamp), src/components/public/stat-cards.tsx (tabular-nums)
+- Phase A complete; next phase = B (security hardening): Prompt 5 Turnstile + per-IP enquiry rate limit, Prompt 6 TOTP 2FA for SUPER_ADMIN, Prompt 7 security self-audit table (+diff)

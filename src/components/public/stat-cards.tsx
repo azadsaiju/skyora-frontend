@@ -44,7 +44,7 @@ function StatCard({ value, suffix, label, color }: StatCardProps) {
   return (
     <div ref={ref} className="brutal-card brutal-hover min-w-0 p-5 md:p-6">
       <p
-        className="font-display text-4xl leading-none md:text-5xl"
+        className="font-display text-4xl leading-none tabular-nums md:text-5xl"
         style={{ color }}
       >
         {shown}
