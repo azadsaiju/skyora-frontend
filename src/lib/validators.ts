@@ -93,6 +93,8 @@ export const enquiryCreateSchema = z.object({
   source: z.string().trim().min(1).max(60).optional().default("website"),
   /** honeypot — must stay empty; filled values are silently discarded */
   website: z.string().max(200).optional().default(""),
+  /** Cloudflare Turnstile token (verified server-side when configured) */
+  turnstileToken: z.string().max(2048).optional().default(""),
 });
 
 // ── ENQUIRY ADMIN ────────────────────────────────────────────────────────────
@@ -192,6 +194,21 @@ export const userUpdateSchema = z.object({
     .regex(/[A-Za-z]/, "Password must contain a letter")
     .regex(/[0-9]/, "Password must contain a number")
     .optional(),
+});
+
+// ── MFA (TOTP 2FA) ──────────────────────────────────────────────────────────
+/** 6-digit TOTP code or a recovery code like AB3D9-K2M7X. */
+export const mfaCodeSchema = z.object({
+  code: z
+    .string()
+    .trim()
+    .min(6, "Enter your 6-digit code")
+    .max(20, "Code is too long")
+    .regex(/^[A-Za-z0-9-]+$/, "Codes contain letters and digits only"),
+});
+
+export const mfaDisableSchema = z.object({
+  password: z.string().min(1, "Password is required").max(128),
 });
 
 // ── AUDIT LOG QUERY ──────────────────────────────────────────────────────────

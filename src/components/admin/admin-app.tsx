@@ -17,6 +17,7 @@ import {
   Loader2,
   LogOut,
   ScrollText,
+  ShieldCheck,
   Trophy,
   Users,
   type LucideIcon,
@@ -34,6 +35,8 @@ import {
 } from "@/components/admin/admin-ui";
 import { LoginView } from "@/components/admin/login-view";
 import { ChangePasswordView } from "@/components/admin/change-password-view";
+import { MfaView } from "@/components/admin/mfa-view";
+import { SecurityView } from "@/components/admin/security-view";
 import { DashboardView } from "@/components/admin/dashboard-view";
 import { EnquiriesView } from "@/components/admin/enquiries-view";
 import { CoursesView } from "@/components/admin/courses-view";
@@ -48,10 +51,11 @@ type AdminView =
   | "courses"
   | "vacancies"
   | "achievements"
+  | "security"
   | "users"
   | "audit";
 
-type Phase = "loading" | "login" | "password" | "ready";
+type Phase = "loading" | "login" | "mfa" | "password" | "ready";
 
 const NAV_ITEMS: { id: AdminView; label: string; icon: LucideIcon }[] = [
   { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -59,6 +63,7 @@ const NAV_ITEMS: { id: AdminView; label: string; icon: LucideIcon }[] = [
   { id: "courses", label: "Courses", icon: GraduationCap },
   { id: "vacancies", label: "Vacancies", icon: Briefcase },
   { id: "achievements", label: "Achievements", icon: Trophy },
+  { id: "security", label: "Security", icon: ShieldCheck },
 ];
 
 const SUPER_NAV_ITEMS: { id: AdminView; label: string; icon: LucideIcon }[] = [
@@ -70,6 +75,7 @@ export function AdminApp() {
   const [phase, setPhase] = React.useState<Phase>("loading");
   const [user, setUser] = React.useState<SessionUser | null>(null);
   const [view, setView] = React.useState<AdminView>("dashboard");
+  const [mfaEnroll, setMfaEnroll] = React.useState(false);
   const lastExpiredToastRef = React.useRef(0);
 
   // Restore the session cookie on mount.
@@ -151,12 +157,47 @@ export function AdminApp() {
     );
   }
 
-  if (phase === "login" || !user) {
+  if (phase === "login") {
     return (
       <LoginView
         onSuccess={(u) => {
           setUser(u);
           setPhase(u.mustChangePassword ? "password" : "ready");
+        }}
+        onMfaRequired={(mustEnroll) => {
+          setMfaEnroll(mustEnroll);
+          setPhase("mfa");
+        }}
+      />
+    );
+  }
+
+  // MFA challenge: no session exists yet (user is intentionally still null).
+  if (phase === "mfa") {
+    return (
+      <MfaView
+        mustEnroll={mfaEnroll}
+        onAuthenticated={(u) => {
+          setUser(u);
+          setPhase(u.mustChangePassword ? "password" : "ready");
+        }}
+        onExpired={() => {
+          setPhase("login");
+        }}
+      />
+    );
+  }
+
+  if (!user) {
+    return (
+      <LoginView
+        onSuccess={(u) => {
+          setUser(u);
+          setPhase(u.mustChangePassword ? "password" : "ready");
+        }}
+        onMfaRequired={(mustEnroll) => {
+          setMfaEnroll(mustEnroll);
+          setPhase("mfa");
         }}
       />
     );
@@ -195,6 +236,8 @@ export function AdminApp() {
         return <VacanciesView key="vacancies" />;
       case "achievements":
         return <AchievementsView key="achievements" />;
+      case "security":
+        return <SecurityView key="security" user={u} onUserUpdate={setUser} />;
       case "users":
         return u.role === "SUPER_ADMIN" ? (
           <UsersView key="users" user={u} />

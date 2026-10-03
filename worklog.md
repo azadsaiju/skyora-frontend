@@ -140,3 +140,22 @@ Work Log:
 Stage Summary:
 - Files changed: src/components/public/home-section.tsx (hero clamp), src/components/public/stat-cards.tsx (tabular-nums)
 - Phase A complete; next phase = B (security hardening): Prompt 5 Turnstile + per-IP enquiry rate limit, Prompt 6 TOTP 2FA for SUPER_ADMIN, Prompt 7 security self-audit table (+diff)
+
+---
+Task ID: 5
+Agent: Z.ai Code (lead)
+Task: Phase B — Security hardening (Prompts 5–7): Turnstile, TOTP 2FA, security self-audit
+
+Work Log:
+- Prompt 5 (Turnstile): installed nothing new (fetch-based siteverify); src/lib/turnstile.ts verifies tokens against Cloudflare siteverify (fail-closed on network error, pass-through when TURNSTILE_SECRET_KEY unset); src/components/public/turnstile-widget.tsx (explicit render, script singleton, expired/error callbacks, renders nothing without NEXT_PUBLIC_TURNSTILE_SITE_KEY); enquiry-form.tsx gates submit until token present, remounts widget per attempt (single-use tokens), 429/403 messages toasted; middleware CSP extended (challenges.cloudflare.com in script/img/connect/frame-src); .env + .env.example wired (dev uses Cloudflare always-pass TEST keys)
+- Prompt 6 (TOTP 2FA): installed otplib@13 + qrcode; User table + totpSecret/totpEnabled/recoveryCodes (db:push); auth.ts — HMAC-signed 5-min skyora_mfa cookie (timingSafeEqual), resolveMfaActor (mfa-cookie OR full session for self-enrollment), recovery codes (10× high-entropy, SHA-256 hashed, single-use, normalize+constant-time match); routes: /api/auth/mfa/setup (QR data-URL + otpauth URI + manual secret), /confirm (first code → enable + issue 10 codes + session), /verify (TOTP or recovery code → session, shares 5-fail→15-min lockout with password), /disable (password consent; SUPER_ADMIN → 403 MFA_MANDATORY); login route: SUPER_ADMIN/totpEnabled users get {mfaRequired,mustEnroll} + mfa cookie instead of session; audit actions MFA_CHALLENGE/MFA_SETUP_STARTED/MFA_ENABLED/MFA_DISABLED/MFA_DISABLE_FAILED/MFA_LOGIN_SUCCESS/MFA_CODE_FAILED/RECOVERY_CODE_USED (purple family in audit view); middleware: /api/auth/mfa added to public paths (routes self-enforce); SessionUser.totpEnabled added end-to-end
+- Admin UI: mfa-view.tsx (enroll: QR+manual secret → 6-digit confirm → 10 recovery codes shown once with copy + save-confirm checkbox; verify: TOTP/recovery input); security-view.tsx (status card, ADMIN opt-in dialog + disable-with-password dialog, super-admin mandatory note + disabled button); admin-app phase machine extended (login → mfa → password → ready) — FIXED unreachable mfa phase bug (phase==="login" || !user swallowed it); Security nav for all roles
+- Prompt 7 (self-audit): findings table in chat report (see conversation), all HIGH/MED items fixed in this phase
+- Tests: 19-step curl suite (turnstile 403/201, admin direct login, super mfa-gated login + no-session 401, setup/auth-guards, confirm w/ real TOTP code via otplib, wrong code 400, recovery code single-use, lockout counters, admin opt-in→opt-out, PASSWORD_CHANGE_REQUIRED guard interplay, audit trail shows full MFA lifecycle, super disable 403); browser E2E: public form shows Cloudflare challenge iframe + auto-solves + submits successfully; admin login → MFA verify screen → wrong code toast → TOTP code → dashboard; Security view mandatory state; fixed NextResponse import bug caught by tsc
+- lint: 0 errors/1 known font warning; tsc: 0 errors in src/; pristine state restored (both users ChangeMe@12345 + mustChangePassword=true + 2FA wiped, sessions cleared, 2 test enquiries removed, 5 seed enquiries intact)
+
+Stage Summary:
+- Files added: src/lib/turnstile.ts, src/components/public/turnstile-widget.tsx, src/components/admin/{mfa-view,security-view}.tsx, src/app/api/auth/mfa/{setup,confirm,verify,disable}/route.ts
+- Files changed: auth.ts, validators.ts, types.ts, audit.ts, middleware.ts, enquiry route, login route, enquiry-form.tsx, login-view.tsx, admin-app.tsx, audit-logs-view.tsx, prisma/schema.prisma, .env, .env.example
+- Production TODO (user): set REAL Turnstile keys (test keys don't stop bots), AUTH_SECRET, swap SQLite→Postgres if desired
+- Next phase = C (features): Prompt 8 CSV import, Prompt 9 follow-up badges + reminders, Prompt 10 WhatsApp deep-link

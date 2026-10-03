@@ -3,6 +3,7 @@ import { enquiryCreateSchema, handleApiError, jsonError } from "@/lib/validators
 import { db } from "@/lib/db";
 import { getClientIp } from "@/lib/auth";
 import { checkRateLimit } from "@/lib/rate-limit";
+import { verifyTurnstileToken } from "@/lib/turnstile";
 
 export const dynamic = "force-dynamic";
 
@@ -10,6 +11,7 @@ export const dynamic = "force-dynamic";
  * POST /api/enquiry — public enquiry submission.
  * - Rate limited: max 3 submissions per IP per 10 minutes → 429.
  * - Honeypot field `website` must be empty; bot fills → silent fake success.
+ * - Cloudflare Turnstile token verified server-side when configured → 403.
  * - Zod-validated; stored with source page + timestamp.
  */
 export async function POST(req: NextRequest) {
@@ -35,7 +37,17 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: true }, { status: 201 });
     }
 
-    // 3. Validate the referenced course exists (and is active).
+    // 3. Turnstile — verify the human check (when the secret key is set).
+    const captchaOk = await verifyTurnstileToken(data.turnstileToken, ip);
+    if (!captchaOk) {
+      return jsonError(
+        403,
+        "Captcha verification failed. Please refresh the page and try again.",
+        "TURNSTILE_FAILED"
+      );
+    }
+
+    // 4. Validate the referenced course exists (and is active).
     const course = await db.course.findUnique({
       where: { id: data.courseId },
     });
@@ -43,7 +55,7 @@ export async function POST(req: NextRequest) {
       return jsonError(400, "Selected course is not available.", "INVALID_COURSE");
     }
 
-    // 4. Persist
+    // 5. Persist
     await db.enquiry.create({
       data: {
         name: data.name,

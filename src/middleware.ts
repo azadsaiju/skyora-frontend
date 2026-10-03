@@ -10,7 +10,7 @@ import { NextRequest, NextResponse } from "next/server";
  * RBAC are enforced inside each API route via `requireAuth`/`requireSuperAdmin`.
  */
 
-const PUBLIC_API_PATHS = ["/api/auth/login", "/api/enquiry", "/api/public"];
+const PUBLIC_API_PATHS = ["/api/auth/login", "/api/auth/mfa", "/api/enquiry", "/api/public"];
 const ADMIN_API_PREFIXES = [
   "/api/auth/me",
   "/api/auth/logout",
@@ -27,11 +27,12 @@ const ADMIN_API_PREFIXES = [
 function applySecurityHeaders(res: NextResponse, isProd: boolean): NextResponse {
   const csp = [
     "default-src 'self'",
-    `script-src 'self' 'unsafe-inline'${isProd ? "" : " 'unsafe-eval'"}`,
+    `script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com${isProd ? "" : " 'unsafe-eval'"}`,
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "font-src 'self' data: https://fonts.gstatic.com",
-    "img-src 'self' data: blob: https:",
-    `connect-src 'self'${isProd ? "" : " ws: wss:"}`,
+    "img-src 'self' data: blob: https://challenges.cloudflare.com https:",
+    `connect-src 'self' https://challenges.cloudflare.com${isProd ? "" : " ws: wss:"}`,
+    "frame-src https://challenges.cloudflare.com",
     "object-src 'none'",
     "base-uri 'self'",
     "form-action 'self'",

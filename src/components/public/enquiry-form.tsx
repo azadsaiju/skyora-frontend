@@ -6,7 +6,7 @@
  * shadcn Select for course interest, sonner toasts for errors.
  */
 
-import { useEffect, useId, useState } from "react";
+import { useCallback, useEffect, useId, useState } from "react";
 import type { FormEvent } from "react";
 import { CheckCircle2, Loader2, Send } from "lucide-react";
 import { toast } from "sonner";
@@ -23,6 +23,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  TurnstileWidget,
+  turnstileEnabled,
+} from "@/components/public/turnstile-widget";
 
 const PHONE_PATTERN = "^[+]?[0-9][0-9\\s\\-()]{7,15}$";
 
@@ -54,8 +58,14 @@ export function EnquiryForm({
   const [courseId, setCourseId] = useState("");
   const [message, setMessage] = useState("");
   const [website, setWebsite] = useState(""); // honeypot — must stay empty
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0); // remounts the captcha after each try
   const [submitting, setSubmitting] = useState(false);
   const [succeeded, setSucceeded] = useState(false);
+
+  const handleCaptcha = useCallback((token: string | null) => {
+    setCaptchaToken(token);
+  }, []);
 
   // Pre-select the requested course once the course list is available.
   useEffect(() => {
@@ -72,6 +82,8 @@ export function EnquiryForm({
     setCourseId("");
     setMessage("");
     setWebsite("");
+    setCaptchaToken(null);
+    setAttempt((a) => a + 1); // fresh captcha — tokens are single-use
     setSucceeded(false);
   }
 
@@ -79,6 +91,10 @@ export function EnquiryForm({
     e.preventDefault();
     if (!courseId) {
       toast.error("Please select a course.");
+      return;
+    }
+    if (turnstileEnabled && !captchaToken) {
+      toast.error("Please complete the security check first.");
       return;
     }
     setSubmitting(true);
@@ -93,6 +109,7 @@ export function EnquiryForm({
           message: message.trim(),
           source,
           website,
+          turnstileToken: captchaToken ?? "",
         }),
       });
       setSucceeded(true);
@@ -103,6 +120,8 @@ export function EnquiryForm({
           ? err.message
           : "Could not send your enquiry. Please try again."
       );
+      setCaptchaToken(null);
+      setAttempt((a) => a + 1); // fresh captcha for the retry
     } finally {
       setSubmitting(false);
     }
@@ -245,9 +264,11 @@ export function EnquiryForm({
         </p>
       </div>
 
+      <TurnstileWidget key={attempt} onToken={handleCaptcha} />
+
       <Button
         type="submit"
-        disabled={submitting}
+        disabled={submitting || (turnstileEnabled && !captchaToken)}
         className="h-11 w-full rounded-lg font-bold uppercase brutal-hover"
       >
         {submitting ? (

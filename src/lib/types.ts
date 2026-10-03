@@ -43,6 +43,7 @@ export interface SessionUser {
   email: string;
   role: Role;
   mustChangePassword: boolean;
+  totpEnabled: boolean;
 }
 
 export interface UserDTO {

@@ -1,4 +1,4 @@
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import {
   loginSchema,
   handleApiError,
@@ -10,6 +10,7 @@ import {
   createSession,
   respondWithSession,
   getClientIp,
+  setMfaCookie,
 } from "@/lib/auth";
 import { db } from "@/lib/db";
 import {
@@ -77,6 +78,26 @@ export async function POST(req: NextRequest) {
 
     clearLoginFailures(lockKey);
 
+    // ── TOTP 2FA gate ────────────────────────────────────────────────────────
+    // Mandatory for SUPER_ADMIN; enforced for anyone who has opted in.
+    // Password alone is NOT enough: issue a short-lived mfa-pending cookie
+    // (no session) and make the client complete the TOTP challenge.
+    if (user.role === "SUPER_ADMIN" || user.totpEnabled) {
+      await logAudit({
+        userId: user.id,
+        action: "MFA_CHALLENGE",
+        entity: "AUTH",
+        entityId: user.id,
+        ipAddress: ip,
+        meta: { mustEnroll: !user.totpEnabled },
+      });
+      const res = NextResponse.json({
+        mfaRequired: true,
+        mustEnroll: !user.totpEnabled,
+      });
+      return setMfaCookie(res, user.id);
+    }
+
     // Rotate sessions: invalidate any previous sessions for this user.
     await db.session.deleteMany({ where: { userId: user.id } });
     const { token, maxAge } = await createSession(user.id, req);
@@ -97,6 +118,7 @@ export async function POST(req: NextRequest) {
           email: user.email,
           role: user.role,
           mustChangePassword: user.mustChangePassword,
+          totpEnabled: user.totpEnabled,
         },
       },
       token,

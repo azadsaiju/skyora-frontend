@@ -19,6 +19,10 @@ model User {
   role               String   @default("ADMIN") // SUPER_ADMIN | ADMIN (zod-enforced)
   isActive           Boolean  @default(true)
   mustChangePassword Boolean  @default(false)
+  // ── TOTP 2FA (mandatory for SUPER_ADMIN, optional for ADMIN) ──
+  totpSecret         String? // base32 secret; present while enrolling or enabled
+  totpEnabled        Boolean  @default(false)
+  recoveryCodes      String? // JSON array of SHA-256 hashes; each usable once
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
 

@@ -17,10 +17,18 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { FIELD_CLASS } from "@/components/admin/admin-ui";
 
+interface LoginResponse {
+  user?: SessionUser;
+  mfaRequired?: boolean;
+  mustEnroll?: boolean;
+}
+
 export function LoginView({
   onSuccess,
+  onMfaRequired,
 }: {
   onSuccess: (user: SessionUser) => void;
+  onMfaRequired: (mustEnroll: boolean) => void;
 }) {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
@@ -32,10 +40,19 @@ export function LoginView({
     if (submitting) return;
     setSubmitting(true);
     try {
-      const res = await api<{ user: SessionUser }>("/api/auth/login", {
+      const res = await api<LoginResponse>("/api/auth/login", {
         method: "POST",
         body: JSON.stringify({ email: email.trim(), password }),
       });
+      // TOTP-gated accounts receive a challenge instead of a session.
+      if (res.mfaRequired) {
+        onMfaRequired(Boolean(res.mustEnroll));
+        return;
+      }
+      if (!res.user) {
+        toast.error("Sign in failed. Please try again.");
+        return;
+      }
       toast.success(`Welcome back, ${res.user.name}`);
       onSuccess(res.user);
     } catch (err) {
@@ -143,7 +160,7 @@ export function LoginView({
           <div className="mt-6 space-y-1.5 border-t-2 border-dashed border-ink/20 pt-4 text-center">
             <p className="text-xs text-muted-foreground">
               Sessions are httpOnly + SameSite=Strict. 5 failed attempts = 15
-              min lockout.
+              min lockout. Super admin sign-ins require a second factor.
             </p>
             <a
               href="/"
