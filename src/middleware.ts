@@ -36,12 +36,18 @@ function applySecurityHeaders(res: NextResponse, isProd: boolean): NextResponse 
     "object-src 'none'",
     "base-uri 'self'",
     "form-action 'self'",
-    "frame-ancestors 'none'",
+    // Clickjacking protection: strict in production (real domain, no embedding).
+    // Relaxed in dev so the sandbox preview panel can embed the site in its iframe.
+    isProd ? "frame-ancestors 'none'" : "frame-ancestors *",
     ...(isProd ? ["upgrade-insecure-requests"] : []),
   ].join("; ");
 
   res.headers.set("Content-Security-Policy", csp);
-  res.headers.set("X-Frame-Options", "DENY");
+  if (isProd) {
+    // Legacy clickjacking guard — only set when strict embedding is required.
+    // In dev, CSP frame-ancestors governs, keeping the preview panel working.
+    res.headers.set("X-Frame-Options", "DENY");
+  }
   res.headers.set("X-Content-Type-Options", "nosniff");
   res.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
   res.headers.set("Permissions-Policy", "camera=(), microphone=(), geolocation=()");

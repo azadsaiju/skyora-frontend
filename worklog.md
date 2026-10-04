@@ -202,3 +202,17 @@ Stage Summary:
 - Files restored: .env (full var set)
 - Cumulative diff across Phases B–D: +8 lib files (turnstile, csv, mailer, reminders, reminder-cron, track-whatsapp + auth/validators/rate-limit/audit/types extensions), +8 API routes (mfa/setup|confirm|verify|disable, enquiries/import, reminders, track/whatsapp), +4 admin views (mfa-view, security-view, import-dialog, reminders-card) + admin-app phase machine, +1 public component (turnstile-widget) + enquiry-form gating, prisma User + 2FA columns, middleware CSP + mfa paths, .env/.env.example/README/vercel.json
 - Next: none — project is launch-ready pending user-side production config
+
+---
+Task ID: B-0 (preview panel hotfix)
+Agent: Z.ai Code (main)
+Task: Fix "preview panel not opening" — site was blocked from iframe embedding by Phase A security headers.
+
+Work Log:
+- Diagnosed: dev server + Caddy gateway both serving 200; root cause was `x-frame-options: DENY` + CSP `frame-ancestors 'none'` applied unconditionally in src/middleware.ts (added during Phase A hardening), which blocks the preview panel's cross-origin iframe.
+- Fix: made clickjacking headers environment-aware in src/middleware.ts — production keeps `frame-ancestors 'none'` + `X-Frame-Options: DENY`; dev sandbox now serves `frame-ancestors *` and omits X-Frame-Options so the preview panel can embed the site.
+- Verified: vercel.json (production deployment) still enforces X-Frame-Options: DENY; middleware hot-reloaded cleanly; site renders in browser with zero console errors; lint 0 errors (1 pre-existing unrelated font warning).
+
+Stage Summary:
+- Preview panel embedding unblocked; production clickjacking protection unchanged.
+- Files touched: src/middleware.ts only (6-line change).
