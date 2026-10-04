@@ -286,3 +286,20 @@ Stage Summary:
 - Login flow verified live end-to-end (creds → forced password change → dashboard → CSV export 200).
 - Files touched: src/components/public/footer.tsx, src/app/page.tsx (comment only).
 - Seed credential contract unchanged: both accounts ChangeMe@12345 with forced change on first login; super admin will be required to enroll TOTP on first sign-in.
+---
+Task ID: B-4 (track certifications + login restriction notice)
+Agent: Z.ai Code (main)
+Task: User asked to (1) add "IATA Preferred" for aviation, (2) add "certificate provided by STED Council" for IT, (3) make clear the login is for admins/administrators only (for reviewing enquiry details).
+
+Work Log:
+- src/config/site.config.ts: added `certifications` block keyed by track — AVIATION: short "IATA Preferred" / full "IATA-preferred aviation academy — curriculum aligned with International Air Transport Association (IATA) standards."; IT: short "Certificate by STED Council" / full "Certificate provided by STED Council (Scientific & Technical Education Development Council) on successful course completion." Central config = edit once, shown everywhere.
+- src/components/public/courses-section.tsx: certification banner (Award icon + track color) above each track's grid + certification badge pill on every course card (under duration badge).
+- src/components/public/home-section.tsx: TrackCard gained `track: Track` prop + certification pill under the track title; both call sites pass track.
+- src/components/admin/login-view.tsx: added dashed "Restricted area" info box — login is for authorised admins & administrators only, to review enquiry details and manage site content; students directed to WhatsApp/enquiry form.
+- Bonus fix: src/app/api/enquiries/export/route.ts — `body` type widened to `ArrayBuffer | string` (pre-existing tsc error from CSV work; tsc in src/ now clean).
+- Verified live (agent-browser): Courses/Aviation tab shows IATA banner + badges on both cards; IT tab shows STED banner + badges on all cards; Home track cards show both pills; #/admin shows the restricted-area note. Lint 0 errors (1 pre-existing font warning); tsc src/ clean; app+gateway 200; dev.log clean.
+
+Stage Summary:
+- Track accreditations are live sitewide (Courses banners + card badges + Home pills) from one config block; no DB/schema change (certification is a track-level fact, not per-course data).
+- Login panel now explicitly states admin/administrator-only access and its purpose (reviewing enquiry details).
+- Files touched: site.config.ts, courses-section.tsx, home-section.tsx, login-view.tsx, enquiries/export/route.ts (type fix only).

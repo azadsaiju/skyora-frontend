@@ -8,6 +8,7 @@
 import { motion, type Variants } from "framer-motion";
 import {
   ArrowRight,
+  Award,
   ChevronRight,
   Code2,
   Plane,
@@ -17,7 +18,7 @@ import {
 } from "lucide-react";
 import { siteConfig } from "@/config/site.config";
 import { trackWhatsApp } from "@/lib/track-whatsapp";
-import type { CourseDTO } from "@/lib/types";
+import type { CourseDTO, Track } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SectionHeading } from "@/components/public/section-heading";
@@ -55,12 +56,13 @@ const GRID_ITEM: Variants = {
 // ── Track highlight card ─────────────────────────────────────────────────────
 interface TrackCardProps {
   title: string;
+  track: Track;
   Icon: LucideIcon;
   color: string;
   courses: CourseDTO[];
 }
 
-function TrackCard({ title, Icon, color, courses }: TrackCardProps) {
+function TrackCard({ title, track, Icon, color, courses }: TrackCardProps) {
   return (
     <div className="brutal-card flex min-w-0 flex-col p-6 md:p-8">
       <div className="flex items-center gap-4">
@@ -82,6 +84,14 @@ function TrackCard({ title, Icon, color, courses }: TrackCardProps) {
           />
         </div>
       </div>
+
+      {/* Track certification — IATA Preferred (Aviation) / STED Council (IT) */}
+      <p className="mt-4 inline-flex w-fit items-center gap-2 rounded-full border-2 border-ink bg-cream px-3 py-1.5">
+        <Award aria-hidden className="h-3.5 w-3.5 shrink-0" style={{ color }} />
+        <span className="font-grotesk text-[11px] font-bold tracking-widest uppercase">
+          {siteConfig.certifications[track].short}
+        </span>
+      </p>
 
       {courses.length === 0 ? (
         <p className="mt-6 rounded-lg bg-cream px-3 py-3 text-sm text-muted-foreground">
@@ -284,12 +294,14 @@ export function HomeSection() {
           <div className="mt-10 grid gap-6 md:grid-cols-2">
             <TrackCard
               title="AVIATION"
+              track="AVIATION"
               Icon={Plane}
               color="#2563EB"
               courses={aviationCourses}
             />
             <TrackCard
               title="IT & SOFTWARE"
+              track="IT"
               Icon={Code2}
               color="#00B8D9"
               courses={itCourses}

@@ -38,6 +38,22 @@ export const siteConfig = {
     { value: 40, suffix: "+", label: "HIRING PARTNERS", color: "#00B8D9" },
   ],
 
+  // ── TRACK CERTIFICATIONS (Courses page + Home highlights) ────────────────
+  // One entry per career track. "short" is the badge label, "full" is the
+  // explanatory line shown in the certification banner on the courses page.
+  certifications: {
+    AVIATION: {
+      short: "IATA Preferred",
+      full:
+        "IATA-preferred aviation academy — curriculum aligned with International Air Transport Association (IATA) standards.",
+    },
+    IT: {
+      short: "Certificate by STED Council",
+      full:
+        "Certificate provided by STED Council (Scientific & Technical Education Development Council) on successful course completion.",
+    },
+  },
+
   // ── RECRUITER / PARTNER MARQUEE STRIP ─────────────────────────────────────
   recruiters: [
     "IndiGo",

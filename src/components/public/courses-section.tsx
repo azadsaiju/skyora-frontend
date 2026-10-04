@@ -6,8 +6,9 @@
  */
 
 import { motion, type Variants } from "framer-motion";
-import { Clock, Code2, Plane } from "lucide-react";
+import { Award, Clock, Code2, Plane } from "lucide-react";
 import type { CourseDTO, Track } from "@/lib/types";
+import { siteConfig } from "@/config/site.config";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -65,6 +66,15 @@ function CourseCard({
         <Clock aria-hidden />
         {course.duration}
       </Badge>
+      {/* Track certification — IATA Preferred (Aviation) / STED Council (IT) */}
+      <p className="mt-2 inline-flex w-fit items-center gap-1.5 rounded-full border-2 border-ink px-2.5 py-1 font-grotesk text-[11px] font-bold tracking-wide uppercase">
+        <Award
+          aria-hidden
+          className="h-3 w-3 shrink-0"
+          style={{ color }}
+        />
+        {siteConfig.certifications[course.track].short}
+      </p>
       <p className="mt-3 line-clamp-3 text-sm break-words text-muted-foreground">
         {course.description}
       </p>
@@ -147,17 +157,38 @@ function TrackGrid({
   }
 
   return (
-    <motion.div
-      variants={GRID_CONTAINER}
-      initial="hidden"
-      whileInView="show"
-      viewport={{ once: true, margin: "-60px" }}
-      className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
-    >
-      {trackCourses.map((course) => (
-        <CourseCard key={course.id} course={course} courses={courses} />
-      ))}
-    </motion.div>
+    <div>
+      {/* Certification banner — track-level accreditation statement */}
+      <div className="mb-6 flex items-start gap-3 rounded-xl border-2 border-ink bg-white p-4 shadow-hard-sm">
+        <span
+          aria-hidden
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-white"
+          style={{ background: TRACK_META[track].color }}
+        >
+          <Award className="h-5 w-5" />
+        </span>
+        <div className="min-w-0">
+          <p className="font-grotesk text-sm font-bold tracking-wide uppercase">
+            {siteConfig.certifications[track].short}
+          </p>
+          <p className="mt-0.5 text-xs break-words text-muted-foreground md:text-sm">
+            {siteConfig.certifications[track].full}
+          </p>
+        </div>
+      </div>
+
+      <motion.div
+        variants={GRID_CONTAINER}
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, margin: "-60px" }}
+        className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+      >
+        {trackCourses.map((course) => (
+          <CourseCard key={course.id} course={course} courses={courses} />
+        ))}
+      </motion.div>
+    </div>
   );
 }
 

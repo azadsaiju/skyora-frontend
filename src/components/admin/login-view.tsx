@@ -7,7 +7,7 @@
  */
 
 import * as React from "react";
-import { Eye, EyeOff, Loader2, Lock } from "lucide-react";
+import { Eye, EyeOff, Info, Loader2, Lock } from "lucide-react";
 import { toast } from "sonner";
 
 import { api } from "@/lib/client";
@@ -86,6 +86,18 @@ export function LoginView({
                 Secure Admin Portal
               </p>
             </div>
+          </div>
+
+          <div className="mt-4 flex items-start gap-2 rounded-lg border-2 border-dashed border-ink/25 bg-cream px-3 py-2.5">
+            <Info
+              className="mt-0.5 size-3.5 shrink-0 text-muted-foreground"
+              aria-hidden="true"
+            />
+            <p className="text-xs leading-relaxed text-muted-foreground">
+              Restricted area — login is for authorised admins &amp;
+              administrators only, to review enquiry details and manage site
+              content. Students can enquire via WhatsApp or the enquiry form.
+            </p>
           </div>
 
           <form onSubmit={handleSubmit} className="mt-6 space-y-4">

@@ -109,7 +109,7 @@ export async function GET(req: NextRequest) {
 
     const filename = `skyora-enquiries-${new Date().toISOString().slice(0, 10)}.${format}`;
 
-    let body: ArrayBuffer;
+    let body: ArrayBuffer | string;
     let contentType: string;
 
     if (format === "csv") {
