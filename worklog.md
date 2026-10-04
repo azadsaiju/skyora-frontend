@@ -233,3 +233,20 @@ Stage Summary:
 - Dev server stable via start-stop-daemon (PID in /tmp/skyora-dev.pid); gateway :81 serves the site with iframe-friendly dev headers.
 - Dev header policy finalized: no X-Frame-Options / no HSTS / CSP frame-ancestors * in dev; all strict in production (middleware isProd branch + vercel.json).
 - Preview panel blocker should now be cleared; user needs to refresh the panel.
+
+---
+Task ID: B-1 (Prompt 5 live verification)
+Agent: Z.ai Code (main)
+Task: User asked to "start the prompt" (Prompt 5 — Turnstile + per-IP rate limit). Discovered via worklog that ALL prompts (5–12, Phases A–D) were already implemented by the prior session; re-verified Prompt 5's two features live instead of re-implementing.
+
+Work Log:
+- Read worklog: Task 7 entry records Phases A–D complete, 70/70 regression PASS, incl. turnstile + 429@4th + MFA + CSV import + reminders + WhatsApp tracking + README/vercel.json/.env.example.
+- Confirmed artifacts on disk: src/lib/turnstile.ts (fail-closed siteverify), src/lib/rate-limit.ts (sliding window + login lockout), src/app/api/enquiry/route.ts (limit→honeypot→turnstile→course→persist), src/components/public/turnstile-widget.tsx (explicit render, token callback), .env has Cloudflare DEV TEST key pair (1x…AA site + 1x…AA secret, always-pass).
+- LIVE API tests: missing token → 403; dummy token → passed siteverify (real HTTPS call to Cloudflare succeeded) → INVALID_COURSE 400 (course intentionally wrong); valid course ×4 same IP → 201,201,201,429; 429 body = RATE_LIMITED + retryAfterSec (~594). Deleted QA rows after (source='qa').
+- Browser E2E on contact form: Turnstile script loads, challenge iframe mounted (visible in a11y tree as "Widget containing a Cloudflare security challenge"; INVISIBLE to querySelectorAll — shadow DOM; verify via snapshot/network trace, both confirmed 200s); widget auto-solved test-key token (len 21); filled form → submit → POST 201 + "RECEIVED!" UI. Rate limit also observed from browser path (429 when bucket full).
+- State hygiene: 4 QA rows deleted total; DB = 5 seed + 1 REAL user enquiry (azad saiju 11:46, source courses:full-stack-development — kept, do not delete); dev server restarted twice via start-stop-daemon to reset the in-memory localhost rate bucket my probes filled (user shares that bucket through the gateway). Final: app 200, gateway 200, lint 0 errors (1 known font warning).
+
+Stage Summary:
+- Prompt 5 verified live end-to-end (API + browser human path + rate limit + 429 UI path). No code changes needed — prior session's implementation is correct and complete.
+- ALL 12 prompts stand complete; project is launch-ready pending user-side production config (real Turnstile keys, AUTH_SECRET, SMTP, domain).
+- Ops notes: shadow-DOM hides the Turnstile iframe from querySelector — use a11y snapshot; curl probes without X-Forwarded-For share the ::1 bucket with preview-panel users — always use a unique test IP header.
