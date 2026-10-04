@@ -303,3 +303,19 @@ Stage Summary:
 - Track accreditations are live sitewide (Courses banners + card badges + Home pills) from one config block; no DB/schema change (certification is a track-level fact, not per-course data).
 - Login panel now explicitly states admin/administrator-only access and its purpose (reviewing enquiry details).
 - Files touched: site.config.ts, courses-section.tsx, home-section.tsx, login-view.tsx, enquiries/export/route.ts (type fix only).
+---
+Task ID: B-5 (official IATA + STED Council logos)
+Agent: Z.ai Code (main)
+Task: User asked to add the IATA and STED Council logos they had provided (found in upload/: pasted_image_1791115436219.png = IATA Authorized Training Center "Preferred" badge; pasted_image_1791115718897.png = STED Council seal).
+
+Work Log:
+- Processed images with sharp: IATA cropped to the circular badge only (extract 150x132 @ left 100 top 0 → trim → 256px contain, transparent bg) since the source had extra marketing text below; STED copied as-is (447→320px square). Saved to public/certifications/iata-preferred.png + sted-council.png.
+- site.config.ts: each certifications entry gained a `logo` path (edit-once central config).
+- courses-section.tsx: banner now shows the official mark in a bordered 56px frame (replaces the generic Award icon); every course card badge shows a 16px logo beside the label. Swapped to next/image; removed unused Award import.
+- home-section.tsx: track pills on AVIATION / IT & SOFTWARE cards now show the official logo (20px) beside the label.
+- Verified live (agent-browser): Aviation banner + both card badges show IATA badge; IT banner + all card badges show STED seal; Home pills show respective logos; /_next/image endpoints 200 for both files. Lint 0 errors (1 pre-existing font warning); tsc src/ clean; app+gateway 200.
+
+Stage Summary:
+- Official accreditation marks are live sitewide: Courses banners, course card badges, Home track pills — all driven from site.config.certifications[track].logo (one place to swap files later).
+- Source uploads kept untouched in upload/; production-ready copies in public/certifications/.
+- Files touched: site.config.ts, courses-section.tsx, home-section.tsx, public/certifications/{iata-preferred,sted-council}.png.

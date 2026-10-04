@@ -6,9 +6,9 @@
  */
 
 import { motion, type Variants } from "framer-motion";
+import Image from "next/image";
 import {
   ArrowRight,
-  Award,
   ChevronRight,
   Code2,
   Plane,
@@ -85,9 +85,16 @@ function TrackCard({ title, track, Icon, color, courses }: TrackCardProps) {
         </div>
       </div>
 
-      {/* Track certification — IATA Preferred (Aviation) / STED Council (IT) */}
-      <p className="mt-4 inline-flex w-fit items-center gap-2 rounded-full border-2 border-ink bg-cream px-3 py-1.5">
-        <Award aria-hidden className="h-3.5 w-3.5 shrink-0" style={{ color }} />
+      {/* Track certification — official IATA / STED Council mark */}
+      <p className="mt-4 inline-flex w-fit items-center gap-2 rounded-full border-2 border-ink bg-white px-3 py-1.5">
+        <Image
+          src={siteConfig.certifications[track].logo}
+          alt=""
+          aria-hidden
+          width={20}
+          height={20}
+          className="size-5 shrink-0 object-contain"
+        />
         <span className="font-grotesk text-[11px] font-bold tracking-widest uppercase">
           {siteConfig.certifications[track].short}
         </span>

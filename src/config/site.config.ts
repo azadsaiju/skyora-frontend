@@ -40,17 +40,20 @@ export const siteConfig = {
 
   // ── TRACK CERTIFICATIONS (Courses page + Home highlights) ────────────────
   // One entry per career track. "short" is the badge label, "full" is the
-  // explanatory line shown in the certification banner on the courses page.
+  // explanatory line, "logo" is the official mark shown beside the text
+  // (files live in /public/certifications/).
   certifications: {
     AVIATION: {
       short: "IATA Preferred",
       full:
         "IATA-preferred aviation academy — curriculum aligned with International Air Transport Association (IATA) standards.",
+      logo: "/certifications/iata-preferred.png",
     },
     IT: {
       short: "Certificate by STED Council",
       full:
         "Certificate provided by STED Council (Scientific & Technical Education Development Council) on successful course completion.",
+      logo: "/certifications/sted-council.png",
     },
   },
 

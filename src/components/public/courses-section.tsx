@@ -6,7 +6,8 @@
  */
 
 import { motion, type Variants } from "framer-motion";
-import { Award, Clock, Code2, Plane } from "lucide-react";
+import Image from "next/image";
+import { Clock, Code2, Plane } from "lucide-react";
 import type { CourseDTO, Track } from "@/lib/types";
 import { siteConfig } from "@/config/site.config";
 import { Badge } from "@/components/ui/badge";
@@ -66,12 +67,15 @@ function CourseCard({
         <Clock aria-hidden />
         {course.duration}
       </Badge>
-      {/* Track certification — IATA Preferred (Aviation) / STED Council (IT) */}
-      <p className="mt-2 inline-flex w-fit items-center gap-1.5 rounded-full border-2 border-ink px-2.5 py-1 font-grotesk text-[11px] font-bold tracking-wide uppercase">
-        <Award
+      {/* Track certification — official IATA / STED Council mark */}
+      <p className="mt-2 inline-flex w-fit items-center gap-1.5 rounded-full border-2 border-ink bg-white px-2.5 py-1 font-grotesk text-[11px] font-bold tracking-wide uppercase">
+        <Image
+          src={siteConfig.certifications[course.track].logo}
+          alt=""
           aria-hidden
-          className="h-3 w-3 shrink-0"
-          style={{ color }}
+          width={16}
+          height={16}
+          className="size-4 shrink-0 object-contain"
         />
         {siteConfig.certifications[course.track].short}
       </p>
@@ -158,14 +162,19 @@ function TrackGrid({
 
   return (
     <div>
-      {/* Certification banner — track-level accreditation statement */}
+      {/* Certification banner — track-level accreditation with official logo */}
       <div className="mb-6 flex items-start gap-3 rounded-xl border-2 border-ink bg-white p-4 shadow-hard-sm">
         <span
           aria-hidden
-          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-white"
-          style={{ background: TRACK_META[track].color }}
+          className="flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-lg border-2 border-ink/10 bg-white"
         >
-          <Award className="h-5 w-5" />
+          <Image
+            src={siteConfig.certifications[track].logo}
+            alt=""
+            width={52}
+            height={52}
+            className="size-[52px] object-contain"
+          />
         </span>
         <div className="min-w-0">
           <p className="font-grotesk text-sm font-bold tracking-wide uppercase">
