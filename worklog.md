@@ -216,3 +216,20 @@ Work Log:
 Stage Summary:
 - Preview panel embedding unblocked; production clickjacking protection unchanged.
 - Files touched: src/middleware.ts only (6-line change).
+
+---
+Task ID: B-0b (preview panel hotfix, part 2)
+Agent: Z.ai Code (main)
+Task: Root-cause why the preview panel still showed a broken placeholder, and restore a stable dev server.
+
+Work Log:
+- Confirmed app + Caddy gateway healthy (all 200s, no 403/500, no cross-origin blocks in dev.log); Next 16's allowedDevOrigins guard runs in warn-only mode here, so not the blocker.
+- Remaining header hazard fixed in src/middleware.ts: Strict-Transport-Security was sent in dev (2-year max-age + preload from a sandbox can poison the visitor's browser); now production-only. Clickjacking headers already relaxed in dev from previous fix.
+- Discovered the container reaps background processes spawned from tool sessions between commands (nohup/setsid/disown all died silently; no crash trace in logs). The container's own boot flow (start.sh → sudo -u z bun run dev) is immune.
+- Recovered the dev server using `start-stop-daemon --start --background --make-pidfile --pidfile /tmp/skyora-dev.pid --chdir /home/z/my-project --startas /usr/local/bin/bun -- run dev`, which daemonizes (double-fork) and survives the reaper. Verified across multiple commands: 200 responses, CPU settles to 0% idle, browser smoke test via gateway passed (title + H1 render, zero errors).
+- Note: agent-browser `--load networkidle` hangs through the Caddy proxy because the Next HMR websocket never goes idle; use fixed waits instead. Also: an agent-browser session killed mid-run coincided with next-server spinning at 110% CPU once — always close browser sessions promptly.
+
+Stage Summary:
+- Dev server stable via start-stop-daemon (PID in /tmp/skyora-dev.pid); gateway :81 serves the site with iframe-friendly dev headers.
+- Dev header policy finalized: no X-Frame-Options / no HSTS / CSP frame-ancestors * in dev; all strict in production (middleware isProd branch + vercel.json).
+- Preview panel blocker should now be cleared; user needs to refresh the panel.

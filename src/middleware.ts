@@ -51,10 +51,14 @@ function applySecurityHeaders(res: NextResponse, isProd: boolean): NextResponse 
   res.headers.set("X-Content-Type-Options", "nosniff");
   res.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
   res.headers.set("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
-  res.headers.set(
-    "Strict-Transport-Security",
-    "max-age=63072000; includeSubDomains; preload"
-  );
+  if (isProd) {
+    // HSTS is production-only: sending it from the dev sandbox can poison the
+    // visitor's browser cache for the sandbox host (2-year max-age + preload).
+    res.headers.set(
+      "Strict-Transport-Security",
+      "max-age=63072000; includeSubDomains; preload"
+    );
+  }
   return res;
 }
 
