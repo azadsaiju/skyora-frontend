@@ -16,20 +16,14 @@ export const dynamic = "force-dynamic";
 
 /**
  * POST /api/auth/mfa/disable { password }
- * Turns OFF 2FA for the signed-in account — ADMIN only. 2FA is MANDATORY
- * for SUPER_ADMIN accounts and can never be disabled (403).
- * Requires the account password as a second consent factor.
+ * Turns OFF 2FA for the signed-in account. 2FA is optional for every
+ * account (SUPER_ADMIN included) and can be disabled at any time from
+ * the Security page. Requires the account password as a second consent
+ * factor; the action is recorded in the audit log.
  */
 export async function POST(req: NextRequest) {
   try {
     const session = await requireAuth(req);
-    if (session.role === "SUPER_ADMIN") {
-      return jsonError(
-        403,
-        "Two-factor authentication is mandatory for super admin accounts and cannot be disabled.",
-        "MFA_MANDATORY"
-      );
-    }
 
     const body = await req.json().catch(() => null);
     const { password } = mfaDisableSchema.parse(body);

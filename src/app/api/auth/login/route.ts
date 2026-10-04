@@ -80,21 +80,24 @@ export async function POST(req: NextRequest) {
     clearLoginFailures(lockKey);
 
     // ── TOTP 2FA gate ────────────────────────────────────────────────────────
-    // Mandatory for SUPER_ADMIN; enforced for anyone who has opted in.
-    // Password alone is NOT enough: issue a short-lived mfa-pending cookie
-    // (no session) and make the client complete the TOTP challenge.
-    if (user.role === "SUPER_ADMIN" || user.totpEnabled) {
+    // Optional for every account: only users who enabled 2FA themselves
+    // (Security → Enable 2FA) are challenged. Everyone else — including
+    // SUPER_ADMIN — gets a session directly from the password step.
+    // Password alone is NOT enough for opted-in accounts: issue a
+    // short-lived mfa-pending cookie (no session) and make the client
+    // complete the TOTP challenge.
+    if (user.totpEnabled) {
       await logAudit({
         userId: user.id,
         action: "MFA_CHALLENGE",
         entity: "AUTH",
         entityId: user.id,
         ipAddress: ip,
-        meta: { mustEnroll: !user.totpEnabled },
+        meta: { mustEnroll: false },
       });
       const res = NextResponse.json({
         mfaRequired: true,
-        mustEnroll: !user.totpEnabled,
+        mustEnroll: false,
         // Body token for contexts where the cookie is dropped (iframes).
         mfaToken: createMfaPendingToken(user.id),
       });

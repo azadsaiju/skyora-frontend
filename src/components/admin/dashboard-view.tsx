@@ -16,6 +16,7 @@ import {
   Inbox,
   MessageCircle,
   RefreshCw,
+  ShieldAlert,
   Users,
 } from "lucide-react";
 import { format } from "date-fns";
@@ -42,9 +43,11 @@ import { RemindersCard } from "@/components/admin/reminders-card";
 export function DashboardView({
   user,
   onOpenEnquiries,
+  onOpenSecurity,
 }: {
   user: SessionUser;
   onOpenEnquiries: () => void;
+  onOpenSecurity: () => void;
 }) {
   const [data, setData] = React.useState<DashboardDataDTO | null>(null);
   const [loading, setLoading] = React.useState(true);
@@ -125,6 +128,36 @@ export function DashboardView({
         </div>
       ) : data ? (
         <>
+          {!user.totpEnabled ? (
+            <section
+              aria-label="Two-factor authentication is off"
+              className="brutal-card flex flex-col gap-4 p-5 sm:flex-row sm:items-center"
+            >
+              <span
+                aria-hidden="true"
+                className="flex size-11 shrink-0 items-center justify-center rounded-lg border-2 border-ink bg-brand-orange text-white shadow-hard-sm"
+              >
+                <ShieldAlert className="size-5" />
+              </span>
+              <div className="min-w-0 flex-1">
+                <p className="font-grotesk text-sm font-bold uppercase tracking-wide">
+                  Two-factor authentication is OFF
+                </p>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  Optional — sign in currently needs only your password. Add an
+                  authenticator-app code as a second lock from the Security
+                  page; you can turn it off again anytime.
+                </p>
+              </div>
+              <Button
+                onClick={onOpenSecurity}
+                className="shrink-0 justify-center bg-brand-pink font-grotesk font-bold uppercase text-white hover:bg-brand-pink/90"
+              >
+                <ShieldAlert className="size-4" aria-hidden="true" />
+                Manage 2FA
+              </Button>
+            </section>
+          ) : null}
           <section
             aria-label="Key statistics"
             className="grid grid-cols-2 gap-4 lg:grid-cols-4"

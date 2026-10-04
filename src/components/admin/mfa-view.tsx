@@ -1,10 +1,10 @@
 "use client";
 
 /**
- * MFA challenge view — two modes:
- *  - mustEnroll: forced TOTP setup (QR → first code → 10 recovery codes shown
- *    exactly once) required for SUPER_ADMIN before any session is issued.
- *  - verify: enter a 6-digit authenticator code or a single-use recovery code.
+ * MFA challenge view — shown after the password step ONLY for accounts that
+ * have opted in to 2FA via Security → Enable 2FA (2FA is optional for every
+ * account, SUPER_ADMIN included). Self-service enrollment lives in the
+ * Security page; the enrollment mode below is kept as a defensive fallback.
  * Runs between the password step and the dashboard; no session exists yet.
  */
 
@@ -246,9 +246,9 @@ export function MfaView({ mustEnroll, onAuthenticated, onExpired }: MfaViewProps
     return (
       <MfaShell step="1 of 2" title="SET UP 2FA">
         <p className="text-sm leading-relaxed text-muted-foreground">
-          Super admin accounts require two-factor authentication. Scan the QR
-          code with Google Authenticator / Authy / 1Password, then enter the
-          6-digit code to activate. The setup window stays open for{" "}
+          Two-factor enrollment in progress. Scan the QR code with Google
+          Authenticator / Authy / 1Password, then enter the 6-digit code to
+          activate. The setup window stays open for{" "}
           <strong className="text-ink">15 minutes</strong> — if it expires,
           simply sign in again.
         </p>

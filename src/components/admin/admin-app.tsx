@@ -228,6 +228,7 @@ export function AdminApp() {
             key="dashboard"
             user={u}
             onOpenEnquiries={() => setView("enquiries")}
+            onOpenSecurity={() => setView("security")}
           />
         );
       case "enquiries":

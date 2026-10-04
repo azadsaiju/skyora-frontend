@@ -356,3 +356,30 @@ Work Log:
 Stage Summary:
 - Admin auth now works in BOTH contexts: normal tabs (httpOnly cookies, unchanged) and cookie-blocked iframes like the preview panel (header tokens with same server-side DB verification). "Verification session expired" eliminated for panel users; 15-min MFA window + QR-display refresh retained.
 - Files touched: src/lib/auth.ts, src/middleware.ts, src/lib/client.ts, src/app/api/auth/login/route.ts, src/app/api/auth/mfa/setup/route.ts, src/components/admin/admin-app.tsx.
+---
+Task ID: B-8 (2FA becomes optional — direct super-admin access + Enable/Disable toggle)
+Agent: Z.ai Code (main)
+Task: User request — remove the forced QR/2FA enrollment wall at super-admin login ("give the access directly"), and add a working Enable/Disable 2FA option with buttons in the admin interface.
+
+Work Log:
+- src/app/api/auth/login/route.ts: TOTP gate changed from `role === "SUPER_ADMIN" || totpEnabled` to `totpEnabled` only. Super admin now gets a session straight from the password step; only accounts that opted in (Security → Enable 2FA) see the authenticator challenge. mustEnroll is always false now.
+- src/app/api/auth/mfa/disable/route.ts: removed the SUPER_ADMIN 403 MFA_MANDATORY block — any account (super admin included) can disable 2FA with password confirmation.
+- src/components/admin/security-view.tsx: badge "Required/Recommended" → "Optional"; description rewritten (2FA off = password-only sign-in, how to enable, disableable anytime); Disable button enabled for SUPER_ADMIN (removed disabled/title guard); removed now-unused isSuper; dialog copy updated.
+- src/components/admin/mfa-view.tsx: header comment + enrollment copy updated (enrollment mode kept as defensive fallback; self-service enrollment lives in Security page).
+- src/components/admin/dashboard-view.tsx: new 2FA banner card when totpEnabled=false ("TWO-FACTOR AUTHENTICATION IS OFF" + optional explainer + pink "MANAGE 2FA" button → Security view); new required onOpenSecurity prop.
+- src/components/admin/admin-app.tsx: passes onOpenSecurity={() => setView("security")} to DashboardView.
+- Full E2E (agent-browser, with mustChangePassword temporarily false to test direct login; password NEVER changed):
+  1. admin@skyora.edu.in / ChangeMe@12345 → DIRECT dashboard (no QR, no password screen) + 2FA-OFF banner visible ✓
+  2. Manage 2FA → Security: "OPTIONAL" badge + ENABLE 2FA ✓
+  3. Enable → QR dialog → secret read from DB → live otplib v13 `generate({secret})` code → Verify & Enable → toast + recovery-codes step → Done → "Enabled on this account" + active DISABLE 2FA ✓
+  4. Logout → login → TWO-FACTOR CHECK challenge appears → live code → dashboard ✓ (2FA-on login path intact)
+  5. Security → DISABLE 2FA → password confirm → "Not enabled" + ENABLE 2FA ✓
+  6. Logout → login → direct dashboard again ✓
+  7. Browser closed.
+- Seed state restored after E2E: admin mustChangePassword=true, totpEnabled=false, totpSecret=null, recoveryCodes=null, all sessions deleted (1), enquiries intact (6 incl. real azad saiju enquiry). dev.log clean; lint 0 errors (1 pre-existing font warning); tsc src/ clean; app :3000 + gateway :81 both 200.
+- otplib v13 note: async generate()/verify() work with the default crypto plugin; only the class/sync API needs explicit NobleCryptoPlugin — confirm/verify routes unaffected.
+
+Stage Summary:
+- 2FA is now strictly opt-in for every account (SUPER_ADMIN included): direct password-only login by default, one-click enrollment (QR → code → recovery codes) and password-confirmed opt-out from Security page, discoverable via the dashboard banner.
+- Login response contract unchanged for clients (mfaRequired/mustEnroll fields still present; mustEnroll now always false).
+- Files touched: src/app/api/auth/login/route.ts, src/app/api/auth/mfa/disable/route.ts, src/components/admin/security-view.tsx, src/components/admin/mfa-view.tsx, src/components/admin/dashboard-view.tsx, src/components/admin/admin-app.tsx.

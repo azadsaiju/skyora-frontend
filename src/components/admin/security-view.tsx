@@ -2,10 +2,9 @@
 
 /**
  * Security view — per-account two-factor authentication management.
- * - SUPER_ADMIN: 2FA is mandatory (enrollment is forced at login); view-only
- *   status here, disable is blocked server-side.
- * - ADMIN: optional opt-in via the same QR → code → recovery-codes flow,
- *   and opt-out with password confirmation.
+ * 2FA is OPTIONAL for every account (SUPER_ADMIN included): anyone can
+ * enable it here (QR → code → recovery codes) and disable it later with
+ * password confirmation. Accounts with 2FA on are challenged at login.
  */
 
 import * as React from "react";
@@ -44,8 +43,6 @@ interface SecurityViewProps {
 type EnrollmentStep = "qr" | "codes";
 
 export function SecurityView({ user, onUserUpdate }: SecurityViewProps) {
-  const isSuper = user.role === "SUPER_ADMIN";
-
   const [enrollOpen, setEnrollOpen] = React.useState(false);
   const [enrollStep, setEnrollStep] = React.useState<EnrollmentStep>("qr");
   const [qrDataUrl, setQrDataUrl] = React.useState<string | null>(null);
@@ -179,16 +176,14 @@ export function SecurityView({ user, onUserUpdate }: SecurityViewProps) {
               </div>
             </div>
             <span className="rounded-md border-2 border-ink bg-cream px-2 py-1 font-grotesk text-[10px] font-bold uppercase tracking-widest">
-              {isSuper ? "Required" : "Recommended"}
+              Optional
             </span>
           </div>
 
           <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-            {isSuper
-              ? "Two-factor authentication is mandatory for super admin accounts. If you are seeing this page without 2FA, complete enrollment at your next sign-in — the portal will not open without it."
-              : user.totpEnabled
-                ? "Codes from your authenticator app (or a recovery code) are requested after every password sign-in. Keep your 10 recovery codes safe — each works once."
-                : "Add a second lock to your account: after entering your password you'll be asked for a 6-digit code from an authenticator app. ADMIN accounts can opt in or out anytime here."}
+            {user.totpEnabled
+              ? "Codes from your authenticator app (or a recovery code) are requested after every password sign-in. Keep your 10 recovery codes safe — each works once. You can turn this off anytime below."
+              : "Two-factor authentication is off — you currently sign in with your password only. To add a second lock, click Enable 2FA, scan the QR code with an authenticator app (Google Authenticator / Authy / 1Password) and enter the 6-digit code. You can disable it again anytime from this page."}
           </p>
 
           <div className="mt-5 flex flex-wrap gap-3">
@@ -204,12 +199,7 @@ export function SecurityView({ user, onUserUpdate }: SecurityViewProps) {
             ) : (
               <Button
                 variant="outline"
-                disabled={busy || isSuper}
-                title={
-                  isSuper
-                    ? "2FA cannot be disabled on super admin accounts"
-                    : undefined
-                }
+                disabled={busy}
                 onClick={() => setDisableOpen(true)}
                 className="justify-center border-2 border-ink font-grotesk font-bold uppercase"
               >
@@ -369,7 +359,7 @@ export function SecurityView({ user, onUserUpdate }: SecurityViewProps) {
         </DialogContent>
       </Dialog>
 
-      {/* ── Disable dialog (ADMIN only) ───────────────────────────────────── */}
+      {/* ── Disable dialog (password-confirmed) ─────────────────────────── */}
       <Dialog open={disableOpen} onOpenChange={setDisableOpen}>
         <DialogContent className="border-2 border-ink shadow-hard! sm:max-w-sm">
           <DialogHeader>
@@ -377,8 +367,8 @@ export function SecurityView({ user, onUserUpdate }: SecurityViewProps) {
               Disable 2FA
             </DialogTitle>
             <DialogDescription>
-              This removes the extra protection from your account. Confirm
-              with your password.
+              This removes the extra protection from your account — you will
+              sign in with your password only. Confirm with your password.
             </DialogDescription>
           </DialogHeader>
           <form onSubmit={disableTotp} className="space-y-3">
