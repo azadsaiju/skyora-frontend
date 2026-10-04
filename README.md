@@ -35,7 +35,7 @@ fully server-validated API, and a hardened admin (RBAC, 2FA, audit trail).
 | --- | --- |
 | Passwords | bcrypt (cost 12), forced change on first login / after reset |
 | Sessions | Opaque 256-bit tokens, SHA-256 hashed at rest, httpOnly + SameSite=Strict cookies, server-side rotation on login |
-| TOTP 2FA | **Mandatory for SUPER_ADMIN**, opt-in for ADMIN (RFC-6238, otplib), QR enrolment, 10 single-use recovery codes (SHA-256 hashed) |
+| TOTP 2FA | **Optional for every account (SUPER_ADMIN included)** — one-click enable from the Security page (RFC-6238, otplib), QR enrolment, 10 single-use recovery codes (SHA-256 hashed), password-confirmed opt-out. Accounts with 2FA on get an authenticator-code challenge after the password step |
 | Login lockout | 5 failed attempts (email+IP) → 15-minute lock |
 | Enquiry anti-spam | Cloudflare Turnstile (server-side siteverify, fail-closed) + honeypot + 3 per IP / 10 min |
 | Rate limits | CSV import 5/user/hour, WhatsApp tracking 30/IP/min |
@@ -71,9 +71,19 @@ Seed accounts (created via `prisma/seed.ts`, **change the passwords immediately*
 | ADMIN | `counsellor@skyora.edu.in` | `ChangeMe@12345` |
 
 - Public site: `/`
-- Admin portal: `/#/admin`
-- SUPER_ADMIN is forced through 2FA enrolment (scan the QR with Google
-  Authenticator / Authy / 1Password) and a password change on first login.
+- Admin portal: `/#/admin` (also via the **ADMIN LOGIN** button in the site footer)
+- First login forces a password change for both seeded accounts. 2FA is
+  **off by default and optional** — enable it anytime under
+  **Security → Enable 2FA** (QR → authenticator app → recovery codes),
+  disable it again from the same page.
+
+### Production readiness
+
+| Command | Purpose |
+| --- | --- |
+| `bun run preflight` | One-command go/no-go production check (env, secrets, Turnstile keys, SMTP, seeded-password sweep) |
+| `bun run db:backup <db> [dir]` | Timestamped + gzipped SQLite snapshot, 30-day retention |
+| `docs/DEPLOYMENT.md` | Full VPS/Caddy/Cloudflare deployment guide — env setup, systemd, backups, updates, troubleshooting |
 
 ### Scripts
 

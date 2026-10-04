@@ -383,3 +383,28 @@ Stage Summary:
 - 2FA is now strictly opt-in for every account (SUPER_ADMIN included): direct password-only login by default, one-click enrollment (QR → code → recovery codes) and password-confirmed opt-out from Security page, discoverable via the dashboard banner.
 - Login response contract unchanged for clients (mfaRequired/mustEnroll fields still present; mustEnroll now always false).
 - Files touched: src/app/api/auth/login/route.ts, src/app/api/auth/mfa/disable/route.ts, src/components/admin/security-view.tsx, src/components/admin/mfa-view.tsx, src/components/admin/dashboard-view.tsx, src/components/admin/admin-app.tsx.
+---
+Task ID: B-9 (Phases E–G: production readiness kit, brand assets, final re-certification)
+Agent: Z.ai Code (main)
+Task: "finish the next phases" — original A–D phases were complete, so executed the remaining path to production: Phase E (preflight + deploy kit), Phase F (PWA/OG assets), Phase G (full smoke re-certification after Tasks B-3..B-8).
+
+Work Log:
+- PHASE E — Production readiness kit:
+  - scripts/preflight.ts (bun run preflight): go/no-go env validator — runtime, DATABASE_URL (resolves file: relative AND absolute), Prisma connectivity + row counts, seeded-password sweep (bcrypt-compares both seed accounts against ChangeMe@12345), mustChangePassword states, AUTH_SECRET 64-hex check (WARN dev / FAIL prod), Turnstile real-vs-test-key detection (WARN dev / FAIL prod), SMTP presence, reminder schedule. Colored ✓/▲/✗ report, exit 1 on FAIL. Found + fixed own path bug (absolute file: URL was being re-rooted).
+  - docs/DEPLOYMENT.md: full VPS guide — prerequisites, bun/caddy install, env setup, db:push+seed, preflight step, first-login security checklist, build/start + systemd unit, Caddy reverse proxy w/ auto-HTTPS, Cloudflare DNS, SQLite backup cron, update procedure, troubleshooting table.
+  - scripts/backup-db.sh (bun run db:backup): timestamped gzip snapshots via sqlite3 .backup API (copy fallback), 30-day prune, tested round-trip.
+  - package.json: + preflight, db:backup scripts. README: 2FA row corrected to "Optional for every account", admin-portal entry note, new "Production readiness" table.
+- PHASE F — Brand/PWA assets (scripts/generate-assets.ts, sharp):
+  - public/icons/: icon-192, icon-512, maskable-512 (mark 76% on cream), apple-touch-icon 180 (cream plate) — rasterized from public/logo.svg.
+  - public/og-image.png (1200×630): cream dot-grid, pink/cyan blobs, logo mark on ink-stroked plate, SKYORA wordmark + GROUP OF INSTITUTES + tagline + IATA/STED line (DejaVu Sans Bold fallback).
+  - src/app/manifest.ts (PWA manifest: standalone, cream theme, all icons) + layout.tsx metadata: icon array (svg+2 png), apple icon, manifest link, og:image 1200×630, twitter summary_large_image.
+- PHASE G — Re-certification:
+  - lint 0 errors (1 pre-existing font warning); tsc src/ clean.
+  - HTTP 200 for /manifest.webmanifest, /og-image.png, /icons/* (3), /logo.svg, /robots.txt.
+  - agent-browser smoke: home hero renders; head has manifest link + og:image + 4 icon links; IATA Preferred badge present on page; footer #/admin link present; #/admin login screen renders (email/password/sign-in). Did NOT log into real accounts — audit log shows the USER logged in themselves (MFA enable → login w/ code → MFA_DISABLED via new toggle at 15:31, PASSWORD_CHANGE completing first-login at 15:44, REMINDER_RUN at 16:00): admin password is now user-owned + mustChangePassword=false — state intentionally left untouched (1 active session kept, enquiries intact incl. real azad saiju record).
+  - dev.log clean; app :3000 + gateway :81 both 200; browser closed.
+
+Stage Summary:
+- Project is feature-complete AND ops-complete: preflight/deploy/backup tooling closes the gap between "works here" and "goes live".
+- User-side go-live checklist (also in docs/DEPLOYMENT.md): real Turnstile keys, SMTP creds (optional), domain+Caddy/Cloudflare, counsellor password change, optional re-enable of 2FA (they tested it and disabled it).
+- Files: +scripts/preflight.ts, +scripts/backup-db.sh, +scripts/generate-assets.ts, +docs/DEPLOYMENT.md, +src/app/manifest.ts, +public/icons/*, +public/og-image.png; ~package.json, README.md, src/app/layout.tsx.
