@@ -3,13 +3,14 @@
 /**
  * Site footer — brand, quick links, contact channels, socials.
  * pb-24 on mobile so the fixed floating action buttons never cover text.
- * Never links to #/admin.
+ * Bottom bar exposes a labelled "Admin Login" entry to the staff portal (#/admin).
  */
 
 import {
   Github,
   Instagram,
   Linkedin,
+  Lock,
   Mail,
   MessageCircle,
   Phone,
@@ -147,15 +148,26 @@ export function Footer() {
           </div>
         </div>
 
-        {/* Bottom bar */}
-        <div className="mt-12 flex flex-col gap-2 border-t border-white/15 pt-6 text-xs text-white/50 md:flex-row md:items-center md:justify-between">
+        {/* Bottom bar — md:pr-24 keeps the Admin Login pill clear of the fixed
+            floating action buttons (WhatsApp/call) pinned to the bottom-right. */}
+        <div className="mt-12 flex flex-col gap-3 border-t border-white/15 pt-6 text-xs text-white/50 md:flex-row md:items-center md:justify-between md:pr-24">
           <p>
             © {year} {siteConfig.name}. All rights reserved.
           </p>
-          <p className="max-w-md md:text-right">
-            We never share your data. Enquiries are used only for admission
-            counselling.
-          </p>
+          <div className="flex flex-col gap-3 md:flex-row md:items-center md:gap-6">
+            <p className="max-w-md md:text-right">
+              We never share your data. Enquiries are used only for admission
+              counselling.
+            </p>
+            <a
+              href="#/admin"
+              aria-label="Admin and staff login portal"
+              className="inline-flex w-fit items-center gap-1.5 rounded-md border border-white/25 px-2.5 py-1.5 font-grotesk text-[11px] font-bold uppercase tracking-wider text-white/70 transition-colors hover:border-brand-pink hover:text-brand-pink focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none"
+            >
+              <Lock className="h-3 w-3 shrink-0" aria-hidden />
+              Admin Login
+            </a>
+          </div>
         </div>
       </div>
     </footer>

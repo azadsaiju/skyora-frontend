@@ -15,7 +15,7 @@ import { AdminApp } from "@/components/admin/admin-app";
 export default function Page() {
   const { route } = useHashRoute();
 
-  // Admin portal — unlinked, noindex, rendered on demand via #/admin
+  // Admin portal — reached via the footer "Admin Login" link or #/admin directly.
   if (route === "admin") {
     return <AdminApp />;
   }

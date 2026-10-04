@@ -267,3 +267,22 @@ Work Log:
 Stage Summary:
 - Admin panel now exports enquiries as real CSV files (and Excel), both filter-aware and audit-logged; login stays at #/admin.
 - Files touched: src/app/api/enquiries/export/route.ts, src/components/admin/enquiries-view.tsx.
+---
+Task ID: B-3 (visible admin login entry point)
+Agent: Z.ai Code (main)
+Task: User asked "is there any login panel, if exist not visible then make it visible". Login panel existed at #/admin but was deliberately unlinked (footer comment: "Never links to #/admin") — user wants it discoverable.
+
+Work Log:
+- Confirmed panel exists: #/admin renders full-screen "SECURE ADMIN PORTAL" (login-view.tsx); seed accounts admin@skyora.edu.in (SUPER_ADMIN) + counsellor@skyora.edu.in, ChangeMe@12345, forced password change on first login.
+- src/components/public/footer.tsx: added labelled "Admin Login" pill (Lock icon, bordered, hover pink, aria-label "Admin and staff login portal") in the footer bottom bar — visible on every public page; updated stale header comment.
+- Overlap fix: fixed floating WhatsApp/call buttons (fixed right-4 bottom-4 z-50) covered the pill at the bottom-right corner on desktop; mobile already cleared them via pb-40. Added md:pr-24 to the bottom bar so the pill never sits under the floaters.
+- src/app/page.tsx: updated stale "unlinked, noindex" comment.
+- Browser E2E (agent-browser): footer pill visible at page bottom (screenshot) → click → URL #/admin → SECURE ADMIN PORTAL renders → admin login hit mandatory MFA-enroll screen (super admin 2FA by design; NOT enrolled — left untouched) → counsellor login → forced password change → admin dashboard → Enquiries view shows Import CSV / Download Excel / Download CSV → Download CSV click → GET /api/enquiries/export?format=csv → 200.
+- State restored: counsellor passwordHash back to bcrypt(ChangeMe@12345), mustChangePassword=true, ALL sessions deleted (DB-verified both users back to seed state); browser closed; admin MFA still unenrolled (totpEnabled=false, totpSecret=null).
+- Health: lint 0 errors (1 pre-existing font warning); dev.log clean (export 200, logout 200, no errors); app :3000 and gateway :81 both 200.
+
+Stage Summary:
+- Admin login is now visibly reachable: every public page's footer has a "🔒 ADMIN LOGIN" pill → #/admin Secure Admin Portal.
+- Login flow verified live end-to-end (creds → forced password change → dashboard → CSV export 200).
+- Files touched: src/components/public/footer.tsx, src/app/page.tsx (comment only).
+- Seed credential contract unchanged: both accounts ChangeMe@12345 with forced change on first login; super admin will be required to enroll TOTP on first sign-in.
