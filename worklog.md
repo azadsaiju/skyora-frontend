@@ -319,3 +319,20 @@ Stage Summary:
 - Official accreditation marks are live sitewide: Courses banners, course card badges, Home track pills — all driven from site.config.certifications[track].logo (one place to swap files later).
 - Source uploads kept untouched in upload/; production-ready copies in public/certifications/.
 - Files touched: site.config.ts, courses-section.tsx, home-section.tsx, public/certifications/{iata-preferred,sted-council}.png.
+---
+Task ID: B-6 (MFA verification session expired — fix)
+Agent: Z.ai Code (main)
+Task: User reported "Verification session expired — please sign in again" (screenshot: admin login page with error toast) when trying the super-admin login/2FA setup.
+
+Work Log:
+- Root-caused in src/lib/auth.ts: MFA_PENDING cookie TTL was 300s (5 min), set once at the password step and never refreshed. First-time 2FA enrollment (install authenticator, scan QR, enter first code) routinely exceeds 5 min → resolveMfaActor() returns null → 401 MFA_PENDING_EXPIRED → client toasts and returns to login. Working as coded, but window too tight for real users.
+- Fix 1: src/lib/auth.ts MFA_TTL_SEC 300 → 900 (15 min) with comment.
+- Fix 2: src/app/api/auth/mfa/setup/route.ts now refreshes the mfa cookie on successful setup (when actor came via pending cookie, not session) — the 15-min window restarts when the QR is actually on screen.
+- Fix 3: mfa-view.tsx setup copy now states the 15-minute window + "if it expires, simply sign in again".
+- Live E2E (agent-browser): admin login → QR screen → cookie Max-Age verified 900s post-setup → computed real TOTP code from displayed secret (bun helper, HMAC-SHA1/base32) → VERIFY & ENABLE accepted → recovery-codes screen → continue → forced password-change screen. Full chain works.
+- State restored: admin reset to seed (totpEnabled=false, totpSecret=null, recoveryCodes=null, mustChangePassword=true), ALL sessions deleted, browser closed. Health: lint 0 errors, tsc src/ clean, app+gateway 200.
+
+Stage Summary:
+- "Verification session expired" fixed at the root: 15-minute window + refresh at QR display. Users who still let it lapse just sign in again (by design, fail-closed).
+- Super-admin first-login flow verified end-to-end and reset to seed for the user's own enrollment.
+- Files touched: src/lib/auth.ts, src/app/api/auth/mfa/setup/route.ts, src/components/admin/mfa-view.tsx.

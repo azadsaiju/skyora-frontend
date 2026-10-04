@@ -21,7 +21,10 @@ const SESSION_TTL_MS = 1000 * 60 * 60 * 24 * 7; // 7 days
 // user knows the password but has NOT completed 2FA yet — never grants API
 // access (admin routes only accept the real session cookie).
 export const MFA_COOKIE = "skyora_mfa";
-const MFA_TTL_SEC = 300; // 5 minutes to complete the TOTP challenge
+// 15 minutes — covers first-time enrollment (installing an authenticator app,
+// scanning the QR, entering the first code). The timer restarts when the QR
+// is displayed (setup route refreshes the cookie).
+const MFA_TTL_SEC = 900;
 
 function authSecret(): string {
   const secret = process.env.AUTH_SECRET;

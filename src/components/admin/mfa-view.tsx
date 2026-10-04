@@ -248,7 +248,9 @@ export function MfaView({ mustEnroll, onAuthenticated, onExpired }: MfaViewProps
         <p className="text-sm leading-relaxed text-muted-foreground">
           Super admin accounts require two-factor authentication. Scan the QR
           code with Google Authenticator / Authy / 1Password, then enter the
-          6-digit code to activate.
+          6-digit code to activate. The setup window stays open for{" "}
+          <strong className="text-ink">15 minutes</strong> — if it expires,
+          simply sign in again.
         </p>
 
         {setupLoading ? (

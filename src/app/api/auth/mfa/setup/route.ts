@@ -3,7 +3,7 @@ import QRCode from "qrcode";
 import { generateSecret, generateURI } from "otplib";
 import { handleApiError, jsonError } from "@/lib/validators";
 import { db } from "@/lib/db";
-import { resolveMfaActor, getClientIp } from "@/lib/auth";
+import { resolveMfaActor, getClientIp, setMfaCookie } from "@/lib/auth";
 import { logAudit } from "@/lib/audit";
 
 export const dynamic = "force-dynamic";
@@ -65,7 +65,12 @@ export async function POST(req: NextRequest) {
       ipAddress: getClientIp(req),
     });
 
-    return NextResponse.json({ otpauthUrl, qrDataUrl, secret });
+    const res = NextResponse.json({ otpauthUrl, qrDataUrl, secret });
+    // Restart the verification window now that the QR is on screen — the user
+    // gets the full TTL to install/scan/confirm instead of only the time left
+    // since the password step. Only relevant for the pending-cookie flow.
+    if (!actor.viaSession) setMfaCookie(res, user.id);
+    return res;
   } catch (e) {
     return handleApiError(e);
   }
