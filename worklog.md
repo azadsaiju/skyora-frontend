@@ -250,3 +250,20 @@ Stage Summary:
 - Prompt 5 verified live end-to-end (API + browser human path + rate limit + 429 UI path). No code changes needed — prior session's implementation is correct and complete.
 - ALL 12 prompts stand complete; project is launch-ready pending user-side production config (real Turnstile keys, AUTH_SECRET, SMTP, domain).
 - Ops notes: shadow-DOM hides the Turnstile iframe from querySelector — use a11y snapshot; curl probes without X-Forwarded-For share the ::1 bucket with preview-panel users — always use a unique test IP header.
+
+---
+Task ID: B-2 (CSV export for admin panel)
+Agent: Z.ai Code (main)
+Task: User asked (1) where the admin login is, (2) whether enquiries can be saved as CSV files from the admin panel — if not, add it.
+
+Work Log:
+- Answered (1): admin login is at the site URL + #/admin (Secure Admin Portal; seed creds in README; first login forces password change).
+- Found (2) partially done: export existed as .xlsx only (ExcelJS). Added CSV format:
+  - src/app/api/enquiries/export/route.ts: refactored to shared row-shaping; `?format=csv|xlsx` (default xlsx); RFC 4180 writer (quote-if-needed, doubled quotes, CRLF, UTF-8 BOM for Excel unicode) + formula-injection guard (=, +, -, @, tab, CR → apostrophe prefix); filename skyora-enquiries-YYYY-MM-DD.csv; Content-Type text/csv; charset=utf-8; audit log now records format.
+  - src/components/admin/enquiries-view.tsx: added "Download CSV" button beside "Download Excel" (same filter-aware baseQuery + format=csv param).
+- Verified live (curl + browser): CSV 200 with correct headers/BOM/CRLF; escaping proven on probe rows (=CMD("calc") → "'=CMD(""calc"")", multiline+comma message preserved inside quotes, +91 phone → "'+91…" prefix); xlsx still valid (PK\x03\x04); no-cookie → 401; audit rows {"rows":8,"format":"csv"/"xlsx"}; browser: button renders in Enquiries header, click → GET /api/enquiries/export?format=csv 200.
+- State restored: 2 probe rows deleted (6 enquiries = 5 seed + 1 real user row), counsellor password back to ChangeMe@12345 via the UI's forced-change flow, mustChangePassword=true, all sessions cleared.
+
+Stage Summary:
+- Admin panel now exports enquiries as real CSV files (and Excel), both filter-aware and audit-logged; login stays at #/admin.
+- Files touched: src/app/api/enquiries/export/route.ts, src/components/admin/enquiries-view.tsx.

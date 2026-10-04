@@ -14,6 +14,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Download,
+  FileText,
   Inbox,
   RefreshCw,
   Search,
@@ -246,6 +247,17 @@ export function EnquiriesView({ user }: { user: SessionUser }) {
         >
           <Download className="size-4" aria-hidden="true" />
           Download Excel
+        </Button>
+        <Button
+          variant="outline"
+          onClick={() => {
+            const base = baseQuery();
+            window.location.href = `/api/enquiries/export${base}${base ? "&" : "?"}format=csv`;
+          }}
+          className="border-2 border-ink bg-white font-grotesk font-bold"
+        >
+          <FileText className="size-4" aria-hidden="true" />
+          Download CSV
         </Button>
         <Button
           variant="outline"
