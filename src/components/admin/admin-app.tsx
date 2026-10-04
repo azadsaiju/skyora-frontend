@@ -24,7 +24,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 
-import { api } from "@/lib/client";
+import { api, clearSessionToken, clearMfaPending } from "@/lib/client";
 import type { SessionUser } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
@@ -128,8 +128,10 @@ export function AdminApp() {
     try {
       await api("/api/auth/logout", { method: "POST" });
     } catch {
-      // Cookie may already be gone — sign out locally regardless.
+      // Cookie/token may already be gone — sign out locally regardless.
     }
+    clearSessionToken();
+    clearMfaPending();
     toast.success("Signed out");
     setUser(null);
     setView("dashboard");

@@ -66,6 +66,16 @@ export function setMfaCookie(res: NextResponse, userId: string): NextResponse {
   return res;
 }
 
+/**
+ * Signed short-lived token proving "password OK, 2FA pending". Issued in the
+ * login response BODY so the client can echo it back as the `x-mfa-pending`
+ * header — this works even where browsers drop cookies (third-party iframe
+ * contexts like embedded preview panels). The cookie remains as a fallback.
+ */
+export function createMfaPendingToken(userId: string): string {
+  return signMfaValue(userId, Date.now());
+}
+
 export function clearMfaCookie(res: NextResponse): NextResponse {
   res.cookies.set(MFA_COOKIE, "", { ...cookieOptions(0), maxAge: 0 });
   return res;
@@ -87,6 +97,11 @@ function readCookie(req: NextRequest | Request, name: string): string | null {
   return null;
 }
 
+/** Read the MFA pending token: `x-mfa-pending` header first, cookie fallback. */
+function readMfaPending(req: NextRequest | Request): string | null {
+  return req.headers.get("x-mfa-pending") ?? readCookie(req, MFA_COOKIE);
+}
+
 /**
  * Resolve the user behind an MFA challenge: either via the short-lived
  * mfa-pending cookie (post-password, pre-session) or — for self-service
@@ -97,7 +112,7 @@ export async function resolveMfaActor(
 ): Promise<{ userId: string; viaSession: boolean } | null> {
   const sessionUser = await getSessionUser(req);
   if (sessionUser) return { userId: sessionUser.id, viaSession: true };
-  const pendingId = verifyMfaValue(readCookie(req, MFA_COOKIE));
+  const pendingId = verifyMfaValue(readMfaPending(req));
   if (!pendingId) return null;
   const user = await db.user.findUnique({ where: { id: pendingId } });
   if (!user || !user.isActive) return null;
@@ -183,6 +198,11 @@ export function getClientIp(req: NextRequest | Request): string {
 }
 
 function readSessionToken(req: NextRequest | Request): string | null {
+  // Header first (works where cookies are dropped, e.g. third-party iframes).
+  const auth = req.headers.get("authorization");
+  if (auth?.toLowerCase().startsWith("bearer ")) return auth.slice(7).trim() || null;
+  const headerToken = req.headers.get("x-session-token");
+  if (headerToken) return headerToken.trim() || null;
   return readCookie(req, SESSION_COOKIE);
 }
 
@@ -303,13 +323,18 @@ export async function requireSuperAdmin(req: NextRequest | Request): Promise<Ses
   return user;
 }
 
-/** Attach session cookie to a JSON response in one call. */
+/** Attach session token to body + cookie in one call. */
 export function respondWithSession(
   data: unknown,
   token: string,
   maxAgeSec: number,
   status = 200
 ): NextResponse {
-  const res = NextResponse.json(data, { status });
+  // The token is also echoed in the body so clients in cookie-restricted
+  // contexts (third-party iframes) can hold it and send it as a header.
+  const res = NextResponse.json({
+    ...(typeof data === "object" && data !== null ? data : {}),
+    sessionToken: token,
+  });
   return setSessionCookie(res, token, maxAgeSec);
 }

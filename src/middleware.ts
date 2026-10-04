@@ -71,7 +71,15 @@ export function middleware(req: NextRequest): NextResponse {
     return applySecurityHeaders(NextResponse.next(), isProd);
   }
 
+  // Session proof can arrive two ways: the httpOnly cookie (normal tabs) or
+  // the Authorization header (cookie-restricted contexts like third-party
+  // iframe preview panels, where browsers drop cookies entirely). Either way,
+  // the route handler still re-verifies the credential against the database.
   const hasSessionCookie = Boolean(req.cookies.get("skyora_session")?.value);
+  const authHeader = req.headers.get("authorization") ?? "";
+  const hasSessionHeader =
+    authHeader.toLowerCase().startsWith("bearer ") ||
+    Boolean(req.headers.get("x-session-token"));
   const isAdminApi =
     ADMIN_API_PREFIXES.some(
       (p) => pathname === p || pathname.startsWith(p + "/")
@@ -82,7 +90,7 @@ export function middleware(req: NextRequest): NextResponse {
         (p) => pathname === p || pathname.startsWith(p + "/")
       ));
 
-  if (isAdminApi && !hasSessionCookie) {
+  if (isAdminApi && !hasSessionCookie && !hasSessionHeader) {
     return applySecurityHeaders(
       NextResponse.json(
         { error: "Unauthorized", code: "UNAUTHORIZED" },

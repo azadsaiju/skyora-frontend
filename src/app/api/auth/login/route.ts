@@ -11,6 +11,7 @@ import {
   respondWithSession,
   getClientIp,
   setMfaCookie,
+  createMfaPendingToken,
 } from "@/lib/auth";
 import { db } from "@/lib/db";
 import {
@@ -94,6 +95,8 @@ export async function POST(req: NextRequest) {
       const res = NextResponse.json({
         mfaRequired: true,
         mustEnroll: !user.totpEnabled,
+        // Body token for contexts where the cookie is dropped (iframes).
+        mfaToken: createMfaPendingToken(user.id),
       });
       return setMfaCookie(res, user.id);
     }

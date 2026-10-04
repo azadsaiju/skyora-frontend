@@ -336,3 +336,23 @@ Stage Summary:
 - "Verification session expired" fixed at the root: 15-minute window + refresh at QR display. Users who still let it lapse just sign in again (by design, fail-closed).
 - Super-admin first-login flow verified end-to-end and reset to seed for the user's own enrollment.
 - Files touched: src/lib/auth.ts, src/app/api/auth/mfa/setup/route.ts, src/components/admin/mfa-view.tsx.
+---
+Task ID: B-7 (REAL root cause: preview iframe drops cookies — header-based auth fallback)
+Agent: Z.ai Code (main)
+Task: User reported "Verification session expired" STILL occurring on admin sign-in after the TTL fix. Diagnosis proved the earlier 5-min TTL was not the true root cause.
+
+Work Log:
+- ROOT CAUSE: the user opens the site inside the preview panel (third-party iframe). Browsers drop SameSite=Strict cookies in that context, so the skyora_mfa cookie from the login response was never stored → POST /api/auth/mfa/setup arrived cookieless → 401 MFA_PENDING_EXPIRED. The same blocking would have killed the session cookie afterwards (every admin API call would 401 in the panel). dev.log confirmed the user's repeated login-200 → setup-401 pattern.
+- Server fixes:
+  - src/lib/auth.ts: readSessionToken now accepts Authorization: Bearer / x-session-token header before the cookie; new createMfaPendingToken(); resolveMfaActor reads x-mfa-pending header before cookie; respondWithSession echoes sessionToken in the body (covers login, mfa/verify, mfa/confirm, change-password rotation).
+  - src/app/api/auth/login/route.ts: MFA branch returns mfaToken in body.
+  - src/app/api/auth/mfa/setup/route.ts: returns fresh mfaToken (restarts 15-min window for header clients too).
+  - src/middleware.ts: defense-in-depth fast-fail now accepts EITHER the session cookie OR a Bearer/x-session-token header (route handlers still verify the credential against the DB — no security regression).
+- Client fixes:
+  - src/lib/client.ts: token stores (localStorage + in-memory fallback, try/catch for blocked storage); api() attaches Authorization + x-mfa-pending automatically, captures sessionToken/mfaToken from responses, clears on 401 UNAUTHORIZED and on logout.
+  - src/components/admin/admin-app.tsx: handleLogout clears both stored tokens.
+- Verified with ZERO cookies (exact preview-panel condition, curl): counsellor login → sessionToken → /me, /api/enquiries, /api/dashboard, /api/courses all 200 with Bearer only → logout 200 → token dead. Full admin flow: login → mfaToken → setup via x-mfa-pending (QR + fresh token) → TOTP confirm → 10 recovery codes + sessionToken → /me 200 SUPER_ADMIN. Cookie path re-verified in browser (admin login → QR screen, no error toast). Seed state restored after tests (both accounts mustChangePassword=true, admin 2FA unenrolled, sessions=0). Lint 0 errors; tsc src/ clean; app+gateway 200. Dev server restarted once via start-stop-daemon during debugging (stale route bundle suspected, actual bug was the middleware check).
+
+Stage Summary:
+- Admin auth now works in BOTH contexts: normal tabs (httpOnly cookies, unchanged) and cookie-blocked iframes like the preview panel (header tokens with same server-side DB verification). "Verification session expired" eliminated for panel users; 15-min MFA window + QR-display refresh retained.
+- Files touched: src/lib/auth.ts, src/middleware.ts, src/lib/client.ts, src/app/api/auth/login/route.ts, src/app/api/auth/mfa/setup/route.ts, src/components/admin/admin-app.tsx.
