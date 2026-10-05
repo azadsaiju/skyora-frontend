@@ -1,12 +1,14 @@
 "use client";
 
 /**
- * Home page: hero → stats band → recruiter marquee → course highlights
- * (two tracks) → testimonials → enquiry CTA.
+ * Home page: hero → stats band → recruiter marquee → department highlight
+ * cards (linked to /aviation & /it, reading the shared course store) →
+ * testimonials → enquiry CTA.
  */
 
 import { motion, type Variants } from "framer-motion";
 import Image from "next/image";
+import Link from "next/link";
 import {
   ArrowRight,
   ChevronRight,
@@ -18,7 +20,8 @@ import {
 } from "lucide-react";
 import { siteConfig } from "@/config/site.config";
 import { trackWhatsApp } from "@/lib/track-whatsapp";
-import type { CourseDTO, Track } from "@/lib/types";
+import { DEPARTMENTS } from "@/lib/departments";
+import type { CourseDTO, CoursePublicDTO, Track } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SectionHeading } from "@/components/public/section-heading";
@@ -53,34 +56,49 @@ const GRID_ITEM: Variants = {
   },
 };
 
-// ── Track highlight card ─────────────────────────────────────────────────────
-interface TrackCardProps {
-  title: string;
-  track: Track;
-  Icon: LucideIcon;
-  color: string;
-  courses: CourseDTO[];
+/** Flatten the API CourseDTO (newline-separated lists) to the public shape. */
+function toPublic(c: CourseDTO): CoursePublicDTO {
+  return {
+    id: c.id,
+    title: c.title,
+    track: c.track,
+    slug: c.slug,
+    duration: c.duration,
+    description: c.description,
+    skills: c.skills.split("\n").filter(Boolean),
+    jobRoles: c.jobRoles.split("\n").filter(Boolean),
+    workplaces: c.workplaces.split("\n").filter(Boolean),
+    image: c.image,
+  };
 }
 
-function TrackCard({ title, track, Icon, color, courses }: TrackCardProps) {
+// ── Track highlight card — links to the department page ─────────────────────
+interface TrackCardProps {
+  track: Track;
+  Icon: LucideIcon;
+  courses: CoursePublicDTO[];
+}
+
+function TrackCard({ track, Icon, courses }: TrackCardProps) {
+  const dept = DEPARTMENTS[track];
   return (
     <div className="brutal-card flex min-w-0 flex-col p-6 md:p-8">
       <div className="flex items-center gap-4">
         <span
           aria-hidden
           className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg border-2 border-ink text-white shadow-hard-sm"
-          style={{ background: color }}
+          style={{ background: dept.accent }}
         >
           <Icon className="h-6 w-6" />
         </span>
         <div className="min-w-0">
           <h3 className="font-display text-xl leading-none uppercase md:text-2xl">
-            {title}
+            {dept.name}
           </h3>
           <span
             aria-hidden
             className="mt-2 block h-1.5 w-14 rounded-full"
-            style={{ background: color }}
+            style={{ background: dept.accent }}
           />
         </div>
       </div>
@@ -102,20 +120,20 @@ function TrackCard({ title, track, Icon, color, courses }: TrackCardProps) {
 
       {courses.length === 0 ? (
         <p className="mt-6 rounded-lg bg-cream px-3 py-3 text-sm text-muted-foreground">
-          New batches are being scheduled — check the courses page soon.
+          New batches are being scheduled — check the department page soon.
         </p>
       ) : (
         <div className="mt-5 space-y-1">
           {courses.map((course) => (
-            <a
+            <Link
               key={course.id}
-              href="#/courses"
+              href={dept.path}
               className="group -mx-2 flex min-w-0 items-start gap-3 rounded-lg px-2 py-2.5 transition-colors hover:bg-cream"
             >
               <span
                 aria-hidden
                 className="mt-1.5 h-2 w-2 shrink-0 rounded-full"
-                style={{ background: color }}
+                style={{ background: dept.accent }}
               />
               <span className="min-w-0 flex-1">
                 <span className="flex flex-wrap items-baseline gap-x-2">
@@ -134,17 +152,17 @@ function TrackCard({ title, track, Icon, color, courses }: TrackCardProps) {
                 aria-hidden
                 className="mt-1 h-4 w-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5"
               />
-            </a>
+            </Link>
           ))}
         </div>
       )}
 
-      <a
-        href="#/courses"
-        className="mt-5 inline-flex items-center gap-1.5 font-grotesk text-sm font-bold text-brand-pink uppercase hover:underline"
+      <Link
+        href={dept.path}
+        className="mt-5 inline-flex w-fit items-center gap-1.5 font-grotesk text-sm font-bold text-brand-pink uppercase hover:underline"
       >
-        View all courses <ArrowRight className="h-4 w-4" aria-hidden />
-      </a>
+        View all {dept.name} courses <ArrowRight className="h-4 w-4" aria-hidden />
+      </Link>
     </div>
   );
 }
@@ -172,12 +190,16 @@ function TrackSkeleton() {
 export function HomeSection() {
   const { data, error, loading, refetch } = usePublicContent();
 
+  // Shared course store (same DB the admin manages): each department card
+  // previews its top 3 courses and links to the full department page.
   const aviationCourses = (data?.courses ?? [])
     .filter((c) => c.track === "AVIATION")
-    .slice(0, 3);
+    .slice(0, 3)
+    .map(toPublic);
   const itCourses = (data?.courses ?? [])
     .filter((c) => c.track === "IT")
-    .slice(0, 3);
+    .slice(0, 3)
+    .map(toPublic);
 
   return (
     <>
@@ -200,13 +222,13 @@ export function HomeSection() {
           className="relative mx-auto max-w-7xl px-4 py-16 md:px-6 md:py-24"
         >
           <motion.div variants={HERO_ITEM}>
-            <a
-              href="#/courses"
+            <Link
+              href="/aviation"
               className="inline-flex items-center gap-2 rounded-full border-2 border-ink bg-white px-4 py-1.5 font-grotesk text-xs font-bold tracking-wide uppercase shadow-hard-sm brutal-hover md:text-sm"
             >
               Admissions Open 2025
               <ArrowRight className="h-4 w-4" aria-hidden />
-            </a>
+            </Link>
           </motion.div>
 
           <motion.h1
@@ -252,7 +274,7 @@ export function HomeSection() {
               variant="outline"
               className="rounded-lg border-2 border-ink bg-white font-bold uppercase shadow-hard-sm brutal-hover"
             >
-              <a href="#/courses">Explore Courses</a>
+              <Link href="/aviation">Explore Courses</Link>
             </Button>
           </motion.div>
 
@@ -276,7 +298,7 @@ export function HomeSection() {
       {/* ── RECRUITER MARQUEE ────────────────────────────────────── */}
       <RecruiterMarquee />
 
-      {/* ── COURSE HIGHLIGHTS ────────────────────────────────────── */}
+      {/* ── DEPARTMENT HIGHLIGHTS ───────────────────────────────── */}
       <section
         aria-label="Course highlights — two tracks"
         className="mx-auto max-w-7xl px-4 py-12 md:px-6 md:py-20"
@@ -299,20 +321,8 @@ export function HomeSection() {
           </div>
         ) : (
           <div className="mt-10 grid gap-6 md:grid-cols-2">
-            <TrackCard
-              title="AVIATION"
-              track="AVIATION"
-              Icon={Plane}
-              color="#2563EB"
-              courses={aviationCourses}
-            />
-            <TrackCard
-              title="IT & SOFTWARE"
-              track="IT"
-              Icon={Code2}
-              color="#00B8D9"
-              courses={itCourses}
-            />
+            <TrackCard track="AVIATION" Icon={Plane} courses={aviationCourses} />
+            <TrackCard track="IT" Icon={Code2} courses={itCourses} />
           </div>
         )}
       </section>

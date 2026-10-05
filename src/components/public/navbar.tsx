@@ -13,7 +13,7 @@ import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import { siteConfig } from "@/config/site.config";
 import { trackWhatsApp } from "@/lib/track-whatsapp";
-import { useHashRoute } from "@/hooks/use-hash-route";
+import { useHashRoute, type PublicRoute } from "@/hooks/use-hash-route";
 import { Button } from "@/components/ui/button";
 
 interface NavLink {

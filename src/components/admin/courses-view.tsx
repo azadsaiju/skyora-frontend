@@ -2,26 +2,39 @@
 
 /**
  * Courses admin — CRUD for the two public course tracks (Aviation & IT).
- * Includes an isActive toggle (hide/show on the public site) and a syllabus
- * editor with one topic per line. Deleting a course detaches (never deletes)
- * its enquiries — enforced server-side.
+ *
+ * Every field here maps 1:1 to what the public site renders:
+ *  - skills      → "Skills you will learn" bullets on /aviation & /it
+ *  - jobRoles    → "Career opportunities" bullets
+ *  - workplaces  → "Where you can work" bullets
+ *  - image       → course card image (empty = auto-assign department hero)
+ *  - isActive    → hide/show on the public site without deleting
+ *
+ * The homepage cards and the department pages read the SAME database rows
+ * (via /api/public/content and the RSC pages), so changes made here appear
+ * on the public site instantly — no code changes, no redeploy.
  */
 
 import * as React from "react";
+import Image from "next/image";
 import {
   Clock,
   Code2,
   GraduationCap,
+  ImagePlus,
   Loader2,
   Pencil,
   Plane,
   Plus,
+  Sparkles,
   Trash2,
+  X,
   type LucideIcon,
 } from "lucide-react";
 import { toast } from "sonner";
 
 import { api } from "@/lib/client";
+import { DEPARTMENTS } from "@/lib/departments";
 import type { CourseDTO, Track } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import {
@@ -44,6 +57,14 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
   AdminPageHeader,
   ConfirmDeleteDialog,
   EmptyState,
@@ -55,22 +76,42 @@ import {
 const TRACKS: Track[] = ["AVIATION", "IT"];
 
 interface CourseFormState {
-  title: string;
   track: Track;
+  title: string;
   duration: string;
   description: string;
-  syllabus: string;
+  skills: string;
+  jobRoles: string;
+  workplaces: string;
+  sortOrder: string;
   isActive: boolean;
+  /** "" → auto-assign department hero; otherwise an uploaded /uploads/... path */
+  image: string;
 }
 
 const EMPTY_FORM: CourseFormState = {
-  title: "",
   track: "AVIATION",
+  title: "",
   duration: "",
   description: "",
-  syllabus: "",
+  skills: "",
+  jobRoles: "",
+  workplaces: "",
+  sortOrder: "0",
   isActive: true,
+  image: "",
 };
+
+/** Track chip used in the table + form (Aviation / IT & Software). */
+function TrackChip({ track }: { track: Track }) {
+  const Icon = track === "AVIATION" ? Plane : Code2;
+  return (
+    <span className="inline-flex w-fit items-center gap-1.5 rounded-full border-2 border-ink bg-white px-2.5 py-0.5 font-grotesk text-[11px] font-bold uppercase">
+      <Icon className="size-3.5" aria-hidden="true" />
+      {DEPARTMENTS[track].name}
+    </span>
+  );
+}
 
 function CourseFormDialog({
   open,
@@ -86,6 +127,8 @@ function CourseFormDialog({
   const [fields, setFields] = React.useState<CourseFormState>(EMPTY_FORM);
   const [errors, setErrors] = React.useState<Record<string, string>>({});
   const [saving, setSaving] = React.useState(false);
+  const [uploading, setUploading] = React.useState(false);
+  const fileRef = React.useRef<HTMLInputElement>(null);
 
   React.useEffect(() => {
     if (!open) return;
@@ -93,12 +136,16 @@ function CourseFormDialog({
     setFields(
       initial
         ? {
-            title: initial.title,
             track: initial.track,
+            title: initial.title,
             duration: initial.duration,
             description: initial.description,
-            syllabus: initial.syllabus,
+            skills: initial.skills,
+            jobRoles: initial.jobRoles,
+            workplaces: initial.workplaces,
+            sortOrder: String(initial.sortOrder ?? 0),
             isActive: initial.isActive,
+            image: initial.image ?? "",
           }
         : EMPTY_FORM
     );
@@ -119,9 +166,28 @@ function CourseFormDialog({
       errs.duration = "Duration is required.";
     if (fields.description.trim().length < 10)
       errs.description = "Description is required (min 10 characters).";
-    if (fields.syllabus.trim().length < 1)
-      errs.syllabus = "Add at least one syllabus topic.";
+    if (fields.skills.trim().length < 1)
+      errs.skills = "Add at least one skill (one per line).";
     return errs;
+  }
+
+  async function handleUpload(file: File) {
+    setUploading(true);
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      const res = await api<{ path: string }>("/api/upload", {
+        method: "POST",
+        body: fd,
+      });
+      set("image", res.path);
+      toast.success("Image uploaded");
+    } catch (err) {
+      toastApiError(err, "Could not upload the image.");
+    } finally {
+      setUploading(false);
+      if (fileRef.current) fileRef.current.value = "";
+    }
   }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -133,11 +199,15 @@ function CourseFormDialog({
     setSaving(true);
     try {
       const body = JSON.stringify({
-        title: fields.title.trim(),
         track: fields.track,
+        title: fields.title.trim(),
         duration: fields.duration.trim(),
         description: fields.description.trim(),
-        syllabus: fields.syllabus.trim(),
+        skills: fields.skills.trim(),
+        jobRoles: fields.jobRoles.trim(),
+        workplaces: fields.workplaces.trim(),
+        image: fields.image.trim(),
+        sortOrder: Number(fields.sortOrder) || 0,
         isActive: fields.isActive,
       });
       if (initial) {
@@ -145,10 +215,10 @@ function CourseFormDialog({
           method: "PATCH",
           body,
         });
-        toast.success("Course updated");
+        toast.success("Course updated — live on the public site");
       } else {
         await api<{ course: CourseDTO }>("/api/courses", { method: "POST", body });
-        toast.success("Course added");
+        toast.success("Course added — live on the public site");
       }
       onSaved();
     } catch (err) {
@@ -158,21 +228,72 @@ function CourseFormDialog({
     }
   }
 
+  const previewImage =
+    fields.image || DEPARTMENTS[fields.track].heroImage;
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="nice-scrollbar max-h-[90vh] overflow-y-auto rounded-xl border-2 border-ink bg-white shadow-hard sm:max-w-lg">
+      <DialogContent className="nice-scrollbar max-h-[90vh] overflow-y-auto rounded-xl border-2 border-ink bg-white shadow-hard sm:max-w-2xl">
         <DialogHeader>
           <DialogTitle className="font-display uppercase">
-            {initial ? "Edit Course" : "Add Course"}
+            {initial ? "Edit Course" : "Add New Course"}
           </DialogTitle>
           <DialogDescription>
             {initial
-              ? "Update this course as it appears on the public site."
-              : "Create a new course for the Aviation or IT track."}
+              ? "Update this course — the department page, homepage card and enquiry form update instantly."
+              : "New courses appear instantly on the matching department page and the homepage card."}
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+          {/* Department + duration */}
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="space-y-1.5">
+              <Label htmlFor="course-track" className="font-grotesk text-xs font-bold uppercase">
+                Department
+              </Label>
+              <Select
+                value={fields.track}
+                onValueChange={(v) => set("track", v as Track)}
+              >
+                <SelectTrigger
+                  id="course-track"
+                  aria-label="Course department"
+                  className={SELECT_TRIGGER_CLASS}
+                >
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {TRACKS.map((t) => (
+                    <SelectItem key={t} value={t}>
+                      {DEPARTMENTS[t].name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <p className="text-[11px] text-muted-foreground">
+                Shows on {DEPARTMENTS[fields.track].path}
+              </p>
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="course-duration" className="font-grotesk text-xs font-bold uppercase">
+                Duration
+              </Label>
+              <Input
+                id="course-duration"
+                value={fields.duration}
+                onChange={(e) => set("duration", e.target.value)}
+                placeholder="e.g. 4 Months"
+                className={FIELD_CLASS}
+                aria-invalid={!!errors.duration}
+              />
+              {errors.duration ? (
+                <p className="text-xs font-bold text-brand-red">{errors.duration}</p>
+              ) : null}
+            </div>
+          </div>
+
+          {/* Title */}
           <div className="space-y-1.5">
             <Label htmlFor="course-title" className="font-grotesk text-xs font-bold uppercase">
               Title
@@ -190,49 +311,7 @@ function CourseFormDialog({
             ) : null}
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div className="space-y-1.5">
-              <Label htmlFor="course-track" className="font-grotesk text-xs font-bold uppercase">
-                Track
-              </Label>
-              <Select
-                value={fields.track}
-                onValueChange={(v) => set("track", v as Track)}
-              >
-                <SelectTrigger
-                  id="course-track"
-                  aria-label="Course track"
-                  className={SELECT_TRIGGER_CLASS}
-                >
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {TRACKS.map((t) => (
-                    <SelectItem key={t} value={t}>
-                      {t}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="course-duration" className="font-grotesk text-xs font-bold uppercase">
-                Duration
-              </Label>
-              <Input
-                id="course-duration"
-                value={fields.duration}
-                onChange={(e) => set("duration", e.target.value)}
-                placeholder="e.g. 3 months"
-                className={FIELD_CLASS}
-                aria-invalid={!!errors.duration}
-              />
-              {errors.duration ? (
-                <p className="text-xs font-bold text-brand-red">{errors.duration}</p>
-              ) : null}
-            </div>
-          </div>
-
+          {/* Description */}
           <div className="space-y-1.5">
             <Label htmlFor="course-desc" className="font-grotesk text-xs font-bold uppercase">
               Description
@@ -251,36 +330,153 @@ function CourseFormDialog({
             ) : null}
           </div>
 
-          <div className="space-y-1.5">
-            <Label htmlFor="course-syllabus" className="font-grotesk text-xs font-bold uppercase">
-              Syllabus Highlights
-            </Label>
-            <Textarea
-              id="course-syllabus"
-              value={fields.syllabus}
-              onChange={(e) => set("syllabus", e.target.value)}
-              rows={5}
-              placeholder={"One topic per line, e.g.\nMock interviews\nDCS basics"}
-              className={`${FIELD_CLASS} resize-none`}
-              aria-invalid={!!errors.syllabus}
-            />
-            <p className="text-[11px] text-muted-foreground">
-              One topic per line — the first few appear as bullets on the site.
-            </p>
-            {errors.syllabus ? (
-              <p className="text-xs font-bold text-brand-red">{errors.syllabus}</p>
-            ) : null}
+          {/* Skills / Job roles / Workplaces */}
+          <div className="grid gap-4 md:grid-cols-3">
+            <div className="space-y-1.5">
+              <Label htmlFor="course-skills" className="font-grotesk text-xs font-bold uppercase">
+                Skills You Will Learn
+              </Label>
+              <Textarea
+                id="course-skills"
+                value={fields.skills}
+                onChange={(e) => set("skills", e.target.value)}
+                rows={6}
+                placeholder={"One per line, e.g.\nSafety & Emergency Procedures\nFirst Aid"}
+                className={`${FIELD_CLASS} resize-none nice-scrollbar`}
+                aria-invalid={!!errors.skills}
+              />
+              {errors.skills ? (
+                <p className="text-xs font-bold text-brand-red">{errors.skills}</p>
+              ) : null}
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="course-jobs" className="font-grotesk text-xs font-bold uppercase">
+                Job Opportunities
+              </Label>
+              <Textarea
+                id="course-jobs"
+                value={fields.jobRoles}
+                onChange={(e) => set("jobRoles", e.target.value)}
+                rows={6}
+                placeholder={"One per line, e.g.\nCabin Crew\nFlight Purser"}
+                className={`${FIELD_CLASS} resize-none nice-scrollbar`}
+              />
+              <p className="text-[11px] text-muted-foreground">Career roles listed under each course.</p>
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="course-workplaces" className="font-grotesk text-xs font-bold uppercase">
+                Where You Can Work
+              </Label>
+              <Textarea
+                id="course-workplaces"
+                value={fields.workplaces}
+                onChange={(e) => set("workplaces", e.target.value)}
+                rows={6}
+                placeholder={"One per line, e.g.\nDomestic & international airlines\nAirports"}
+                className={`${FIELD_CLASS} resize-none nice-scrollbar`}
+              />
+              <p className="text-[11px] text-muted-foreground">Airlines, airports, companies…</p>
+            </div>
           </div>
 
-          <div className="flex items-center justify-between rounded-lg border-2 border-dashed border-ink/30 p-3">
-            <Label htmlFor="course-active" className="font-grotesk text-sm font-bold">
-              Active on public site
-            </Label>
-            <Switch
-              id="course-active"
-              checked={fields.isActive}
-              onCheckedChange={(v) => set("isActive", v)}
-            />
+          {/* Image */}
+          <div className="rounded-lg border-2 border-dashed border-ink/30 p-3">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <span
+                  aria-hidden
+                  className="relative flex h-14 w-24 shrink-0 items-center justify-center overflow-hidden rounded-lg border-2 border-ink bg-olive-tint"
+                >
+                  <Image
+                    src={previewImage}
+                    alt=""
+                    fill
+                    sizes="96px"
+                    className="object-cover"
+                    unoptimized={previewImage.startsWith("/uploads/")}
+                  />
+                </span>
+                <div>
+                  <p className="font-grotesk text-xs font-bold uppercase">
+                    Course image
+                  </p>
+                  <p className="mt-0.5 text-[11px] text-muted-foreground">
+                    {fields.image
+                      ? "Custom image uploaded"
+                      : "Auto-assigns the department image"}
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                {fields.image ? (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => set("image", "")}
+                    className="border-2 border-ink bg-white font-grotesk font-bold"
+                  >
+                    <X className="size-4" aria-hidden="true" />
+                    Use department image
+                  </Button>
+                ) : null}
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  disabled={uploading}
+                  onClick={() => fileRef.current?.click()}
+                  className="border-2 border-ink bg-white font-grotesk font-bold"
+                >
+                  {uploading ? (
+                    <Loader2 className="size-4 animate-spin" aria-hidden="true" />
+                  ) : (
+                    <ImagePlus className="size-4" aria-hidden="true" />
+                  )}
+                  Upload image
+                </Button>
+                <input
+                  ref={fileRef}
+                  type="file"
+                  accept="image/png,image/jpeg,image/webp"
+                  className="hidden"
+                  aria-label="Upload course image"
+                  onChange={(e) => {
+                    const f = e.target.files?.[0];
+                    if (f) void handleUpload(f);
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Sort order + active */}
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="space-y-1.5">
+              <Label htmlFor="course-sort" className="font-grotesk text-xs font-bold uppercase">
+                Display order
+              </Label>
+              <Input
+                id="course-sort"
+                type="number"
+                min={0}
+                max={999}
+                value={fields.sortOrder}
+                onChange={(e) => set("sortOrder", e.target.value)}
+                className={FIELD_CLASS}
+              />
+              <p className="text-[11px] text-muted-foreground">Lower numbers appear first.</p>
+            </div>
+            <div className="flex items-center justify-between self-end rounded-lg border-2 border-dashed border-ink/30 p-3">
+              <Label htmlFor="course-active" className="font-grotesk text-sm font-bold">
+                Active on public site
+              </Label>
+              <Switch
+                id="course-active"
+                checked={fields.isActive}
+                onCheckedChange={(v) => set("isActive", v)}
+              />
+            </div>
           </div>
 
           <DialogFooter>
@@ -295,7 +491,7 @@ function CourseFormDialog({
             </Button>
             <Button
               type="submit"
-              disabled={saving}
+              disabled={saving || uploading}
               className="font-grotesk font-bold uppercase shadow-hard-sm"
             >
               {saving ? (
@@ -310,7 +506,7 @@ function CourseFormDialog({
   );
 }
 
-function CourseCard({
+function CourseRow({
   course,
   toggling,
   onEdit,
@@ -323,82 +519,82 @@ function CourseCard({
   onToggleActive: (c: CourseDTO, active: boolean) => void;
   onDelete: (c: CourseDTO) => void;
 }) {
-  const bullets = course.syllabus
+  const skillList = course.skills
     .split("\n")
     .map((s) => s.trim())
     .filter(Boolean);
-  const shown = bullets.slice(0, 2);
-  const extra = bullets.length - shown.length;
+  const jobList = course.jobRoles
+    .split("\n")
+    .map((s) => s.trim())
+    .filter(Boolean);
 
   return (
-    <div className="brutal-card-sm p-4">
-      <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
-          <div className="flex flex-wrap items-center gap-2">
-            <h3 className="font-grotesk font-bold">{course.title}</h3>
-            <span className="inline-flex items-center gap-1 rounded-full border-2 border-ink bg-white px-2 py-0.5 font-grotesk text-[10px] font-bold">
-              <Clock className="size-3" aria-hidden="true" />
-              {course.duration}
+    <TableRow className={course.isActive ? "" : "opacity-60"}>
+      <TableCell>
+        <TrackChip track={course.track} />
+      </TableCell>
+      <TableCell className="min-w-[180px]">
+        <p className="font-grotesk font-bold break-words">{course.title}</p>
+        <p className="mt-0.5 inline-flex items-center gap-1 text-xs text-muted-foreground">
+          <Clock className="size-3" aria-hidden="true" />
+          {course.duration}
+          {!course.isActive ? (
+            <span className="ml-1.5 rounded-full border-2 border-ink bg-brand-yellow px-1.5 font-grotesk text-[9px] font-bold uppercase">
+              Hidden
             </span>
-            {!course.isActive ? (
-              <span className="rounded-full border-2 border-ink bg-brand-yellow px-2 py-0.5 font-grotesk text-[10px] font-bold uppercase">
-                Inactive
-              </span>
-            ) : null}
-          </div>
-          <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">
-            {course.description}
-          </p>
-          {shown.length > 0 ? (
-            <ul className="mt-2 space-y-1">
-              {shown.map((b) => (
-                <li key={b} className="flex gap-1.5 text-xs">
-                  <span aria-hidden="true">•</span>
-                  <span className="text-muted-foreground">{b}</span>
-                </li>
-              ))}
-              {extra > 0 ? (
-                <li className="text-xs font-bold text-muted-foreground">
-                  +{extra} more topic{extra > 1 ? "s" : ""}
-                </li>
-              ) : null}
-            </ul>
           ) : null}
-        </div>
-        <div className="flex shrink-0 flex-col items-end gap-2">
+        </p>
+      </TableCell>
+      <TableCell className="hidden max-w-[260px] lg:table-cell">
+        <p className="line-clamp-2 text-sm break-words text-muted-foreground">
+          {course.description}
+        </p>
+      </TableCell>
+      <TableCell className="hidden md:table-cell">
+        <p className="text-sm font-bold">{skillList.length} skills</p>
+        <p className="line-clamp-1 text-xs text-muted-foreground">
+          {skillList[0] ?? "—"}
+        </p>
+      </TableCell>
+      <TableCell className="hidden md:table-cell">
+        <p className="text-sm font-bold">{jobList.length} roles</p>
+        <p className="line-clamp-1 text-xs text-muted-foreground">
+          {jobList[0] ?? "—"}
+        </p>
+      </TableCell>
+      <TableCell>
+        <div className="flex items-center justify-end gap-1">
           <Switch
             checked={course.isActive}
             disabled={toggling}
             onCheckedChange={(v) => onToggleActive(course, v)}
-            aria-label={`Toggle ${course.title} active`}
+            aria-label={`Toggle ${course.title} visible on the public site`}
           />
-          <div className="flex gap-1">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => onEdit(course)}
-              aria-label={`Edit ${course.title}`}
-            >
-              <Pencil className="size-4" aria-hidden="true" />
-            </Button>
-            <ConfirmDeleteDialog
-              trigger={
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  aria-label={`Delete ${course.title}`}
-                >
-                  <Trash2 className="size-4 text-brand-red" aria-hidden="true" />
-                </Button>
-              }
-              title="Delete course?"
-              description={`“${course.title}” will be removed from the public site. Linked enquiries are detached (not deleted). This cannot be undone.`}
-              onConfirm={() => onDelete(course)}
-            />
-          </div>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => onEdit(course)}
+            aria-label={`Edit ${course.title}`}
+          >
+            <Pencil className="size-4" aria-hidden="true" />
+          </Button>
+          <ConfirmDeleteDialog
+            trigger={
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label={`Delete ${course.title}`}
+              >
+                <Trash2 className="size-4 text-brand-red" aria-hidden="true" />
+              </Button>
+            }
+            title="Delete course?"
+            description={`“${course.title}” will be removed from the public site. Linked enquiries are detached (not deleted). This cannot be undone.`}
+            onConfirm={() => onDelete(course)}
+          />
         </div>
-      </div>
-    </div>
+      </TableCell>
+    </TableRow>
   );
 }
 
@@ -450,7 +646,7 @@ export function CoursesView() {
       setCourses((prev) =>
         prev ? prev.map((x) => (x.id === c.id ? res.course : x)) : prev
       );
-      toast.success(isActive ? "Course published" : "Course hidden");
+      toast.success(isActive ? "Course published" : "Course hidden from the public site");
     } catch (err) {
       toastApiError(err, "Could not update the course.");
       void load();
@@ -470,41 +666,29 @@ export function CoursesView() {
   }
 
   const rows = courses ?? [];
-  const aviation = rows.filter((c) => c.track === "AVIATION");
-  const it = rows.filter((c) => c.track === "IT");
-
-  const sections: {
-    label: string;
-    icon: LucideIcon;
-    color: string;
-    courses: CourseDTO[];
-  }[] = [
-    { label: "Aviation", icon: Plane, color: "#2563EB", courses: aviation },
-    { label: "IT", icon: Code2, color: "#00B8D9", courses: it },
-  ];
 
   return (
     <div className="space-y-6">
       <AdminPageHeader
         title="Courses"
-        description="Programs offered across the Aviation and IT tracks."
+        description="Programs across the Aviation and IT & Software departments — published live to the public site."
       >
         <Button
           onClick={openAdd}
           className="font-grotesk font-bold uppercase shadow-hard-sm"
         >
           <Plus className="size-4" aria-hidden="true" />
-          Add Course
+          Add New Course
         </Button>
       </AdminPageHeader>
 
       {loading && courses === null ? (
-        <div className="grid gap-4 lg:grid-cols-2">
-          {Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="brutal-card-sm space-y-3 p-4">
-              <div className="h-5 w-2/3 animate-pulse rounded bg-muted" />
-              <div className="h-4 w-full animate-pulse rounded bg-muted" />
-              <div className="h-4 w-1/2 animate-pulse rounded bg-muted" />
+        <div className="brutal-card space-y-3 p-4">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <div key={i} className="flex items-center gap-4">
+              <div className="h-5 w-20 animate-pulse rounded bg-muted" />
+              <div className="h-5 flex-1 animate-pulse rounded bg-muted" />
+              <div className="h-5 w-16 animate-pulse rounded bg-muted" />
             </div>
           ))}
         </div>
@@ -513,40 +697,38 @@ export function CoursesView() {
           <EmptyState
             icon={GraduationCap}
             title="No courses yet"
-            message="Add your first Aviation or IT course to show it on the public site."
+            message="Add your first Aviation or IT & Software course — it appears instantly on the department page and homepage."
           />
         </div>
       ) : (
-        sections.map((section) => (
-          <section
-            key={section.label}
-            aria-label={`${section.label} courses`}
-            className="space-y-3"
-          >
-            <div className="flex items-center gap-3">
-              <span
-                className="flex size-9 shrink-0 items-center justify-center rounded-lg border-2 border-ink text-white"
-                style={{ backgroundColor: section.color }}
-                aria-hidden="true"
-              >
-                <section.icon className="size-4" />
-              </span>
-              <h2 className="font-display text-lg uppercase">
-                {section.label}
-              </h2>
-              <span className="font-grotesk text-xs font-bold text-muted-foreground">
-                {section.courses.length} course
-                {section.courses.length === 1 ? "" : "s"}
-              </span>
-            </div>
-            {section.courses.length === 0 ? (
-              <p className="rounded-xl border-2 border-dashed border-ink/30 bg-white/60 p-4 text-sm text-muted-foreground">
-                No {section.label} courses yet.
-              </p>
-            ) : (
-              <div className="grid gap-4 lg:grid-cols-2">
-                {section.courses.map((c) => (
-                  <CourseCard
+        <div className="brutal-card overflow-hidden">
+          <div className="nice-scrollbar overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="font-grotesk text-xs font-bold uppercase">
+                    Department
+                  </TableHead>
+                  <TableHead className="font-grotesk text-xs font-bold uppercase">
+                    Course
+                  </TableHead>
+                  <TableHead className="hidden font-grotesk text-xs font-bold uppercase lg:table-cell">
+                    Description
+                  </TableHead>
+                  <TableHead className="hidden font-grotesk text-xs font-bold uppercase md:table-cell">
+                    Skills
+                  </TableHead>
+                  <TableHead className="hidden font-grotesk text-xs font-bold uppercase md:table-cell">
+                    Job Roles
+                  </TableHead>
+                  <TableHead className="text-right font-grotesk text-xs font-bold uppercase">
+                    Live / Actions
+                  </TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {rows.map((c) => (
+                  <CourseRow
                     key={c.id}
                     course={c}
                     toggling={togglingId === c.id}
@@ -555,11 +737,17 @@ export function CoursesView() {
                     onDelete={handleDelete}
                   />
                 ))}
-              </div>
-            )}
-          </section>
-        ))
+              </TableBody>
+            </Table>
+          </div>
+        </div>
       )}
+
+      <p className="flex items-center gap-2 text-xs text-muted-foreground">
+        <Sparkles className="size-3.5 shrink-0 text-brand-pink" aria-hidden="true" />
+        Courses saved here appear instantly on the homepage cards and the
+        Aviation / IT &amp; Software department pages — no code changes needed.
+      </p>
 
       <CourseFormDialog
         open={dialogOpen}

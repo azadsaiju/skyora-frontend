@@ -5,8 +5,8 @@
  */
 
 import { db } from "@/lib/db";
-import type { Course, Track } from "@prisma/client";
-import type { CoursePublicDTO } from "@/lib/types";
+import type { Course } from "@prisma/client";
+import type { CoursePublicDTO, Track } from "@/lib/types";
 import { DEPARTMENTS } from "@/lib/departments";
 
 export function parseLines(raw: string | null | undefined): string[] {

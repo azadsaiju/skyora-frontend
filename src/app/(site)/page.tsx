@@ -4,7 +4,6 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useHashRoute } from "@/hooks/use-hash-route";
 import { HomeSection } from "@/components/public/home-section";
-import { CoursesSection } from "@/components/public/courses-section";
 import { AchievementsSection } from "@/components/public/achievements-section";
 import { PlacementsSection } from "@/components/public/placements-section";
 import { ContactSection } from "@/components/public/contact-section";

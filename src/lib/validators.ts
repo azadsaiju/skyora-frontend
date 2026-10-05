@@ -142,10 +142,13 @@ export const courseCreateSchema = z.object({
   /** /public image path; empty → auto-assign department image */
   image: z
     .union([
-      z.string().trim().startsWith("/", "Image path must start with /"),
+      z
+        .string()
+        .trim()
+        .startsWith("/", "Image path must start with /")
+        .max(400),
       z.literal(""),
     ])
-    .max(400)
     .nullable()
     .optional()
     .default(""),

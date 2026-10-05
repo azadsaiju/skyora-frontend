@@ -10,7 +10,11 @@ import path from "path";
 const STYLE =
   "Flat vector illustration, bold neo-brutalist poster style, thick dark olive-green outlines (#141C08), muted olive green background (#6E9622), cream and warm off-white surfaces, restrained cobalt blue and teal accents, subtle grain texture, clean geometric shapes, no text, no letters, no words, high quality, detailed";
 
-const JOBS: { prompt: string; out: string; size: string }[] = [
+const JOBS: {
+  prompt: string;
+  out: string;
+  size: "1344x768" | "1024x1024" | "768x1344" | "864x1152" | "1152x864" | "1440x720" | "720x1440";
+}[] = [
   {
     prompt: `Wide hero illustration for an aviation training institute: a modern passenger jet at an airport gate with a confident cabin crew member in uniform pulling a suitcase and ground staff with headset marshalling, airport terminal and control tower behind, ${STYLE}`,
     out: "public/departments/aviation-hero.png",

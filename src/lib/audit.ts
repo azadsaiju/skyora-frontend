@@ -26,6 +26,7 @@ export type AuditAction =
   | "COURSE_CREATE"
   | "COURSE_UPDATE"
   | "COURSE_DELETE"
+  | "UPLOAD_CREATE"
   | "VACANCY_CREATE"
   | "VACANCY_UPDATE"
   | "VACANCY_DELETE"
