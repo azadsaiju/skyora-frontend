@@ -8,6 +8,7 @@
  */
 
 import * as React from "react";
+import Image from "next/image";
 import {
   Briefcase,
   ExternalLink,
@@ -145,8 +146,15 @@ export function AdminApp() {
         role="status"
         aria-label="Loading admin portal"
       >
-        <span className="flex size-16 animate-pulse items-center justify-center rounded-xl border-2 border-ink bg-ink font-display text-2xl text-white shadow-hard">
-          S
+        <span className="flex size-16 animate-pulse items-center justify-center overflow-hidden rounded-xl border-2 border-ink bg-white shadow-hard">
+          <Image
+            src="/logo-mark.png"
+            alt=""
+            width={736}
+            height={1024}
+            className="h-full w-full object-contain p-1"
+            priority
+          />
         </span>
         <p className="font-display text-lg uppercase tracking-wide">
           Skyora Admin
@@ -259,10 +267,16 @@ export function AdminApp() {
         <div className="flex items-center justify-between p-4 pb-2">
           <div className="flex min-w-0 items-center gap-2.5">
             <span
-              className="flex size-9 shrink-0 items-center justify-center rounded-lg border-2 border-white/30 bg-white font-display text-base text-ink"
+              className="flex size-9 shrink-0 items-center justify-center overflow-hidden rounded-lg border-2 border-white/30 bg-white"
               aria-hidden="true"
             >
-              S
+              <Image
+                src="/logo-mark.png"
+                alt=""
+                width={736}
+                height={1024}
+                className="h-full w-full object-contain p-0.5"
+              />
             </span>
             <span className="truncate font-display text-sm uppercase tracking-wide">
               Skyora Admin
@@ -308,10 +322,16 @@ export function AdminApp() {
       >
         <div className="flex items-center gap-2.5 px-1 pb-4">
           <span
-            className="flex size-10 items-center justify-center rounded-lg border-2 border-white/30 bg-white font-display text-lg text-ink"
+            className="flex size-10 items-center justify-center overflow-hidden rounded-lg border-2 border-white/30 bg-white"
             aria-hidden="true"
           >
-            S
+            <Image
+              src="/logo-mark.png"
+              alt=""
+              width={736}
+              height={1024}
+              className="h-full w-full object-contain p-0.5"
+            />
           </span>
           <div>
             <p className="font-display text-sm uppercase leading-none">

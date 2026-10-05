@@ -6,6 +6,7 @@
  */
 
 import { motion, type Variants } from "framer-motion";
+import Image from "next/image";
 import { Quote } from "lucide-react";
 import { siteConfig } from "@/config/site.config";
 import { Badge } from "@/components/ui/badge";
@@ -40,10 +41,26 @@ export function AboutSection() {
         transition={{ duration: 0.5, ease: "easeOut" }}
         className="brutal-card mt-10 p-6 md:p-10"
       >
-        <Quote aria-hidden className="h-10 w-10 text-brand-pink" />
-        <p className="mt-4 max-w-3xl text-base leading-relaxed md:text-lg">
-          {siteConfig.story}
-        </p>
+        <div className="flex flex-col gap-6 sm:flex-row sm:items-center">
+          <div className="flex w-fit shrink-0 flex-col items-center gap-2 rounded-xl border-2 border-ink bg-white p-5 shadow-hard-sm">
+            <Image
+              src="/logo-full.png"
+              alt="Official Skyora Group of Institutes logo — green S emblem with Learn · Build · Grow motto"
+              width={300}
+              height={267}
+              className="h-auto w-40 md:w-52"
+            />
+            <span className="font-grotesk text-[9px] font-bold uppercase tracking-[0.3em] text-muted-foreground">
+              Our identity
+            </span>
+          </div>
+          <div className="min-w-0">
+            <Quote aria-hidden className="h-10 w-10 text-brand-pink" />
+            <p className="mt-4 max-w-3xl text-base leading-relaxed md:text-lg">
+              {siteConfig.story}
+            </p>
+          </div>
+        </div>
       </motion.div>
 
       {/* Why us */}

@@ -408,3 +408,27 @@ Stage Summary:
 - Project is feature-complete AND ops-complete: preflight/deploy/backup tooling closes the gap between "works here" and "goes live".
 - User-side go-live checklist (also in docs/DEPLOYMENT.md): real Turnstile keys, SMTP creds (optional), domain+Caddy/Cloudflare, counsellor password change, optional re-enable of 2FA (they tested it and disabled it).
 - Files: +scripts/preflight.ts, +scripts/backup-db.sh, +scripts/generate-assets.ts, +docs/DEPLOYMENT.md, +src/app/manifest.ts, +public/icons/*, +public/og-image.png; ~package.json, README.md, src/app/layout.tsx.
+---
+Task ID: B-10 (Official Skyora logo — extraction + site-wide integration)
+Agent: Z.ai Code (main)
+Task: User uploaded Skyora_Logo.pdf (official logo: green gradient S emblem + sparkle, SKYORA wordmark, "THE SCHOOL OF CODING", "LEARN • BUILD • GROW") and asked to add it as the website logo everywhere.
+
+Work Log:
+- Extraction: pdfimages pulled the native 1254×1254 raster from the PDF (bg = warm cream ~(254,252,247)).
+- scripts/process-logo.ts (4-pass background removal):
+  1. border flood-fill (tolerance 26) for the connected background + soft halo;
+  2. exact bg-signature sweep (|Δr,g,b|≤3 AND r-b≥4 — protects the sparkle's neutral-white core (255,255,255), which a naive chroma-key would have eaten);
+  3. wordmark-region cleanup below the auto-detected mark/wordmark gap (widest transparent row band at rows 681..730): lum>205, g-r≤14 — clears jpeg-noisy letter counters of "O"/"SCHOOL"/"GROW";
+  4. isolated-pixel despeckle ×2 (177 stragglers removed).
+  - Outputs: public/logo-mark.png (736×1024, S+sparkle), public/logo-mark-square.png (1024×1024), public/logo-full.png (1000×892) — all transparent-bg, verified visually.
+- Component integration (placeholder ink "S" tiles → official mark on white/cream tiles):
+  - navbar.tsx (h-10 white tile + border-ink, priority), footer.tsx (white tile on ink bg), admin-app.tsx ×3 (loading pulse tile size-16, mobile top bar size-9, desktop sidebar size-10), login-view.tsx (size-12 tile) — all via next/image /logo-mark.png.
+  - about-section.tsx: story card now opens with the FULL official lockup in a bordered "Our identity" plate next to the founding story (desktop: side-by-side, mobile: stacked).
+  - login-view footer copy updated: "Super admin sign-ins require a second factor" → "2FA is optional — enable it under Security" (aligns with Task B-8).
+- Derived assets regenerated via scripts/generate-assets.ts from the official mark: icon-192/512, maskable-512, apple-touch-icon, og-image.png (white plate behind green mark). layout.tsx icons now /logo-mark.png + png set (no /logo.svg); manifest.ts unchanged (uses icons/). Old placeholder public/logo.svg deleted; middleware matcher now bypasses logo-*, icons/, og-image for static serving.
+- Verification: lint 0 errors (1 pre-existing font warning), tsc src/ clean; HTTP 200 for /logo-mark.png, /logo-full.png, /icons/*, /og-image.png, /manifest.webmanifest; browser screenshots confirm navbar (desktop+mobile 390px), About full logo, footer tile, admin login card; dev.log clean. Real user session + data untouched.
+
+Stage Summary:
+- Official brand identity is now site-wide: navbar, footer, About story card, admin loading/login/sidebar/mobile bar, favicon, PWA icons, and the OG share image.
+- Pipeline is reproducible: swap upload PDF → pdfimages → bun scripts/process-logo.ts → bun scripts/generate-assets.ts.
+- Files: +scripts/process-logo.ts, +public/logo-mark.png, +public/logo-mark-square.png, +public/logo-full.png, −public/logo.svg; ~navbar.tsx, footer.tsx, about-section.tsx, admin-app.tsx, login-view.tsx, layout.tsx, middleware.ts, scripts/generate-assets.ts.

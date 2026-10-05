@@ -3,7 +3,7 @@
  * Run: bun scripts/generate-assets.ts
  * Outputs to public/icons/ and public/og-image.png
  */
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, writeFile } from "node:fs/promises";
 import sharp from "sharp";
 
 const CREAM = "#FAF9F6";
@@ -15,7 +15,9 @@ const TRANSPARENT = { r: 0, g: 0, b: 0, alpha: 0 };
 
 async function main() {
   await mkdir("public/icons", { recursive: true });
-  const mark = Buffer.from(await readFile("public/logo.svg"));
+  // Official Skyora mark (green S + sparkle) — extracted from Skyora_Logo.pdf
+  // by scripts/process-logo.ts.
+  const mark = "public/logo-mark-square.png";
 
   // ── 1. Plain app icons (transparent outside the rounded square) ──────────
   for (const size of [192, 512]) {
@@ -76,13 +78,12 @@ async function main() {
 </svg>`);
 
   const plate = Buffer.from(
-    `<svg xmlns="http://www.w3.org/2000/svg" width="152" height="152"><rect width="152" height="152" rx="30" fill="${CREAM}" stroke="${INK}" stroke-width="4"/></svg>`,
+    `<svg xmlns="http://www.w3.org/2000/svg" width="152" height="152"><rect width="152" height="152" rx="30" fill="#FFFFFF" stroke="${INK}" stroke-width="4"/></svg>`,
   );
   const ogMark = await sharp(mark, { density: 300 })
     .resize(120, 120, { fit: "contain", background: TRANSPARENT })
     .png()
     .toBuffer();
-
   await sharp(ogSvg)
     .composite([
       { input: plate, top: 56, left: 68 },

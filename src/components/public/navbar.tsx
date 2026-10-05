@@ -6,6 +6,7 @@
  */
 
 import { useState } from "react";
+import Image from "next/image";
 import { Menu, X } from "lucide-react";
 import { siteConfig } from "@/config/site.config";
 import { trackWhatsApp } from "@/lib/track-whatsapp";
@@ -35,9 +36,16 @@ export function Navbar({ route }: { route: PublicRoute }) {
         >
           <span
             aria-hidden
-            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-ink font-display text-xl leading-none text-white"
+            className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-lg border-2 border-ink bg-white"
           >
-            S
+            <Image
+              src="/logo-mark.png"
+              alt=""
+              width={736}
+              height={1024}
+              className="h-full w-full object-contain p-0.5"
+              priority
+            />
           </span>
           <span className="min-w-0">
             <span className="block font-display text-lg leading-none tracking-tight">

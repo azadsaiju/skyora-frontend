@@ -7,6 +7,7 @@
  */
 
 import * as React from "react";
+import Image from "next/image";
 import { Eye, EyeOff, Info, Loader2, Lock } from "lucide-react";
 import { toast } from "sonner";
 
@@ -74,10 +75,17 @@ export function LoginView({
         <div className="brutal-card w-[min(420px,calc(100vw-2rem))] p-8">
           <div className="flex items-center gap-3">
             <span
-              className="flex size-12 shrink-0 items-center justify-center rounded-lg border-2 border-ink bg-ink font-display text-xl text-white shadow-hard-sm"
+              className="flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-lg border-2 border-ink bg-white shadow-hard-sm"
               aria-hidden="true"
             >
-              S
+              <Image
+                src="/logo-mark.png"
+                alt=""
+                width={736}
+                height={1024}
+                className="h-full w-full object-contain p-1"
+                priority
+              />
             </span>
             <div className="min-w-0">
               <p className="font-display text-2xl leading-none">SKYORA</p>
@@ -172,7 +180,7 @@ export function LoginView({
           <div className="mt-6 space-y-1.5 border-t-2 border-dashed border-ink/20 pt-4 text-center">
             <p className="text-xs text-muted-foreground">
               Sessions are httpOnly + SameSite=Strict. 5 failed attempts = 15
-              min lockout. Super admin sign-ins require a second factor.
+              min lockout. 2FA is optional — enable it under Security.
             </p>
             <a
               href="/"

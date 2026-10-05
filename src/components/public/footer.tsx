@@ -6,6 +6,7 @@
  * Bottom bar exposes a labelled "Admin Login" entry to the staff portal (#/admin).
  */
 
+import Image from "next/image";
 import {
   Github,
   Instagram,
@@ -53,9 +54,15 @@ export function Footer() {
             >
               <span
                 aria-hidden
-                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border-2 border-white/20 bg-black font-display text-xl leading-none text-white"
+                className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-lg border-2 border-white/20 bg-white"
               >
-                S
+                <Image
+                  src="/logo-mark.png"
+                  alt=""
+                  width={736}
+                  height={1024}
+                  className="h-full w-full object-contain p-0.5"
+                />
               </span>
               <span className="min-w-0">
                 <span className="block font-display text-lg leading-none">
