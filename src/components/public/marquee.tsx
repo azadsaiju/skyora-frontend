@@ -17,9 +17,9 @@ export function RecruiterMarquee() {
   return (
     <section
       aria-label="Our recruiters and hiring partners"
-      className="marquee-hover-pause overflow-hidden border-y-2 border-ink bg-ink py-5"
+      className="marquee-hover-pause overflow-hidden border-y-2 border-ink bg-olive-deep py-5"
     >
-      <p className="mb-4 px-4 text-center font-grotesk text-[11px] font-bold tracking-[0.3em] text-white/50 uppercase">
+      <p className="mb-4 px-4 text-center font-grotesk text-[11px] font-bold tracking-[0.3em] text-cream/60 uppercase">
         Our Recruiters &amp; Hiring Partners
       </p>
       <div className="overflow-hidden">

@@ -5,7 +5,7 @@
  * Stays open on success so the form's success panel is visible.
  */
 
-import type { CourseDTO } from "@/lib/types";
+import type { EnquiryCourseOption } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -18,7 +18,7 @@ import {
 import { EnquiryForm } from "@/components/public/enquiry-form";
 
 interface EnquiryDialogProps {
-  courses: CourseDTO[];
+  courses: EnquiryCourseOption[];
   initialCourseId?: string;
   source: string;
   triggerLabel: string;

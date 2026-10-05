@@ -50,7 +50,7 @@ export function SectionHeading({
       className={centered ? "mx-auto max-w-3xl text-center" : "max-w-3xl"}
     >
       <p
-        className={`flex items-center gap-2.5 font-grotesk text-xs font-bold tracking-[0.2em] text-muted-foreground uppercase ${
+        className={`flex items-center gap-2.5 font-grotesk text-xs font-bold tracking-[0.2em] text-olive-soft uppercase ${
           centered ? "justify-center" : ""
         }`}
       >
@@ -62,7 +62,7 @@ export function SectionHeading({
       </h2>
       {description ? (
         <p
-          className={`mt-4 max-w-2xl text-sm leading-relaxed text-muted-foreground md:text-base ${
+          className={`mt-4 max-w-2xl text-sm leading-relaxed text-olive-soft md:text-base ${
             centered ? "mx-auto" : ""
           }`}
         >

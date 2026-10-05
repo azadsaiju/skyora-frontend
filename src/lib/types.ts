@@ -36,6 +36,11 @@ export const STATUS_COLORS: Record<EnquiryStatus, string> = {
   LOST: "#6B7280",
 };
 
+export const TRACK_ACCENTS: Record<Track, string> = {
+  AVIATION: "#1D4ED8",
+  IT: "#0891B2",
+};
+
 // ── AUTH ─────────────────────────────────────────────────────────────────────
 export interface SessionUser {
   id: string;
@@ -64,11 +69,38 @@ export interface CourseDTO {
   slug: string;
   duration: string;
   description: string;
-  /** newline-separated syllabus highlight bullets */
-  syllabus: string;
+  /** newline-separated "skills you will learn" bullets */
+  skills: string;
+  /** newline-separated career opportunities / job roles */
+  jobRoles: string;
+  /** newline-separated "where you can work" entries */
+  workplaces: string;
+  /** /public image path; null → auto-assign department image */
+  image: string | null;
+  sortOrder: number;
   isActive: boolean;
   createdAt: string;
 }
+
+/** Course shaped for public rendering (lists pre-parsed, dates flattened). */
+export interface CoursePublicDTO {
+  id: string;
+  title: string;
+  track: Track;
+  slug: string;
+  duration: string;
+  description: string;
+  skills: string[];
+  jobRoles: string[];
+  workplaces: string[];
+  image: string | null;
+}
+
+/** Minimal course shape needed by the enquiry form/dialog selects. */
+export type EnquiryCourseOption = Pick<
+  CourseDTO,
+  "id" | "title" | "track" | "duration"
+>;
 
 export interface AchievementDTO {
   id: string;

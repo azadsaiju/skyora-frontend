@@ -11,7 +11,7 @@ import type { FormEvent } from "react";
 import { CheckCircle2, Loader2, Send } from "lucide-react";
 import { toast } from "sonner";
 import { api } from "@/lib/client";
-import type { CourseDTO } from "@/lib/types";
+import type { EnquiryCourseOption } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -31,7 +31,7 @@ import {
 const PHONE_PATTERN = "^[+]?[0-9][0-9\\s\\-()]{7,15}$";
 
 interface EnquiryFormProps {
-  courses: CourseDTO[];
+  courses: EnquiryCourseOption[];
   initialCourseId?: string;
   source: string;
   onSuccess?: () => void;

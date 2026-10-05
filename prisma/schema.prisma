@@ -81,7 +81,11 @@ model Course {
   slug        String   @unique
   duration    String
   description String
-  syllabus    String // newline-separated syllabus highlight bullets
+  skills      String   @default("") // newline-separated "skills you will learn" bullets
+  jobRoles    String   @default("") // newline-separated career opportunities / job roles
+  workplaces  String   @default("") // newline-separated "where you can work" entries
+  image       String? // /public image path; null → auto-assign department image
+  sortOrder   Int      @default(0) // lower = shown first on public pages
   isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt

@@ -12,7 +12,7 @@ export async function GET(req: NextRequest) {
   try {
     await requireAuth(req);
     const courses = await db.course.findMany({
-      orderBy: [{ track: "asc" }, { createdAt: "asc" }],
+      orderBy: [{ track: "asc" }, { sortOrder: "asc" }, { createdAt: "asc" }],
     });
     return NextResponse.json({ courses });
   } catch (e) {
@@ -42,7 +42,11 @@ export async function POST(req: NextRequest) {
         slug,
         duration: data.duration,
         description: data.description,
-        syllabus: data.syllabus,
+        skills: data.skills,
+        jobRoles: data.jobRoles,
+        workplaces: data.workplaces,
+        image: data.image ? data.image : null,
+        sortOrder: data.sortOrder,
         isActive: data.isActive,
       },
     });

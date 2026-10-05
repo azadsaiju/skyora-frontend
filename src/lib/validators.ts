@@ -133,8 +133,23 @@ export const courseCreateSchema = z.object({
   track: z.enum(TRACKS),
   duration: z.string().trim().min(1).max(60),
   description: z.string().trim().min(10).max(2000),
-  /** newline-separated bullets */
-  syllabus: z.string().trim().min(1).max(2000),
+  /** newline-separated "skills you will learn" bullets */
+  skills: z.string().trim().min(1, "Add at least one skill").max(2000),
+  /** newline-separated career opportunities / job roles */
+  jobRoles: z.string().trim().max(2000).optional().default(""),
+  /** newline-separated "where you can work" entries */
+  workplaces: z.string().trim().max(2000).optional().default(""),
+  /** /public image path; empty → auto-assign department image */
+  image: z
+    .union([
+      z.string().trim().startsWith("/", "Image path must start with /"),
+      z.literal(""),
+    ])
+    .max(400)
+    .nullable()
+    .optional()
+    .default(""),
+  sortOrder: z.coerce.number().int().min(0).max(999).optional().default(0),
   isActive: z.boolean().optional().default(true),
 });
 export const courseUpdateSchema = courseCreateSchema.partial();

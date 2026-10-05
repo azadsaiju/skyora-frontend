@@ -61,8 +61,14 @@ async function main() {
       duration: "4 Months",
       description:
         "Complete cabin crew program — safety drills, first aid, grooming, in-flight service and airline interview preparation with real mock panels.",
-      syllabus:
-        "Safety & Emergency Procedures (SEP)\nFirst Aid & Aviation Medicine\nIn-flight Service & Galley Management\nGrooming, Deportment & Communication\nAirline Interview & Mock Panels",
+      skills:
+        "Safety & Emergency Procedures (SEP)\nFirst Aid & Aviation Medicine\nIn-flight Service & Galley Management\nGrooming, Deportment & Communication\nAnnouncements & Foreign Phraseology\nAirline Interview & Grooming Panels",
+      jobRoles:
+        "Cabin Crew / Flight Attendant\nFlight Purser\nSenior Cabin Crew\nAirline Customer Service\nInflight Trainer (after experience)",
+      workplaces:
+        "Domestic & international airlines (IndiGo, Air India, Akasa, Emirates…)\nCharter & business-jet operators\nAirline training academies",
+      image: null,
+      sortOrder: 1,
     },
     {
       title: "Ground Staff & Airport Operations",
@@ -70,8 +76,14 @@ async function main() {
       duration: "3 Months",
       description:
         "Airport ground operations training — check-in systems, baggage handling, DCS, customer service and ramp safety, with airport visit modules.",
-      syllabus:
-        "Airport & Terminal Operations\nDeparture Control Systems (DCS)\nCheck-in, Boarding & Baggage Handling\nCustomer Service & Conflict Handling\nRamp Safety & Security (DGCA norms)",
+      skills:
+        "Airport & Terminal Operations\nDeparture Control Systems (DCS)\nCheck-in, Boarding & Baggage Handling\nPassenger Handling & Special Assistance\nCustomer Service & Conflict Handling\nRamp Safety & Security (DGCA norms)",
+      jobRoles:
+        "Ground Staff / Customer Service Agent\nCheck-in & Boarding Executive\nRamp Agent\nTicketing Executive\nBaggage Service Agent\nAirport Lounge Staff",
+      workplaces:
+        "Airports & terminal operators (DIAL, GMR, AAI)\nGround handling companies (Celebi, AISATS, Bird)\nAirlines' airport teams\nTravel & ticketing companies",
+      image: null,
+      sortOrder: 2,
     },
     {
       title: "Data Science",
@@ -79,8 +91,14 @@ async function main() {
       duration: "6 Months",
       description:
         "End-to-end data science — Python, statistics, machine learning and MLOps basics, capped with a portfolio project reviewed by working data scientists.",
-      syllabus:
-        "Python, NumPy, Pandas\nStatistics & Experiment Design\nMachine Learning (sklearn, XGBoost)\nDeep Learning Basics (PyTorch)\nCapstone: End-to-end ML Project",
+      skills:
+        "Python, NumPy & Pandas\nStatistics & Experiment Design\nMachine Learning (sklearn, XGBoost)\nDeep Learning Basics (PyTorch)\nMLOps: tracking, deployment & monitoring\nCapstone: End-to-end ML Project",
+      jobRoles:
+        "Data Scientist\nMachine Learning Engineer\nData Analyst\nBI Analyst\nAI/ML Associate",
+      workplaces:
+        "Product & e-commerce companies (Flipkart, Amazon…)\nIT services (TCS, Infosys, Accenture…)\nFintech & startups\nAnalytics consulting firms",
+      image: null,
+      sortOrder: 1,
     },
     {
       title: "Data Analytics",
@@ -88,17 +106,29 @@ async function main() {
       duration: "5 Months",
       description:
         "From spreadsheets to dashboards — Excel, SQL, Power BI and storytelling with data, built around real business case studies.",
-      syllabus:
-        "Advanced Excel & GSheets\nSQL for Analysts\nPower BI Dashboards\nData Storytelling & Presenting\nCapstone: Business Case Analysis",
+      skills:
+        "Advanced Excel & Google Sheets\nSQL for Analysts (joins, windows, CTEs)\nPower BI Dashboards & DAX\nData Storytelling & Presenting\nPython for Analysis (Pandas)\nCapstone: Business Case Analysis",
+      jobRoles:
+        "Data Analyst\nBusiness Analyst\nMIS Executive\nReporting Analyst\nOperations Analyst",
+      workplaces:
+        "IT services & consulting (TCS, Deloitte, KPMG…)\nBanks & insurance firms\nE-commerce & retail\nHealthcare & logistics analytics teams",
+      image: null,
+      sortOrder: 2,
     },
     {
-      title: "Data Analyst",
+      title: "Data Analyst Professional",
       track: "IT",
       duration: "4 Months",
       description:
         "Job-focused analyst track — SQL mastery, Excel automation, Tableau and Python analytics, with weekly mock interviews and resume labs.",
-      syllabus:
-        "SQL Joins, Windows & Optimization\nExcel Automation (VBA, Pivot Engine)\nTableau Visualization\nPython for Analysis (Pandas)\nInterview Prep & Case Studies",
+      skills:
+        "SQL Joins, Windows & Optimization\nExcel Automation (VBA, Pivot Engine)\nTableau Visualization\nPython for Analysis (Pandas)\nDashboard Design & KPI Reporting\nInterview Prep & Case Studies",
+      jobRoles:
+        "Data Analyst\nProduct Analyst\nMarketing Analyst\nRevenue Analyst\nJunior Data Scientist",
+      workplaces:
+        "Startups & product companies\nMedia & ad-tech firms\nShare brokers & fintech\nGlobal capability centres (GCCs)",
+      image: null,
+      sortOrder: 3,
     },
     {
       title: "Flutter App Development",
@@ -106,8 +136,14 @@ async function main() {
       duration: "5 Months",
       description:
         "Cross-platform mobile development with Flutter & Dart — state management, APIs, Firebase, and two store-ready apps in your portfolio.",
-      syllabus:
-        "Dart Language Deep Dive\nWidgets, Layouts & Theming\nState Management (Riverpod/BLoC)\nREST APIs & Firebase\nCapstone: Publish a Play Store App",
+      skills:
+        "Dart Language Deep Dive\nWidgets, Layouts & Theming\nState Management (Riverpod/BLoC)\nREST APIs & Firebase\nApp Store & Play Store Deployment\nCapstone: Publish a Play Store App",
+      jobRoles:
+        "Flutter Developer\nMobile App Developer\nAssociate Software Engineer\nCross-platform Developer",
+      workplaces:
+        "Mobile-first startups\nApp development agencies\nProduct companies (Zeta, CRED…)\nFreelance / contract builds",
+      image: null,
+      sortOrder: 4,
     },
     {
       title: "Full Stack Development",
@@ -115,8 +151,14 @@ async function main() {
       duration: "6 Months",
       description:
         "MERN + Next.js full stack — from HTML fundamentals to deployed production apps with auth, databases, tests and CI/CD.",
-      syllabus:
-        "HTML, CSS, JavaScript ES6+\nReact & Next.js\nNode.js, Express & REST APIs\nMongoDB & SQL Basics\nCapstone: Deployed Production App",
+      skills:
+        "HTML, CSS, JavaScript ES6+\nReact & Next.js\nNode.js, Express & REST APIs\nMongoDB & SQL Basics\nAuth, Testing & Git workflows\nCapstone: Deployed Production App",
+      jobRoles:
+        "Full Stack Developer\nFrontend Developer (React/Next.js)\nBackend Developer (Node.js)\nSDE-1\nWeb Application Developer",
+      workplaces:
+        "SaaS & product startups\nIT services (Wipro, Cognizant…)\nFintech & ed-tech companies\nDigital agencies & remote-first teams",
+      image: null,
+      sortOrder: 5,
     },
   ];
 
@@ -127,7 +169,17 @@ async function main() {
       .replace(/\s+/g, "-");
     await db.course.upsert({
       where: { slug },
-      update: {},
+      // Refresh seed-managed fields so an existing DB gets the enriched
+      // skills / jobRoles / workplaces data on re-seed.
+      update: {
+        track: c.track,
+        duration: c.duration,
+        description: c.description,
+        skills: c.skills,
+        jobRoles: c.jobRoles,
+        workplaces: c.workplaces,
+        sortOrder: c.sortOrder,
+      },
       create: { ...c, slug, isActive: true },
     });
   }

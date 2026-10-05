@@ -54,6 +54,17 @@
   --color-brand-red: #dc2626;
   --color-brand-yellow: #facc15;
 
+  /* ── OLIVE BRAND PALETTE (sampled from the SKYORA "S" logo) ── */
+  /* #387003 = exact logo core · #5f9709 logo highlight · #0f4802 logo shadow */
+  --color-olive: #387003;
+  --color-olive-bright: #5f9709;
+  --color-olive-canvas: #6e9622;
+  --color-olive-deep: #22300a;
+  --color-olive-ink: #141c08;
+  --color-olive-soft: #1f2c09;
+  --color-olive-tint: #eef3d4;
+  --color-olive-pale: #f7fae9;
+
   /* ── HARD OFFSET SHADOWS ────────────────────────────────────── */
   --shadow-hard: 6px 6px 0 0 #0a0a0a;
   --shadow-hard-sm: 3px 3px 0 0 #0a0a0a;
@@ -62,6 +73,7 @@
   --shadow-hard-blue: 6px 6px 0 0 #2563eb;
   --shadow-hard-orange: 6px 6px 0 0 #ff7a00;
   --shadow-hard-cyan: 6px 6px 0 0 #00b8d9;
+  --shadow-hard-olive: 6px 6px 0 0 #141c08;
 }
 
 :root {
@@ -141,7 +153,8 @@
     scroll-behavior: smooth;
   }
   body {
-    @apply bg-cream text-ink font-sans antialiased;
+    /* Full olive-green canvas — the SKYORA logo olive, site-wide. */
+    @apply bg-olive-canvas text-olive-ink font-sans antialiased;
   }
   ::selection {
     background: #ff2e63;
@@ -200,17 +213,22 @@
     }
   }
 
+  /* Dark olive panel (footer, banners, marquee) with cream text */
+  .panel-olive {
+    @apply bg-olive-deep text-cream;
+  }
+
   /* ── CUSTOM SCROLLBARS ── */
   .nice-scrollbar {
     scrollbar-width: thin;
-    scrollbar-color: #0a0a0a #f1eee7;
+    scrollbar-color: #141c08 #eef3d4;
   }
   .nice-scrollbar::-webkit-scrollbar {
     width: 8px;
     height: 8px;
   }
   .nice-scrollbar::-webkit-scrollbar-track {
-    background: #f1eee7;
+    background: #eef3d4;
     border-radius: 8px;
   }
   .nice-scrollbar::-webkit-scrollbar-thumb {

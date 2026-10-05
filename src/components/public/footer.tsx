@@ -7,6 +7,7 @@
  */
 
 import Image from "next/image";
+import Link from "next/link";
 import {
   Github,
   Instagram,
@@ -20,12 +21,12 @@ import { siteConfig } from "@/config/site.config";
 import { trackWhatsApp } from "@/lib/track-whatsapp";
 
 const QUICK_LINKS: { label: string; href: string }[] = [
-  { label: "Home", href: "#/" },
-  { label: "Courses", href: "#/courses" },
-  { label: "Achievements", href: "#/achievements" },
-  { label: "Placements", href: "#/placements" },
-  { label: "About", href: "#/about" },
-  { label: "Contact", href: "#/contact" },
+  { label: "Home", href: "/" },
+  { label: "Aviation", href: "/aviation" },
+  { label: "IT & Software", href: "/it" },
+  { label: "Mentorship", href: "/mentorship" },
+  { label: "Certifications", href: "/certifications" },
+  { label: "About", href: "/about" },
 ];
 
 const SOCIALS: { label: string; href: string; Icon: typeof Github }[] = [
@@ -42,13 +43,13 @@ export function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="mt-auto rounded-t-2xl bg-ink text-white">
+    <footer className="panel-olive mt-auto rounded-t-2xl border-t-2 border-ink">
       <div className="mx-auto max-w-7xl px-4 pt-12 pb-40 md:px-6 md:pt-16 md:pb-8">
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr]">
           {/* Brand */}
           <div className="min-w-0">
             <a
-              href="#/"
+              href="/"
               aria-label="Skyora Group of Institutes — Home"
               className="flex w-fit items-center gap-3"
             >
@@ -102,12 +103,12 @@ export function Footer() {
             <ul className="mt-4 space-y-2.5">
               {QUICK_LINKS.map((link) => (
                 <li key={link.href}>
-                  <a
+                  <Link
                     href={link.href}
-                    className="text-sm text-white/60 transition-colors hover:text-brand-pink"
+                    className="text-sm text-cream/70 transition-colors hover:text-brand-pink"
                   >
                     {link.label}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -167,9 +168,9 @@ export function Footer() {
               counselling.
             </p>
             <a
-              href="#/admin"
+              href="/#/admin"
               aria-label="Admin and staff login portal"
-              className="inline-flex w-fit items-center gap-1.5 rounded-md border border-white/25 px-2.5 py-1.5 font-grotesk text-[11px] font-bold uppercase tracking-wider text-white/70 transition-colors hover:border-brand-pink hover:text-brand-pink focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none"
+              className="inline-flex w-fit items-center gap-1.5 rounded-md border border-cream/30 px-2.5 py-1.5 font-grotesk text-[11px] font-bold uppercase tracking-wider text-cream/80 transition-colors hover:border-brand-pink hover:text-brand-pink focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none"
             >
               <Lock className="h-3 w-3 shrink-0" aria-hidden />
               Admin Login

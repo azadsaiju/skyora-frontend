@@ -1,36 +1,116 @@
 "use client";
 
 /**
- * Sticky top navigation with hash-route links, active pill state,
- * WhatsApp CTA and a mobile hamburger dropdown.
+ * Sticky top navigation shared by every public page.
+ * Real routes for departments/About + hash link for the admin portal.
+ * Active-link styling works on both the home hash-router and real paths.
  */
 
 import { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import { siteConfig } from "@/config/site.config";
 import { trackWhatsApp } from "@/lib/track-whatsapp";
-import type { PublicRoute } from "@/hooks/use-hash-route";
+import { useHashRoute } from "@/hooks/use-hash-route";
 import { Button } from "@/components/ui/button";
 
-const NAV_LINKS: { label: string; route: PublicRoute; href: string }[] = [
-  { label: "Home", route: "home", href: "#/" },
-  { label: "Courses", route: "courses", href: "#/courses" },
-  { label: "Achievements", route: "achievements", href: "#/achievements" },
-  { label: "Placements", route: "placements", href: "#/placements" },
-  { label: "About", route: "about", href: "#/about" },
-  { label: "Contact", route: "contact", href: "#/contact" },
+interface NavLink {
+  label: string;
+  href: string;
+  /** external/hash links render as plain <a> (no Next prefetch) */
+  plain?: boolean;
+  match: (pathname: string, route: PublicRoute) => boolean;
+}
+
+const NAV_LINKS: NavLink[] = [
+  {
+    label: "Home",
+    href: "/",
+    match: (p, route) => p === "/" && route === "home",
+  },
+  {
+    label: "Aviation",
+    href: "/aviation",
+    match: (p) => p.startsWith("/aviation"),
+  },
+  {
+    label: "IT & Software",
+    href: "/it",
+    match: (p) => p.startsWith("/it"),
+  },
+  {
+    label: "Mentorship",
+    href: "/mentorship",
+    match: (p) => p.startsWith("/mentorship"),
+  },
+  {
+    label: "Certifications",
+    href: "/certifications",
+    match: (p) => p.startsWith("/certifications"),
+  },
+  {
+    label: "About",
+    href: "/about",
+    match: (p) => p.startsWith("/about"),
+  },
+  {
+    label: "Admin",
+    href: "/#/admin",
+    plain: true,
+    match: (_p, route) => route === "admin",
+  },
 ];
 
-export function Navbar({ route }: { route: PublicRoute }) {
+function NavAnchor({
+  link,
+  active,
+  className,
+  onClick,
+}: {
+  link: NavLink;
+  active: boolean;
+  className: string;
+  onClick?: () => void;
+}) {
+  if (link.plain) {
+    return (
+      <a
+        href={link.href}
+        onClick={onClick}
+        aria-current={active ? "page" : undefined}
+        className={className}
+      >
+        {link.label}
+      </a>
+    );
+  }
+  return (
+    <Link
+      href={link.href}
+      onClick={onClick}
+      aria-current={active ? "page" : undefined}
+      className={className}
+    >
+      {link.label}
+    </Link>
+  );
+}
+
+export function Navbar() {
   const [open, setOpen] = useState(false);
+  const pathname = usePathname() || "/";
+  // Hash route (home sections + admin). Initial state "home" matches SSR;
+  // the hook re-renders after mount when a hash like #/admin is present.
+  const { route } = useHashRoute();
 
   return (
-    <header className="sticky top-0 z-40 border-b-2 border-ink bg-cream/95 backdrop-blur">
+    <header className="sticky top-0 z-40 border-b-2 border-ink bg-olive-canvas/95 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 md:h-[72px] md:px-6">
         {/* Logo */}
-        <a
-          href="#/"
+        <Link
+          href="/"
           aria-label="Skyora Group of Institutes — Home"
           className="flex min-w-0 items-center gap-3"
         >
@@ -51,29 +131,27 @@ export function Navbar({ route }: { route: PublicRoute }) {
             <span className="block font-display text-lg leading-none tracking-tight">
               SKYORA
             </span>
-            <span className="mt-0.5 hidden font-grotesk text-[9px] font-bold uppercase tracking-[0.3em] text-muted-foreground sm:block">
+            <span className="mt-0.5 hidden font-grotesk text-[9px] font-bold uppercase tracking-[0.3em] text-olive-ink/80 sm:block">
               Group of Institutes
             </span>
           </span>
-        </a>
+        </Link>
 
         {/* Desktop links */}
         <nav aria-label="Primary" className="hidden items-center gap-1 lg:flex">
           {NAV_LINKS.map((link) => {
-            const active = route === link.route;
+            const active = link.match(pathname, route);
             return (
-              <a
-                key={link.route}
-                href={link.href}
-                aria-current={active ? "page" : undefined}
+              <NavAnchor
+                key={link.label}
+                link={link}
+                active={active}
                 className={`rounded-full px-3 py-1 font-grotesk text-sm font-bold transition-colors ${
                   active
-                    ? "bg-ink text-white"
-                    : "text-ink/70 hover:bg-ink/5 hover:text-ink"
+                    ? "bg-ink text-cream"
+                    : "text-olive-ink hover:bg-ink/10 hover:text-ink"
                 }`}
-              >
-                {link.label}
-              </a>
+              />
             );
           })}
         </nav>
@@ -115,23 +193,21 @@ export function Navbar({ route }: { route: PublicRoute }) {
         <nav
           id="mobile-nav"
           aria-label="Mobile"
-          className="border-t-2 border-ink bg-cream px-4 pt-3 pb-4 lg:hidden"
+          className="border-t-2 border-ink bg-olive-tint px-4 pt-3 pb-4 lg:hidden"
         >
           <ul className="space-y-1">
             {NAV_LINKS.map((link) => {
-              const active = route === link.route;
+              const active = link.match(pathname, route);
               return (
-                <li key={link.route}>
-                  <a
-                    href={link.href}
+                <li key={link.label}>
+                  <NavAnchor
+                    link={link}
+                    active={active}
                     onClick={() => setOpen(false)}
-                    aria-current={active ? "page" : undefined}
                     className={`block rounded-lg px-3 py-2.5 font-grotesk text-sm font-bold uppercase ${
-                      active ? "bg-ink text-white" : "text-ink hover:bg-ink/5"
+                      active ? "bg-ink text-cream" : "text-olive-ink hover:bg-ink/10"
                     }`}
-                  >
-                    {link.label}
-                  </a>
+                  />
                 </li>
               );
             })}

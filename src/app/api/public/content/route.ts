@@ -14,7 +14,7 @@ export async function GET() {
     const [courses, achievements, vacancies] = await Promise.all([
       db.course.findMany({
         where: { isActive: true },
-        orderBy: [{ track: "asc" }, { createdAt: "asc" }],
+        orderBy: [{ sortOrder: "asc" }, { track: "asc" }, { createdAt: "asc" }],
       }),
       db.achievement.findMany({ orderBy: { date: "desc" }, take: 24 }),
       db.vacancy.findMany({
