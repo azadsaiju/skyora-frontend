@@ -47,12 +47,12 @@ export function EnquiryDialog({
           {triggerLabel}
         </Button>
       </DialogTrigger>
-      <DialogContent className="nice-scrollbar max-h-[85vh] w-full max-w-[calc(100vw-2rem)] overflow-y-auto rounded-xl border-2 border-ink shadow-hard! sm:max-w-[480px]">
+      <DialogContent className="nice-scrollbar max-h-[85vh] w-full max-w-[calc(100vw-2rem)] overflow-y-auto rounded-2xl border border-[#e6dfd3] bg-white shadow-2xl sm:max-w-[480px]">
         <DialogHeader>
-          <DialogTitle className="font-display text-2xl leading-tight uppercase">
+          <DialogTitle className="font-display text-2xl leading-tight uppercase text-ink">
             Enquire Now
           </DialogTitle>
-          <DialogDescription>
+          <DialogDescription className="text-stone-600">
             {course ? (
               <>
                 Interested in{" "}

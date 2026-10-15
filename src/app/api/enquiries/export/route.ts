@@ -75,7 +75,7 @@ export async function GET(req: NextRequest) {
     const query = enquiryQuerySchema.parse(Object.fromEntries(sp.entries()));
     const format = sp.get("format") === "csv" ? "csv" : "xlsx";
 
-    const where = buildEnquiryWhere(query);
+    const where = await buildEnquiryWhere(query);
     const rows = await db.enquiry.findMany({
       where,
       orderBy: { createdAt: "desc" },

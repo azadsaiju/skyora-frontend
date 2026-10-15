@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * Full-bleed black recruiter strip with a seamless infinite marquee.
+ * Full-bleed recruiter strip with a seamless infinite marquee.
  * The list is rendered twice inside a w-max flex row; the CSS keyframe
  * translates exactly -50%, so each copy carries pr-4 (no outer gap) to
  * keep the loop pixel-perfect. Second copy is aria-hidden.
@@ -17,9 +17,9 @@ export function RecruiterMarquee() {
   return (
     <section
       aria-label="Our recruiters and hiring partners"
-      className="marquee-hover-pause overflow-hidden border-y-2 border-ink bg-olive-deep py-5"
+      className="marquee-hover-pause overflow-hidden border-y border-[#e6dfd3] bg-[#f4ede3] py-5"
     >
-      <p className="mb-4 px-4 text-center font-grotesk text-[11px] font-bold tracking-[0.3em] text-cream/60 uppercase">
+      <p className="mb-4 px-4 text-center font-grotesk text-[11px] font-bold tracking-[0.3em] text-stone-500 uppercase">
         Our Recruiters &amp; Hiring Partners
       </p>
       <div className="overflow-hidden">
@@ -33,7 +33,7 @@ export function RecruiterMarquee() {
               {siteConfig.recruiters.map((name, i) => (
                 <span
                   key={`${copy}-${i}`}
-                  className="flex items-center gap-2 rounded-full border-2 border-white bg-white px-5 py-2 font-grotesk font-bold whitespace-nowrap text-ink"
+                  className="flex items-center gap-2 rounded-full border border-[#e6dfd3] bg-white px-5 py-2 font-grotesk font-bold whitespace-nowrap text-stone-800 shadow-xs"
                 >
                   <span
                     aria-hidden

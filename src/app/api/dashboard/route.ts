@@ -16,8 +16,7 @@ export async function GET(req: NextRequest) {
     const endToday = endOfToday();
 
     const [
-      todayFollowUps,
-      overdueFollowUps,
+      openEnquiriesWithFollowUps,
       newEnquiries,
       newEnquiriesToday,
       enrolledCount,
@@ -27,13 +26,16 @@ export async function GET(req: NextRequest) {
       recentEnquiries,
       whatsappRows,
     ] = await Promise.all([
-      db.enquiry.count({
-        where: {
-          followUps: { some: { nextActionDate: { gte: startToday, lt: endToday } } },
+      db.enquiry.findMany({
+        where: { status: { notIn: ["ENROLLED", "LOST"] } },
+        select: {
+          id: true,
+          followUps: {
+            orderBy: { createdAt: "desc" },
+            take: 1,
+            select: { nextActionDate: true },
+          },
         },
-      }),
-      db.enquiry.count({
-        where: { followUps: { some: { nextActionDate: { lt: startToday } } } },
       }),
       db.enquiry.count({ where: { status: "NEW" } }),
       db.enquiry.count({ where: { status: "NEW", createdAt: { gte: startToday } } }),
@@ -57,6 +59,20 @@ export async function GET(req: NextRequest) {
         take: 1000,
       }),
     ]);
+
+    let todayFollowUps = 0;
+    let overdueFollowUps = 0;
+    const todayStr = new Date().toISOString().slice(0, 10);
+    for (const e of openEnquiriesWithFollowUps) {
+      const d = e.followUps[0]?.nextActionDate;
+      if (!d) continue;
+      const dStr = d.toISOString().slice(0, 10);
+      if ((d >= startToday && d < endToday) || dStr === todayStr) {
+        todayFollowUps++;
+      } else if (d < startToday && dStr < todayStr) {
+        overdueFollowUps++;
+      }
+    }
 
     const statusBreakdown: Record<EnquiryStatus, number> = {
       NEW: 0,

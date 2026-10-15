@@ -58,23 +58,23 @@ function PlacedCard({ name, course, company, role, color }: PlacedStudent) {
     >
       <span
         aria-hidden
-        className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border-2 border-ink font-display text-sm text-white"
-        style={{ background: color }}
+        className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full font-display text-sm"
+        style={{ background: `${color}18`, color }}
       >
         {initialsOf(name)}
       </span>
       <span className="min-w-0 flex-1">
-        <span className="block font-grotesk text-sm font-bold break-words">
+        <span className="block font-grotesk text-sm font-bold break-words text-ink">
           {name}
         </span>
-        <span className="block text-xs break-words text-muted-foreground">
+        <span className="block text-xs break-words text-stone-500">
           {course}
         </span>
         <span className="mt-1.5 flex flex-wrap items-center gap-1.5">
-          <span className="text-sm font-bold break-words">{company}</span>
+          <span className="text-sm font-bold break-words text-stone-800">{company}</span>
           <Badge
             variant="outline"
-            className="rounded-full border-2 border-ink bg-white text-[10px] font-bold uppercase"
+            className="rounded-full border-[#e6dfd3] bg-[#f4ede3] text-[10px] font-bold uppercase text-stone-700"
           >
             {role}
           </Badge>
@@ -103,30 +103,30 @@ function VacancyCard({
       variants={GRID_ITEM}
       className="brutal-card flex min-w-0 flex-col p-5"
     >
-      <h4 className="font-grotesk text-base font-bold break-words md:text-lg">
+      <h4 className="font-grotesk text-base font-bold break-words text-ink md:text-lg">
         {vacancy.title}
       </h4>
       <p className="mt-0.5 text-sm font-medium text-brand-blue">
         {vacancy.company}
       </p>
-      <p className="mt-1 flex items-center gap-1.5 text-xs text-muted-foreground">
+      <p className="mt-1 flex items-center gap-1.5 text-xs text-stone-500">
         <MapPin className="h-3.5 w-3.5 shrink-0" aria-hidden />
         <span className="break-words">{vacancy.location}</span>
       </p>
       <Badge
         variant="outline"
-        className="mt-2 w-fit rounded-full border-2 border-ink bg-white text-[11px] font-bold uppercase"
+        className="mt-2 w-fit rounded-full border-[#e6dfd3] bg-[#f4ede3] text-[11px] font-bold uppercase text-stone-700"
       >
         {JOB_TYPE_LABELS[vacancy.jobType] ?? vacancy.jobType}
       </Badge>
-      <p className="mt-2 line-clamp-2 text-sm break-words text-muted-foreground">
+      <p className="mt-2 line-clamp-2 text-sm break-words text-stone-600">
         {vacancy.description}
       </p>
       <div className="flex-1" />
       <Button
         asChild
         variant="outline"
-        className="mt-4 w-full rounded-lg border-2 border-ink font-bold uppercase brutal-hover"
+        className="mt-4 w-full rounded-xl border-[#dcd4c5] bg-white font-bold uppercase text-ink shadow-xs hover:bg-stone-100 brutal-hover"
       >
         <a
           href={vacancy.applyLink}
@@ -151,7 +151,7 @@ function VacancySkeleton() {
         <Skeleton className="h-4 w-full" />
         <Skeleton className="h-4 w-2/3" />
       </div>
-      <Skeleton className="mt-4 h-10 w-full rounded-lg" />
+      <Skeleton className="mt-4 h-10 w-full rounded-xl" />
     </div>
   );
 }
@@ -173,7 +173,7 @@ export function PlacementsSection() {
       />
 
       {/* Part A — recently placed */}
-      <h3 className="mt-12 font-display text-xl uppercase md:text-2xl">
+      <h3 className="mt-12 font-display text-xl uppercase text-ink md:text-2xl">
         Recently placed
       </h3>
       <motion.div
@@ -197,10 +197,10 @@ export function PlacementsSection() {
 
       {/* Part B — live vacancies */}
       <div className="mt-14 flex flex-wrap items-center gap-3">
-        <h3 className="font-display text-2xl leading-none uppercase md:text-3xl">
+        <h3 className="font-display text-2xl leading-none uppercase text-ink md:text-3xl">
           Open vacancies
         </h3>
-        <span className="inline-flex items-center gap-1.5 rounded-full border-2 border-ink bg-white px-2.5 py-1 font-grotesk text-[10px] font-bold tracking-wider uppercase">
+        <span className="inline-flex items-center gap-1.5 rounded-full border border-[#e6dfd3] bg-white px-2.5 py-1 font-grotesk text-[10px] font-bold tracking-wider uppercase text-stone-700 shadow-xs">
           <span
             aria-hidden
             className="h-2.5 w-2.5 animate-pulse rounded-full bg-brand-green"
@@ -221,16 +221,16 @@ export function PlacementsSection() {
         </div>
       ) : vacancies.length === 0 ? (
         <div className="brutal-card mt-6 p-8 text-center md:p-10">
-          <p className="font-display text-xl uppercase md:text-2xl">
+          <p className="font-display text-xl uppercase text-ink md:text-2xl">
             No open vacancies right now
           </p>
-          <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
+          <p className="mx-auto mt-2 max-w-md text-sm text-stone-600">
             New roles drop weekly. Enquire below and the placement cell will
             match you as soon as one lands.
           </p>
           <Button
             asChild
-            className="mt-5 rounded-lg font-bold uppercase brutal-hover"
+            className="mt-5 rounded-xl bg-ink font-bold uppercase text-white hover:bg-stone-800 brutal-hover"
           >
             <a href="#/contact">Enquire Now</a>
           </Button>

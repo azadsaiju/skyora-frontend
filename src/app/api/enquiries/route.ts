@@ -24,7 +24,7 @@ export async function GET(req: NextRequest) {
     const sp = req.nextUrl.searchParams;
     const query = enquiryQuerySchema.parse(Object.fromEntries(sp.entries()));
 
-    const where = buildEnquiryWhere(query);
+    const where = await buildEnquiryWhere(query);
     const page = query.page ?? 1;
     const pageSize = query.pageSize ?? 10;
 

@@ -13,6 +13,7 @@ import {
   Loader2,
   Mail,
   MessageCircle,
+  Pencil,
   Phone,
   Trash2,
   type LucideIcon,
@@ -102,31 +103,149 @@ function MetaItem({
   );
 }
 
-function FollowUpItem({ f }: { f: FollowUpDTO }) {
-  const overdue = isDateOverdue(f.nextActionDate);
+function FollowUpItem({
+  f,
+  isLatest,
+  isClosed,
+  onUpdate,
+}: {
+  f: FollowUpDTO;
+  isLatest: boolean;
+  isClosed: boolean;
+  onUpdate: (id: string, note: string, nextActionDate: string) => Promise<void>;
+}) {
+  const [editing, setEditing] = React.useState(false);
+  const [editNote, setEditNote] = React.useState(f.note);
+  const [editDate, setEditDate] = React.useState(
+    f.nextActionDate ? f.nextActionDate.slice(0, 10) : ""
+  );
+  const [saving, setSaving] = React.useState(false);
+
+  React.useEffect(() => {
+    setEditNote(f.note);
+    setEditDate(f.nextActionDate ? f.nextActionDate.slice(0, 10) : "");
+  }, [f.note, f.nextActionDate]);
+
+  const overdue = !isClosed && isLatest && isDateOverdue(f.nextActionDate);
+
+  async function handleSave(e: React.FormEvent) {
+    e.preventDefault();
+    if (editNote.trim().length < 2) {
+      toast.error("Note is too short.");
+      return;
+    }
+    setSaving(true);
+    try {
+      await onUpdate(f.id, editNote, editDate);
+      setEditing(false);
+    } catch {
+      // toast shown in onUpdate
+    } finally {
+      setSaving(false);
+    }
+  }
+
   return (
-    <li className="relative">
+    <li className="relative group">
       <span
-        className="absolute -left-[22px] top-1.5 size-3 rounded-full border-2 border-ink bg-white"
+        className={cn(
+          "absolute -left-[22px] top-1.5 size-3 rounded-full border-2 border-ink",
+          overdue
+            ? "bg-brand-pink"
+            : isLatest
+            ? "bg-brand-cyan"
+            : "bg-white"
+        )}
         aria-hidden="true"
       />
-      <p className="whitespace-pre-wrap text-sm">{f.note}</p>
-      {f.nextActionDate ? (
-        <span
-          className={cn(
-            "mt-1.5 inline-flex items-center gap-1 rounded-full border-2 border-ink px-2 py-0.5 font-grotesk text-[10px] font-bold uppercase",
-            overdue ? "bg-brand-pink text-white" : "bg-white"
-          )}
-        >
-          <Calendar className="size-3" aria-hidden="true" />
-          Next: {fmtDateShort(f.nextActionDate)}
-          {overdue ? " · Overdue" : ""}
-        </span>
-      ) : null}
-      <p className="mt-1 text-xs text-muted-foreground">
-        by {f.createdBy?.name ?? "—"} ·{" "}
-        {format(parseISO(f.createdAt), "dd MMM yyyy, HH:mm")}
-      </p>
+      {editing ? (
+        <form onSubmit={handleSave} className="brutal-card-sm space-y-2.5 bg-white p-3">
+          <Textarea
+            value={editNote}
+            onChange={(e) => setEditNote(e.target.value)}
+            rows={2}
+            required
+            className={`${FIELD_CLASS} resize-none text-xs`}
+          />
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-end">
+            <div className="flex-1 space-y-1">
+              <Label className="font-grotesk text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                Next action date (optional)
+              </Label>
+              <Input
+                type="date"
+                value={editDate}
+                onChange={(e) => setEditDate(e.target.value)}
+                className={`${FIELD_CLASS} text-xs`}
+              />
+            </div>
+            <div className="flex items-center gap-1.5">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                disabled={saving}
+                onClick={() => {
+                  setEditing(false);
+                  setEditNote(f.note);
+                  setEditDate(f.nextActionDate ? f.nextActionDate.slice(0, 10) : "");
+                }}
+                className="h-8 border-2 border-ink text-xs font-grotesk font-bold"
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                size="sm"
+                disabled={saving}
+                className="h-8 text-xs font-grotesk font-bold uppercase shadow-hard-sm"
+              >
+                {saving ? (
+                  <Loader2 className="mr-1 size-3 animate-spin" aria-hidden="true" />
+                ) : null}
+                Save
+              </Button>
+            </div>
+          </div>
+        </form>
+      ) : (
+        <>
+          <div className="flex items-start justify-between gap-2">
+            <p className="flex-1 whitespace-pre-wrap text-sm">{f.note}</p>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={() => setEditing(true)}
+              className="h-6 px-1.5 text-xs text-muted-foreground hover:text-ink opacity-70 group-hover:opacity-100"
+              title="Edit or reschedule follow-up"
+            >
+              <Pencil className="mr-1 size-3" aria-hidden="true" />
+              Edit
+            </Button>
+          </div>
+          {f.nextActionDate ? (
+            <span
+              className={cn(
+                "mt-1.5 inline-flex items-center gap-1 rounded-full border-2 border-ink px-2 py-0.5 font-grotesk text-[10px] font-bold uppercase",
+                overdue
+                  ? "bg-brand-pink text-white"
+                  : isLatest
+                  ? "bg-white text-ink"
+                  : "border-ink/40 bg-muted/30 text-muted-foreground"
+              )}
+            >
+              <Calendar className="size-3" aria-hidden="true" />
+              Next: {fmtDateShort(f.nextActionDate)}
+              {overdue ? " · Overdue" : isLatest ? "" : " · Completed"}
+            </span>
+          ) : null}
+          <p className="mt-1 text-xs text-muted-foreground">
+            by {f.createdBy?.name ?? "—"} ·{" "}
+            {format(parseISO(f.createdAt), "dd MMM yyyy, HH:mm")}
+          </p>
+        </>
+      )}
     </li>
   );
 }
@@ -293,6 +412,30 @@ export function EnquiryDrawer({
     }
   }
 
+  async function handleUpdateFollowUp(
+    followUpId: string,
+    updatedNote: string,
+    updatedDate: string
+  ) {
+    if (!detail) return;
+    try {
+      await api(`/api/enquiries/${detail.id}/followups`, {
+        method: "PATCH",
+        body: JSON.stringify({
+          followUpId,
+          note: updatedNote.trim(),
+          nextActionDate: updatedDate || null,
+        }),
+      });
+      toast.success("Follow-up updated");
+      setReloadKey((k) => k + 1);
+      onChanged();
+    } catch (err) {
+      toastApiError(err, "Could not update the follow-up.");
+      throw err;
+    }
+  }
+
   async function handleDelete() {
     if (!detail) return;
     try {
@@ -353,8 +496,23 @@ export function EnquiryDrawer({
                 <SheetDescription className="sr-only">
                   Enquiry details and follow-up history
                 </SheetDescription>
-                <div className="mt-2">
+                <div className="mt-2 flex flex-wrap items-center gap-2">
                   <StatusBadge status={detail.status} />
+                  {sortedFollowUps[0]?.nextActionDate &&
+                  detail.status !== "ENROLLED" &&
+                  detail.status !== "LOST" ? (
+                    isDateOverdue(sortedFollowUps[0].nextActionDate) ? (
+                      <span className="inline-flex items-center gap-1 rounded-full border-2 border-ink bg-brand-pink px-2.5 py-0.5 font-grotesk text-[10px] font-bold uppercase text-white">
+                        <Calendar className="size-3" aria-hidden="true" />
+                        Overdue · {fmtDateShort(sortedFollowUps[0].nextActionDate)}
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1 rounded-full border-2 border-ink bg-white px-2.5 py-0.5 font-grotesk text-[10px] font-bold uppercase text-ink">
+                        <Calendar className="size-3" aria-hidden="true" />
+                        Next: {fmtDateShort(sortedFollowUps[0].nextActionDate)}
+                      </span>
+                    )
+                  ) : null}
                 </div>
               </div>
             </div>
@@ -528,8 +686,16 @@ export function EnquiryDrawer({
                 </p>
               ) : (
                 <ul className="ml-2 mt-4 space-y-4 border-l-2 border-ink pl-4">
-                  {sortedFollowUps.map((f) => (
-                    <FollowUpItem key={f.id} f={f} />
+                  {sortedFollowUps.map((f, idx) => (
+                    <FollowUpItem
+                      key={f.id}
+                      f={f}
+                      isLatest={idx === 0}
+                      isClosed={
+                        detail.status === "ENROLLED" || detail.status === "LOST"
+                      }
+                      onUpdate={handleUpdateFollowUp}
+                    />
                   ))}
                 </ul>
               )}

@@ -17,10 +17,10 @@ import { usePublicContent } from "@/components/public/use-public-content";
 import { ContentError } from "@/components/public/content-state";
 
 const TYPE_COLORS: Record<AchievementType, string> = {
-  HACKATHON: "#FF2E63",
-  CERTIFICATION: "#2563EB",
-  PROJECT: "#FF7A00",
-  PLACEMENT: "#16A34A",
+  HACKATHON: "#e11d48",
+  CERTIFICATION: "#1d4ed8",
+  PROJECT: "#d97706",
+  PLACEMENT: "#059669",
 };
 
 const GRID_CONTAINER: Variants = {
@@ -38,7 +38,7 @@ function formatDate(iso: string): string {
 }
 
 function AchievementCard({ achievement }: { achievement: AchievementDTO }) {
-  const color = TYPE_COLORS[achievement.type] ?? "#0A0A0A";
+  const color = TYPE_COLORS[achievement.type] ?? "#1d4ed8";
   return (
     <motion.article
       variants={GRID_ITEM}
@@ -47,7 +47,7 @@ function AchievementCard({ achievement }: { achievement: AchievementDTO }) {
       <div className="flex flex-wrap items-center gap-2">
         <Badge
           variant="outline"
-          className="rounded-full border-2 border-ink bg-white text-[11px] font-bold uppercase"
+          className="rounded-full border-[#e6dfd3] bg-[#f4ede3] text-[11px] font-bold uppercase text-stone-700"
         >
           <span
             aria-hidden
@@ -56,15 +56,15 @@ function AchievementCard({ achievement }: { achievement: AchievementDTO }) {
           />
           {achievement.type}
         </Badge>
-        <span className="ml-auto inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+        <span className="ml-auto inline-flex items-center gap-1.5 text-xs text-stone-500">
           <Calendar className="h-3.5 w-3.5" aria-hidden />
           {formatDate(achievement.date)}
         </span>
       </div>
-      <h3 className="mt-3 font-grotesk text-base font-bold break-words md:text-lg">
+      <h3 className="mt-3 font-grotesk text-base font-bold break-words text-ink md:text-lg">
         {achievement.title}
       </h3>
-      <p className="mt-1 text-sm leading-relaxed break-words text-muted-foreground">
+      <p className="mt-1 text-sm leading-relaxed break-words text-stone-600">
         {achievement.description}
       </p>
       {achievement.link ? (
@@ -126,20 +126,20 @@ export function AchievementsSection() {
       >
         <Github
           aria-hidden
-          className="h-10 w-10 shrink-0 md:h-12 md:w-12"
+          className="h-10 w-10 shrink-0 text-ink md:h-12 md:w-12"
         />
         <span className="min-w-0 flex-1">
-          <span className="block font-display text-lg leading-tight uppercase md:text-xl">
+          <span className="block font-display text-lg leading-tight uppercase text-ink md:text-xl">
             Follow the work on GitHub
           </span>
-          <span className="mt-1 block text-sm text-muted-foreground">
+          <span className="mt-1 block text-sm text-stone-600">
             Real projects, hackathon repos &amp; student code from our IT
             track.
           </span>
         </span>
         <ArrowUpRight
           aria-hidden
-          className="h-6 w-6 shrink-0 transition-transform group-hover:-translate-y-1 group-hover:translate-x-1"
+          className="h-6 w-6 shrink-0 text-stone-400 transition-transform group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:text-ink"
         />
       </motion.a>
 
@@ -157,10 +157,10 @@ export function AchievementsSection() {
         </div>
       ) : achievements.length === 0 ? (
         <div className="brutal-card mt-6 p-10 text-center">
-          <p className="font-display text-xl uppercase">
+          <p className="font-display text-xl uppercase text-ink">
             No achievements yet
           </p>
-          <p className="mt-2 text-sm text-muted-foreground">
+          <p className="mt-2 text-sm text-stone-500">
             The next one is being built — follow the GitHub banner above to
             watch it happen.
           </p>

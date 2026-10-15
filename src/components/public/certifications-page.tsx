@@ -3,8 +3,7 @@
 /**
  * /certifications — the certifications Skyora students earn:
  * IATA Preferred (Aviation), STED Council (IT) and the institute
- * certificate, each as a brutal card with the official mark, issuing
- * body, department and key highlights.
+ * certificate, each displayed with key highlights.
  */
 
 import { motion, type Variants } from "framer-motion";
@@ -58,7 +57,7 @@ const CARDS: CertificationCard[] = [
       "Covers safety, service, DCS and DGCA-norm ground operations",
       "Awarded on completing any Skyora Aviation course",
     ],
-    color: "#1D4ED8",
+    color: "#1d4ed8",
   },
   {
     key: "sted",
@@ -72,7 +71,7 @@ const CARDS: CertificationCard[] = [
       "Adds government-recognised weight to your resume",
       "Awarded on completing any Skyora IT & Software course",
     ],
-    color: "#0891B2",
+    color: "#0284c7",
   },
   {
     key: "institute",
@@ -86,7 +85,7 @@ const CARDS: CertificationCard[] = [
       "Includes your mock-interview and placement-readiness record",
       "Trusted by our 40+ hiring partners",
     ],
-    color: "#387003",
+    color: "#d97706",
   },
 ];
 
@@ -107,27 +106,29 @@ export function CertificationsPage({
   return (
     <>
       {/* ── HERO ─────────────────────────────────────────────────── */}
-      <section aria-label="Certifications hero" className="relative overflow-hidden border-b-2 border-ink">
-        <div aria-hidden className="dot-grid absolute inset-0 opacity-[0.06]" />
-        <div className="relative mx-auto max-w-7xl px-4 py-12 text-center md:px-6 md:py-20">
-          <p className="font-grotesk text-xs font-bold tracking-[0.3em] uppercase text-muted-foreground md:text-sm">
+      <section aria-label="Certifications hero" className="relative overflow-hidden border-b border-[#e6dfd3] gradient-mesh">
+        <div aria-hidden className="dot-grid absolute inset-0 opacity-[0.25]" />
+        <div className="relative mx-auto max-w-7xl px-4 py-16 text-center md:px-6 md:py-24">
+          <p className="font-grotesk text-xs font-bold tracking-[0.3em] uppercase text-stone-500 md:text-sm">
             Papers that open doors
           </p>
-          <h1 className="mx-auto mt-3 max-w-4xl font-display text-[clamp(2.4rem,6.5vw,5rem)] leading-[0.95] uppercase">
-            Certifications that <span className="text-brand-pink">employers</span> recognise
+          <h1 className="mx-auto mt-3 max-w-4xl font-display text-[clamp(2.4rem,6.5vw,5rem)] leading-[0.95] uppercase text-ink">
+            Certifications that{" "}
+            <span className="bg-gradient-to-r from-brand-blue to-brand-cyan bg-clip-text text-transparent">employers</span>{" "}
+            recognise
           </h1>
-          <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground md:text-lg">
+          <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-stone-600 md:text-lg">
             Every Skyora program ends with a certificate — from IATA-preferred
             aviation training to the STED Council award for IT skills — plus
             your project portfolio and interview record.
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <span className="inline-flex items-center gap-2 rounded-full border-2 border-ink bg-white px-4 py-2 font-grotesk text-xs font-bold tracking-wide uppercase shadow-hard-sm">
-              <ShieldCheck className="h-4 w-4 text-brand-pink" aria-hidden />
+            <span className="inline-flex items-center gap-2 rounded-full border border-[#e6dfd3] bg-white px-4 py-2 font-grotesk text-xs font-bold tracking-wide uppercase text-stone-700 shadow-xs">
+              <ShieldCheck className="h-4 w-4 text-brand-blue" aria-hidden />
               Issued on course completion
             </span>
-            <span className="inline-flex items-center gap-2 rounded-full border-2 border-ink bg-white px-4 py-2 font-grotesk text-xs font-bold tracking-wide uppercase shadow-hard-sm">
-              <BadgeCheck className="h-4 w-4 text-brand-pink" aria-hidden />
+            <span className="inline-flex items-center gap-2 rounded-full border border-[#e6dfd3] bg-white px-4 py-2 font-grotesk text-xs font-bold tracking-wide uppercase text-stone-700 shadow-xs">
+              <BadgeCheck className="h-4 w-4 text-brand-blue" aria-hidden />
               Recognised by 40+ hiring partners
             </span>
           </div>
@@ -158,8 +159,8 @@ export function CertificationsPage({
                 variants={GRID_ITEM}
                 className="brutal-card flex min-w-0 flex-col p-6"
               >
-                {/* Certificate image / mockup */}
-                <div className="relative flex h-44 w-full items-center justify-center overflow-hidden rounded-xl border-2 border-ink bg-olive-tint p-5">
+                {/* Certificate image */}
+                <div className="relative flex h-44 w-full items-center justify-center overflow-hidden rounded-xl border border-[#e6dfd3] bg-white p-5 shadow-xs">
                   <Image
                     src={card.image}
                     alt={`${card.title} — official certificate mark`}
@@ -171,18 +172,18 @@ export function CertificationsPage({
 
                 <div
                   aria-hidden
-                  className="mt-5 block h-1.5 w-14 rounded-full"
+                  className="mt-5 block h-1 w-14 rounded-full"
                   style={{ background: card.color }}
                 />
-                <h2 className="mt-3 font-grotesk text-xl leading-tight font-bold break-words">
+                <h2 className="mt-3 font-grotesk text-xl leading-tight font-bold break-words text-ink">
                   {card.title}
                 </h2>
 
                 {/* Issuing body */}
-                <p className="mt-2 flex items-start gap-2 text-sm text-muted-foreground">
+                <p className="mt-2 flex items-start gap-2 text-sm text-stone-600">
                   <ScrollText className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
                   <span className="min-w-0">
-                    <span className="block font-grotesk text-[10px] font-bold tracking-widest uppercase">
+                    <span className="block font-grotesk text-[10px] font-bold tracking-widest uppercase text-stone-400">
                       Issued by
                     </span>
                     <span className="break-words">{card.issuingBody}</span>
@@ -190,21 +191,21 @@ export function CertificationsPage({
                 </p>
 
                 {/* Department */}
-                <p className="mt-3 inline-flex w-fit items-center gap-1.5 rounded-full border-2 border-ink bg-white px-2.5 py-1 font-grotesk text-[11px] font-bold uppercase">
+                <p className="mt-3 inline-flex w-fit items-center gap-1.5 rounded-full border border-[#e6dfd3] bg-[#f4ede3] px-2.5 py-1 font-grotesk text-[11px] font-bold uppercase text-stone-700">
                   <Dept.Icon className="h-3.5 w-3.5" style={{ color: card.color }} aria-hidden />
                   {Dept.label}
                 </p>
 
                 {/* Key highlights */}
                 <div className="mt-4">
-                  <p className="font-grotesk text-xs font-bold tracking-wide uppercase">
+                  <p className="font-grotesk text-xs font-bold tracking-wide uppercase text-stone-800">
                     Key highlights
                   </p>
                   <ul className="mt-2 space-y-1.5">
                     {card.highlights.map((h) => (
                       <li
                         key={h}
-                        className="flex items-start gap-2 text-sm break-words text-muted-foreground"
+                        className="flex items-start gap-2 text-sm break-words text-stone-600"
                       >
                         <BadgeCheck
                           className="mt-0.5 h-4 w-4 shrink-0"
@@ -221,7 +222,7 @@ export function CertificationsPage({
                 <div className="mt-6">
                   <Button
                     asChild
-                    className="w-full rounded-lg font-bold uppercase brutal-hover sm:w-auto"
+                    className="w-full rounded-xl bg-ink font-bold uppercase text-white hover:bg-stone-800 brutal-hover sm:w-auto"
                   >
                     <Link
                       href={
@@ -250,23 +251,24 @@ export function CertificationsPage({
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.5, ease: "easeOut" }}
-          className="relative overflow-hidden rounded-3xl bg-olive-deep p-8 text-cream md:p-14"
+          className="relative overflow-hidden rounded-3xl bg-ink p-8 text-white shadow-xl md:p-14"
         >
           <div
             aria-hidden
             className="absolute inset-0"
             style={{
               backgroundImage:
-                "radial-gradient(rgba(255,255,255,0.12) 1px, transparent 1px)",
-              backgroundSize: "22px 22px",
+                "radial-gradient(rgba(255,255,255,0.08) 1px, transparent 1px)",
+              backgroundSize: "24px 24px",
             }}
           />
           <div className="relative flex flex-col items-start justify-between gap-6 md:flex-row md:items-center">
             <div className="min-w-0">
-              <h2 className="font-display text-3xl leading-[0.95] uppercase md:text-5xl">
-                Earn yours <span className="text-brand-pink">next</span>
+              <h2 className="font-display text-3xl leading-[0.95] uppercase text-white md:text-5xl">
+                Earn yours{" "}
+                <span className="bg-gradient-to-r from-brand-blue to-brand-cyan bg-clip-text text-transparent">next</span>
               </h2>
-              <p className="mt-3 max-w-xl text-sm text-cream/70 md:text-base">
+              <p className="mt-3 max-w-xl text-sm text-stone-300 md:text-base">
                 Pick a course, finish the capstone, walk out with the
                 certificate and the portfolio to back it up.
               </p>
@@ -276,13 +278,13 @@ export function CertificationsPage({
                 courses={enquiryOptions}
                 source="certifications"
                 triggerLabel="Enquire Now"
-                triggerClassName="rounded-lg bg-brand-pink px-6 font-bold uppercase brutal-hover"
+                triggerClassName="rounded-xl bg-brand-blue px-6 font-bold uppercase text-white hover:bg-brand-blue/90 brutal-hover"
               />
               <Button
                 asChild
                 size="lg"
                 variant="ghost"
-                className="rounded-lg border-2 border-cream font-bold uppercase text-cream hover:bg-cream hover:text-ink"
+                className="rounded-xl border border-white/20 font-bold uppercase text-white hover:bg-white/10"
               >
                 <a
                   href={siteConfig.links.whatsapp}

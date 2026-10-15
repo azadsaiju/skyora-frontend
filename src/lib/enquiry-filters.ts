@@ -1,11 +1,12 @@
 import "server-only";
 import type { Prisma } from "@prisma/client";
+import { db } from "@/lib/db";
 
 /**
  * Shared filter builder for the enquiries list + Excel export endpoints,
  * so both always apply identical filters.
  */
-export function buildEnquiryWhere(
+export async function buildEnquiryWhere(
   params: {
     search?: string;
     courseId?: string;
@@ -15,10 +16,10 @@ export function buildEnquiryWhere(
     to?: string;
     followup?: string;
   }
-): Prisma.EnquiryWhereInput {
-  const now = new Date();
-  const startToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const endToday = new Date(startToday.getTime() + 86_400_000);
+): Promise<Prisma.EnquiryWhereInput> {
+  const startToday = startOfToday();
+  const endToday = endOfToday();
+  const todayStr = new Date().toISOString().slice(0, 10);
 
   const where: Prisma.EnquiryWhereInput = {};
 
@@ -39,12 +40,41 @@ export function buildEnquiryWhere(
     }
   }
 
-  if (params.followup === "today") {
-    where.followUps = {
-      some: { nextActionDate: { gte: startToday, lt: endToday } },
-    };
-  } else if (params.followup === "overdue") {
-    where.followUps = { some: { nextActionDate: { lt: startToday } } };
+  if (params.followup === "today" || params.followup === "overdue") {
+    // Overdue/Today follow-ups only pertain to open enquiries (not ENROLLED or LOST)
+    // and are determined strictly by each enquiry's LATEST follow-up.
+    const openEnquiries = await db.enquiry.findMany({
+      where: {
+        ...(params.status
+          ? { status: params.status }
+          : { status: { notIn: ["ENROLLED", "LOST"] } }),
+      },
+      select: {
+        id: true,
+        followUps: {
+          orderBy: { createdAt: "desc" },
+          take: 1,
+          select: { nextActionDate: true },
+        },
+      },
+    });
+
+    const matchingIds = openEnquiries
+      .filter((e) => {
+        const d = e.followUps[0]?.nextActionDate;
+        if (!d) return false;
+        const dStr = d.toISOString().slice(0, 10);
+        if (params.followup === "today") {
+          return (d >= startToday && d < endToday) || dStr === todayStr;
+        }
+        if (params.followup === "overdue") {
+          return d < startToday && dStr < todayStr;
+        }
+        return false;
+      })
+      .map((e) => e.id);
+
+    where.id = { in: matchingIds };
   }
 
   if (params.search) {

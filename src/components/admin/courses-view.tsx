@@ -385,7 +385,7 @@ function CourseFormDialog({
               <div className="flex items-center gap-3">
                 <span
                   aria-hidden
-                  className="relative flex h-14 w-24 shrink-0 items-center justify-center overflow-hidden rounded-lg border-2 border-ink bg-olive-tint"
+                  className="relative flex h-14 w-24 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-white/10 bg-canvas-card"
                 >
                   <Image
                     src={previewImage}

@@ -37,35 +37,50 @@ export interface ReminderDigest {
 export async function buildReminderDigest(): Promise<ReminderDigest> {
   const startToday = startOfToday();
   const endToday = endOfToday();
+  const todayStr = new Date().toISOString().slice(0, 10);
 
-  // Every follow-up scheduled for today-or-earlier on a still-open enquiry.
-  const rows = await db.followUp.findMany({
+  // Every still-open enquiry whose LATEST scheduled next-action falls due today or earlier.
+  const openEnquiries = await db.enquiry.findMany({
     where: {
-      nextActionDate: { lte: endToday },
-      enquiry: { status: { notIn: ["ENROLLED", "LOST"] } },
+      status: { notIn: ["ENROLLED", "LOST"] },
     },
     include: {
-      enquiry: {
-        include: {
-          course: { select: { title: true } },
-          assignedTo: { select: { name: true } },
-        },
+      course: { select: { title: true } },
+      assignedTo: { select: { name: true } },
+      followUps: {
+        orderBy: { createdAt: "desc" },
+        take: 1,
       },
     },
-    orderBy: { nextActionDate: "asc" },
   });
 
-  const items: ReminderItem[] = rows.map((f) => ({
-    enquiryId: f.enquiryId,
-    studentName: f.enquiry.name,
-    phone: f.enquiry.phone,
-    status: f.enquiry.status,
-    course: f.enquiry.course?.title ?? null,
-    note: f.note,
-    nextActionDate: (f.nextActionDate ?? f.createdAt).toISOString(),
-    assignedTo: f.enquiry.assignedTo?.name ?? null,
-    overdue: f.nextActionDate ? f.nextActionDate.getTime() < startToday.getTime() : false,
-  }));
+  const items: ReminderItem[] = [];
+  for (const e of openEnquiries) {
+    const latest = e.followUps[0];
+    if (!latest || !latest.nextActionDate) continue;
+
+    // If scheduled beyond today, it is not due yet
+    const dStr = latest.nextActionDate.toISOString().slice(0, 10);
+    if (latest.nextActionDate > endToday && dStr > todayStr) continue;
+
+    const isOverdue =
+      latest.nextActionDate.getTime() < startToday.getTime() &&
+      dStr < todayStr;
+
+    items.push({
+      enquiryId: e.id,
+      studentName: e.name,
+      phone: e.phone,
+      status: e.status,
+      course: e.course?.title ?? null,
+      note: latest.note,
+      nextActionDate: latest.nextActionDate.toISOString(),
+      assignedTo: e.assignedTo?.name ?? null,
+      overdue: isOverdue,
+    });
+  }
+
+  items.sort((a, b) => a.nextActionDate.localeCompare(b.nextActionDate));
 
   return {
     generatedAt: new Date().toISOString(),

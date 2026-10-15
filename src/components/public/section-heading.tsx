@@ -12,8 +12,10 @@ import { motion } from "framer-motion";
 interface SectionHeadingProps {
   eyebrow: string;
   title: string;
-  /** Substring of `title` to wrap in the pink accent (first occurrence). */
+  /** Substring of `title` to wrap in the accent (first occurrence). */
   highlight?: string;
+  highlightClassName?: string;
+  dotColor?: string;
   description?: string;
   align?: "left" | "center";
 }
@@ -22,6 +24,8 @@ export function SectionHeading({
   eyebrow,
   title,
   highlight,
+  highlightClassName = "text-[#6EA820]",
+  dotColor = "bg-[#6EA820]",
   description,
   align = "left",
 }: SectionHeadingProps) {
@@ -34,7 +38,7 @@ export function SectionHeading({
       titleContent = (
         <>
           {title.slice(0, idx)}
-          <span className="text-brand-pink">{highlight}</span>
+          <span className={highlightClassName}>{highlight}</span>
           {title.slice(idx + highlight.length)}
         </>
       );
@@ -50,11 +54,11 @@ export function SectionHeading({
       className={centered ? "mx-auto max-w-3xl text-center" : "max-w-3xl"}
     >
       <p
-        className={`flex items-center gap-2.5 font-grotesk text-xs font-bold tracking-[0.2em] text-olive-soft uppercase ${
+        className={`flex items-center gap-2.5 font-grotesk text-xs font-bold tracking-[0.2em] text-stone-500 uppercase ${
           centered ? "justify-center" : ""
         }`}
       >
-        <span className="h-2.5 w-2.5 rounded-full bg-brand-pink" aria-hidden />
+        <span className={`h-2.5 w-2.5 rounded-full ${dotColor}`} aria-hidden />
         {eyebrow}
       </p>
       <h2 className="mt-3 font-display text-3xl leading-[0.95] break-words uppercase sm:text-4xl lg:text-5xl">

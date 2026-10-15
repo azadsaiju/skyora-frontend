@@ -50,7 +50,7 @@ function StatCard({ value, suffix, label, color }: StatCardProps) {
         {shown}
         <span>{suffix}</span>
       </p>
-      <p className="mt-2 flex items-center gap-2 font-sans text-xs font-bold tracking-wide uppercase md:text-sm">
+      <p className="mt-2 flex items-center gap-2 font-sans text-xs font-bold tracking-wide uppercase text-stone-600 md:text-sm">
         <span
           aria-hidden
           className="h-2 w-2 shrink-0 rounded-full"

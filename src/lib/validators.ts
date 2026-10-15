@@ -115,6 +115,19 @@ export const followUpCreateSchema = z.object({
     .optional(),
 });
 
+export const followUpUpdateSchema = z.object({
+  followUpId: z.string().min(1, "Follow-up ID is required"),
+  note: z.string().trim().min(2, "Note is too short").max(1000).optional(),
+  nextActionDate: z
+    .string()
+    .regex(
+      /^\d{4}-\d{2}-\d{2}$/,
+      "Use date format YYYY-MM-DD"
+    )
+    .nullable()
+    .optional(),
+});
+
 export const enquiryQuerySchema = z.object({
   search: z.string().trim().max(80).optional(),
   courseId: z.string().trim().max(64).optional(),

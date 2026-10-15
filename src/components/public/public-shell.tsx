@@ -23,7 +23,7 @@ export function PublicShell({ children }: { children: ReactNode }) {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-olive-canvas text-olive-ink">
+    <div className="flex min-h-screen flex-col bg-canvas text-ink">
       <Navbar />
       <main className="flex-1">{children}</main>
       <Footer />

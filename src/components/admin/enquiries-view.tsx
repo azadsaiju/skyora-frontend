@@ -60,6 +60,7 @@ import {
   StatusBadge,
   TableSkeleton,
   fmtDateShort,
+  isDateOverdue,
   toastApiError,
 } from "@/components/admin/admin-ui";
 
@@ -102,9 +103,16 @@ function TrackBadge({ track }: { track: Track }) {
   );
 }
 
-function NextActionCell({ iso }: { iso: string | null }) {
+function NextActionCell({
+  iso,
+  status,
+}: {
+  iso: string | null;
+  status?: EnquiryStatus;
+}) {
   if (!iso) return <span className="text-muted-foreground">—</span>;
-  const overdue = isBefore(parseISO(iso), startOfToday());
+  const isClosed = status === "ENROLLED" || status === "LOST";
+  const overdue = !isClosed && isDateOverdue(iso);
   return (
     <span className="inline-flex flex-col">
       <span
@@ -519,7 +527,10 @@ export function EnquiriesView({ user }: { user: SessionUser }) {
                           )}
                         </TableCell>
                         <TableCell>
-                          <NextActionCell iso={e.latestNextActionDate} />
+                          <NextActionCell
+                            iso={e.latestNextActionDate}
+                            status={e.status}
+                          />
                         </TableCell>
                         <TableCell className="whitespace-nowrap text-sm text-muted-foreground">
                           {fmtDateShort(e.createdAt)}
@@ -541,9 +552,9 @@ export function EnquiriesView({ user }: { user: SessionUser }) {
           {/* Mobile cards */}
           <div className="space-y-3 md:hidden">
             {data.items.map((e) => {
+              const isClosed = e.status === "ENROLLED" || e.status === "LOST";
               const overdue =
-                e.latestNextActionDate !== null &&
-                isBefore(parseISO(e.latestNextActionDate), startOfToday());
+                !isClosed && isDateOverdue(e.latestNextActionDate);
               return (
                 <div key={e.id} className="brutal-card-sm p-4">
                   <div className="flex items-start justify-between gap-2">

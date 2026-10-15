@@ -21,7 +21,7 @@ export function FloatingButtons() {
         onClick={() => trackWhatsApp("floating")}
         whileHover={{ scale: 1.08 }}
         whileTap={{ scale: 0.94 }}
-        className="brutal-hover flex h-14 w-14 items-center justify-center rounded-full border-2 border-ink bg-[#16A34A] text-white shadow-hard-lg"
+        className="flex h-14 w-14 items-center justify-center rounded-full bg-brand-green text-white shadow-lg shadow-brand-green/30 transition-shadow hover:shadow-xl hover:shadow-brand-green/40"
       >
         <MessageCircle className="h-6 w-6" aria-hidden />
       </motion.a>
@@ -30,7 +30,7 @@ export function FloatingButtons() {
         aria-label="Call Skyora"
         whileHover={{ scale: 1.08 }}
         whileTap={{ scale: 0.94 }}
-        className="brutal-hover flex h-14 w-14 items-center justify-center rounded-full border-2 border-ink bg-brand-pink text-white shadow-hard-lg"
+        className="flex h-14 w-14 items-center justify-center rounded-full bg-brand-blue text-white shadow-lg shadow-brand-blue/30 transition-shadow hover:shadow-xl hover:shadow-brand-blue/40"
       >
         <Phone className="h-6 w-6" aria-hidden />
       </motion.a>

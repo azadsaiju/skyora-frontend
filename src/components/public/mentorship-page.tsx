@@ -2,11 +2,10 @@
 
 /**
  * /mentorship — the 1:1 mentorship program: what it covers, the mentor
- * team (with illustrated portraits) and an "Apply for Mentorship" CTA.
+ * team (with initials instead of portraits) and an "Apply for Mentorship" CTA.
  */
 
 import { motion, type Variants } from "framer-motion";
-import Image from "next/image";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -39,7 +38,7 @@ interface MentorCard {
   name: string;
   role: string;
   dept: "AVIATION" | "IT" | "PLACEMENT";
-  photo: string;
+  initials: string;
   tag: string;
   color: string;
 }
@@ -49,33 +48,33 @@ const MENTORS: MentorCard[] = [
     name: "Capt. Rekha Menon",
     role: "Cabin Crew Mentor",
     dept: "AVIATION",
-    photo: "/mentors/mentor-aviation.png",
+    initials: "RM",
     tag: "Cabin Crew Mentor — 8 yrs airline experience",
-    color: "#FF2E63",
+    color: "#e11d48",
   },
   {
     name: "Arjun Deshpande",
     role: "Senior Data Scientist",
     dept: "IT",
-    photo: "/mentors/mentor-data.png",
+    initials: "AD",
     tag: "Senior Data Scientist — 12 yrs in ML & analytics",
-    color: "#0891B2",
+    color: "#0284c7",
   },
   {
     name: "Sneha Kulkarni",
     role: "Full Stack Mentor",
     dept: "IT",
-    photo: "/mentors/mentor-fullstack.png",
+    initials: "SK",
     tag: "Senior Developer — 10 yrs building products",
-    color: "#2563EB",
+    color: "#1d4ed8",
   },
   {
     name: "Faisal Khan",
     role: "Placement Head",
     dept: "PLACEMENT",
-    photo: "/mentors/mentor-placement.png",
+    initials: "FK",
     tag: "Placement Head — 500+ students placed",
-    color: "#FF7A00",
+    color: "#d97706",
   },
 ];
 
@@ -84,25 +83,25 @@ const HOW_IT_WORKS: { Icon: LucideIcon; title: string; text: string; color: stri
     Icon: MessagesSquare,
     title: "1:1 mentoring",
     text: "Every student is paired with a mentor from Aviation or IT — weekly one-on-one sessions, honest feedback and a plan built around your target job.",
-    color: "#FF2E63",
+    color: "#e11d48",
   },
   {
     Icon: Mic,
     title: "Mock interviews",
     text: "Real interview panels — airline grooming rounds, HR screens and technical grills — recorded, reviewed and repeated until you walk in confident.",
-    color: "#2563EB",
+    color: "#1d4ed8",
   },
   {
     Icon: FileText,
     title: "Resume preparation",
     text: "Your resume, LinkedIn and portfolio rebuilt by mentors who actually screen candidates — highlighting projects and skills employers scan for.",
-    color: "#FF7A00",
+    color: "#d97706",
   },
   {
     Icon: ClipboardList,
     title: "Industry projects",
     text: "Work on real datasets, real apps and real airline scenarios — the same deliverables you'll be handed on day one of the job.",
-    color: "#00B8D9",
+    color: "#0284c7",
   },
 ];
 
@@ -126,17 +125,18 @@ export function MentorshipPage({
   return (
     <>
       {/* ── HERO ─────────────────────────────────────────────────── */}
-      <section aria-label="Mentorship program hero" className="relative overflow-hidden border-b-2 border-ink">
-        <div aria-hidden className="dot-grid absolute inset-0 opacity-[0.06]" />
-        <div className="relative mx-auto grid max-w-7xl items-center gap-10 px-4 py-12 md:px-6 md:py-20 lg:grid-cols-2">
-          <div className="min-w-0">
-            <p className="font-grotesk text-xs font-bold tracking-[0.3em] uppercase text-muted-foreground md:text-sm">
+      <section aria-label="Mentorship program hero" className="relative overflow-hidden border-b border-[#e6dfd3] gradient-mesh">
+        <div aria-hidden className="dot-grid absolute inset-0 opacity-[0.25]" />
+        <div className="relative mx-auto max-w-7xl px-4 py-16 md:px-6 md:py-24">
+          <div className="min-w-0 max-w-3xl">
+            <p className="font-grotesk text-xs font-bold tracking-[0.3em] uppercase text-stone-500 md:text-sm">
               Skyora Mentorship Program
             </p>
-            <h1 className="mt-3 font-display text-[clamp(2.4rem,6.5vw,5rem)] leading-[0.95] uppercase">
-              Mentored by people who <span className="text-brand-pink">do the job</span>
+            <h1 className="mt-3 font-display text-[clamp(2.4rem,6.5vw,5rem)] leading-[0.95] uppercase text-ink">
+              Mentored by people who{" "}
+              <span className="bg-gradient-to-r from-brand-blue to-brand-cyan bg-clip-text text-transparent">do the job</span>
             </h1>
-            <p className="mt-5 max-w-xl text-base leading-relaxed text-muted-foreground md:text-lg">
+            <p className="mt-5 max-w-xl text-base leading-relaxed text-stone-600 md:text-lg">
               One-on-one guidance from working airline professionals and tech
               engineers — mock interviews, resume prep and a clear roadmap to
               your first offer letter.
@@ -146,13 +146,13 @@ export function MentorshipPage({
                 courses={enquiryOptions}
                 source="mentorship-hero"
                 triggerLabel="Apply for Mentorship"
-                triggerClassName="rounded-lg px-6 font-bold uppercase brutal-hover"
+                triggerClassName="rounded-xl bg-ink px-6 font-bold uppercase text-white hover:bg-stone-800 brutal-hover"
               />
               <Button
                 asChild
                 size="lg"
                 variant="outline"
-                className="rounded-lg border-2 border-ink bg-white font-bold uppercase shadow-hard-sm brutal-hover"
+                className="rounded-xl border-[#dcd4c5] bg-white font-bold uppercase text-ink shadow-xs hover:bg-stone-100 brutal-hover"
               >
                 <a
                   href={siteConfig.links.whatsapp}
@@ -165,27 +165,6 @@ export function MentorshipPage({
               </Button>
             </div>
           </div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, ease: "easeOut" }}
-            className="relative min-w-0"
-          >
-            <div className="brutal-card relative aspect-[16/10] overflow-hidden rounded-2xl">
-              <Image
-                src="/departments/mentorship-hero.png"
-                alt="A Skyora mentor and student in a one-on-one mock interview session"
-                fill
-                priority
-                sizes="(max-width: 1024px) 100vw, 50vw"
-                className="object-cover"
-              />
-            </div>
-            <span className="absolute -bottom-4 left-5 inline-flex rotate-[-2deg] items-center gap-1.5 rounded-lg border-2 border-ink bg-brand-pink px-3 py-1.5 font-grotesk text-xs font-bold tracking-wide text-white uppercase shadow-hard-sm">
-              1:1 · Aviation & IT mentors
-            </span>
-          </motion.div>
         </div>
       </section>
 
@@ -208,13 +187,13 @@ export function MentorshipPage({
             <motion.div key={title} variants={GRID_ITEM} className="brutal-card-sm min-w-0 p-5">
               <span
                 aria-hidden
-                className="flex h-10 w-10 items-center justify-center rounded-lg border-2 border-ink text-white shadow-hard-sm"
-                style={{ background: color }}
+                className="flex h-10 w-10 items-center justify-center rounded-xl"
+                style={{ background: `${color}18`, color }}
               >
                 <Icon className="h-5 w-5" />
               </span>
-              <h3 className="mt-3 font-grotesk font-bold break-words">{title}</h3>
-              <p className="mt-1 text-sm leading-relaxed break-words text-muted-foreground">
+              <h3 className="mt-3 font-grotesk font-bold break-words text-ink">{title}</h3>
+              <p className="mt-1 text-sm leading-relaxed break-words text-stone-600">
                 {text}
               </p>
             </motion.div>
@@ -223,7 +202,7 @@ export function MentorshipPage({
       </section>
 
       {/* ── MENTORS ──────────────────────────────────────────────── */}
-      <section aria-label="Meet the mentors" className="border-t-2 border-ink bg-olive-tint/60">
+      <section aria-label="Meet the mentors" className="border-t border-[#e6dfd3] bg-[#f4ede3]">
         <div className="mx-auto max-w-7xl px-4 py-12 md:px-6 md:py-20">
           <SectionHeading
             eyebrow="Your mentors"
@@ -248,28 +227,23 @@ export function MentorshipPage({
                 >
                   <span
                     aria-hidden
-                    className="relative flex h-28 w-28 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-ink bg-white shadow-hard-sm"
+                    className="flex h-20 w-20 shrink-0 items-center justify-center rounded-full font-display text-2xl"
+                    style={{ background: `${mentor.color}18`, color: mentor.color }}
                   >
-                    <Image
-                      src={mentor.photo}
-                      alt={`Illustrated portrait of ${mentor.name}, ${mentor.role} at Skyora`}
-                      fill
-                      sizes="112px"
-                      className="object-cover"
-                    />
+                    {mentor.initials}
                   </span>
                   <figcaption className="mt-4 min-w-0">
-                    <p className="font-grotesk font-bold break-words">{mentor.name}</p>
-                    <p className="mt-0.5 text-xs text-muted-foreground">{mentor.role}</p>
+                    <p className="font-grotesk font-bold break-words text-ink">{mentor.name}</p>
+                    <p className="mt-0.5 text-xs text-stone-500">{mentor.role}</p>
                   </figcaption>
                   <span
-                    className="mt-3 inline-flex w-fit items-center gap-1.5 rounded-full border-2 px-2.5 py-1 font-grotesk text-[10px] font-bold uppercase"
-                    style={{ borderColor: mentor.color, color: mentor.color }}
+                    className="mt-3 inline-flex w-fit items-center gap-1.5 rounded-full border px-2.5 py-1 font-grotesk text-[10px] font-bold uppercase"
+                    style={{ borderColor: `${mentor.color}40`, color: mentor.color, background: "#ffffff" }}
                   >
                     <DeptIcon className="h-3 w-3" aria-hidden />
                     {DEPT_LABEL[mentor.dept]}
                   </span>
-                  <p className="mt-3 text-sm leading-relaxed break-words text-muted-foreground">
+                  <p className="mt-3 text-sm leading-relaxed break-words text-stone-600">
                     {mentor.tag}
                   </p>
                 </motion.figure>
@@ -286,23 +260,24 @@ export function MentorshipPage({
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.5, ease: "easeOut" }}
-          className="relative overflow-hidden rounded-3xl bg-olive-deep p-8 text-cream md:p-16"
+          className="relative overflow-hidden rounded-3xl bg-ink p-8 text-white shadow-xl md:p-16"
         >
           <div
             aria-hidden
             className="absolute inset-0"
             style={{
               backgroundImage:
-                "radial-gradient(rgba(255,255,255,0.12) 1px, transparent 1px)",
-              backgroundSize: "22px 22px",
+                "radial-gradient(rgba(255,255,255,0.08) 1px, transparent 1px)",
+              backgroundSize: "24px 24px",
             }}
           />
           <div className="relative flex flex-col items-start justify-between gap-6 md:flex-row md:items-center">
             <div className="min-w-0">
-              <h2 className="font-display text-3xl leading-[0.95] uppercase md:text-5xl">
-                Ready for your <span className="text-brand-pink">1:1?</span>
+              <h2 className="font-display text-3xl leading-[0.95] uppercase text-white md:text-5xl">
+                Ready for your{" "}
+                <span className="bg-gradient-to-r from-brand-blue to-brand-cyan bg-clip-text text-transparent">1:1?</span>
               </h2>
-              <p className="mt-3 max-w-xl text-sm text-cream/70 md:text-base">
+              <p className="mt-3 max-w-xl text-sm text-stone-300 md:text-base">
                 Apply for mentorship — tell us your track and target job, and
                 a counsellor matches you with the right mentor within 24
                 hours.
@@ -313,13 +288,13 @@ export function MentorshipPage({
                 courses={enquiryOptions}
                 source="mentorship-cta"
                 triggerLabel="Apply for Mentorship"
-                triggerClassName="rounded-lg bg-brand-pink px-6 font-bold uppercase brutal-hover"
+                triggerClassName="rounded-xl bg-brand-blue px-6 font-bold uppercase text-white hover:bg-brand-blue/90 brutal-hover"
               />
               <Button
                 asChild
                 size="lg"
                 variant="ghost"
-                className="rounded-lg border-2 border-cream font-bold uppercase text-cream hover:bg-cream hover:text-ink"
+                className="rounded-xl border border-white/20 font-bold uppercase text-white hover:bg-white/10"
               >
                 <Link href="/certifications">
                   See certifications <ArrowRight className="h-4 w-4" aria-hidden />

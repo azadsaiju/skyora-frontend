@@ -43,106 +43,115 @@
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
 
-  /* ── NEO-BRUTALIST BRAND TOKENS ─────────────────────────────── */
-  --color-cream: #faf9f6;
-  --color-ink: #0a0a0a;
-  --color-brand-pink: #ff2e63;
-  --color-brand-blue: #2563eb;
-  --color-brand-orange: #ff7a00;
-  --color-brand-cyan: #00b8d9;
-  --color-brand-green: #16a34a;
+  /* ── WARM CREAM & INK PALETTE ───────────────────────────── */
+  --color-cream: #faf7f2;
+  --color-cream-soft: #f4ede3;
+  --color-cream-sand: #ece4d6;
+  --color-ink: #1c1917;
+  --color-ink-muted: #57534e;
+  --color-brand-pink: #e11d48;
+  --color-brand-blue: #1d4ed8;
+  --color-brand-orange: #d97706;
+  --color-brand-cyan: #0284c7;
+  --color-brand-green: #059669;
   --color-brand-red: #dc2626;
-  --color-brand-yellow: #facc15;
+  --color-brand-yellow: #f59e0b;
 
-  /* ── OLIVE BRAND PALETTE (sampled from the SKYORA "S" logo) ── */
-  /* #387003 = exact logo core · #5f9709 logo highlight · #0f4802 logo shadow */
-  --color-olive: #387003;
-  --color-olive-bright: #5f9709;
-  --color-olive-canvas: #6e9622;
-  --color-olive-deep: #22300a;
-  --color-olive-ink: #141c08;
-  --color-olive-soft: #1f2c09;
-  --color-olive-tint: #eef3d4;
-  --color-olive-pale: #f7fae9;
+  /* ── LAYERED CREAM CANVAS SURFACES ────────────────────────── */
+  --color-canvas: #faf7f2;
+  --color-canvas-light: #f3ece1;
+  --color-canvas-card: #ffffff;
+  --color-canvas-elevated: #faf6ee;
+  --color-canvas-border: #e6dfd3;
 
-  /* ── HARD OFFSET SHADOWS ────────────────────────────────────── */
-  --shadow-hard: 6px 6px 0 0 #0a0a0a;
-  --shadow-hard-sm: 3px 3px 0 0 #0a0a0a;
-  --shadow-hard-lg: 10px 10px 0 0 #0a0a0a;
-  --shadow-hard-pink: 6px 6px 0 0 #ff2e63;
-  --shadow-hard-blue: 6px 6px 0 0 #2563eb;
-  --shadow-hard-orange: 6px 6px 0 0 #ff7a00;
-  --shadow-hard-cyan: 6px 6px 0 0 #00b8d9;
-  --shadow-hard-olive: 6px 6px 0 0 #141c08;
+  /* Backward-compat aliases */
+  --color-olive: #1d4ed8;
+  --color-olive-bright: #3b82f6;
+  --color-olive-canvas: #faf7f2;
+  --color-olive-deep: #1c1917;
+  --color-olive-ink: #1c1917;
+  --color-olive-soft: #6b635b;
+  --color-olive-tint: #f3ece1;
+  --color-olive-pale: #ffffff;
+
+  /* ── ELEGANT WARM SHADOWS ─────────────────────────────────── */
+  --shadow-hard: 0 4px 20px -2px rgba(44, 34, 24, 0.05);
+  --shadow-hard-sm: 0 2px 10px -2px rgba(44, 34, 24, 0.04);
+  --shadow-hard-lg: 0 10px 32px -4px rgba(44, 34, 24, 0.08);
+  --shadow-hard-pink: 0 4px 20px -2px rgba(225, 29, 72, 0.15);
+  --shadow-hard-blue: 0 4px 20px -2px rgba(29, 78, 216, 0.15);
+  --shadow-hard-orange: 0 4px 20px -2px rgba(217, 119, 6, 0.15);
+  --shadow-hard-cyan: 0 4px 20px -2px rgba(2, 132, 199, 0.15);
+  --shadow-hard-olive: 0 4px 20px -2px rgba(29, 78, 216, 0.15);
 }
 
 :root {
   --radius: 0.75rem;
-  --background: #faf9f6;
-  --foreground: #0a0a0a;
+  --background: #faf7f2;
+  --foreground: #1c1917;
   --card: #ffffff;
-  --card-foreground: #0a0a0a;
+  --card-foreground: #1c1917;
   --popover: #ffffff;
-  --popover-foreground: #0a0a0a;
-  --primary: #ff2e63;
-  --primary-foreground: #ffffff;
-  --secondary: #f1eee7;
-  --secondary-foreground: #0a0a0a;
-  --muted: #f1eee7;
-  --muted-foreground: #57534e;
-  --accent: #f1eee7;
-  --accent-foreground: #0a0a0a;
+  --popover-foreground: #1c1917;
+  --primary: #1c1917;
+  --primary-foreground: #faf7f2;
+  --secondary: #f3ece1;
+  --secondary-foreground: #1c1917;
+  --muted: #f3ece1;
+  --muted-foreground: #6b635b;
+  --accent: #ede4d6;
+  --accent-foreground: #1c1917;
   --destructive: #dc2626;
-  --border: #e7e2d9;
-  --input: #0a0a0a;
-  --ring: #0a0a0a;
-  --chart-1: #ff2e63;
-  --chart-2: #2563eb;
-  --chart-3: #ff7a00;
-  --chart-4: #00b8d9;
-  --chart-5: #16a34a;
+  --border: #e6dfd3;
+  --input: #e6dfd3;
+  --ring: #1c1917;
+  --chart-1: #1d4ed8;
+  --chart-2: #e11d48;
+  --chart-3: #d97706;
+  --chart-4: #0284c7;
+  --chart-5: #059669;
   --sidebar: #ffffff;
-  --sidebar-foreground: #0a0a0a;
-  --sidebar-primary: #ff2e63;
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #f1eee7;
-  --sidebar-accent-foreground: #0a0a0a;
-  --sidebar-border: #0a0a0a;
-  --sidebar-ring: #0a0a0a;
+  --sidebar-foreground: #1c1917;
+  --sidebar-primary: #1c1917;
+  --sidebar-primary-foreground: #faf7f2;
+  --sidebar-accent: #f3ece1;
+  --sidebar-accent-foreground: #1c1917;
+  --sidebar-border: #e6dfd3;
+  --sidebar-ring: #1c1917;
 }
 
 .dark {
-  --background: #0a0a0a;
-  --foreground: #faf9f6;
-  --card: #171717;
-  --card-foreground: #faf9f6;
-  --popover: #171717;
-  --popover-foreground: #faf9f6;
-  --primary: #ff2e63;
-  --primary-foreground: #ffffff;
-  --secondary: #262626;
-  --secondary-foreground: #faf9f6;
-  --muted: #262626;
-  --muted-foreground: #a8a29e;
-  --accent: #262626;
-  --accent-foreground: #faf9f6;
-  --destructive: #ef4444;
-  --border: #262626;
-  --input: #262626;
-  --ring: #faf9f6;
-  --chart-1: #ff2e63;
-  --chart-2: #2563eb;
-  --chart-3: #ff7a00;
-  --chart-4: #00b8d9;
-  --chart-5: #16a34a;
-  --sidebar: #171717;
-  --sidebar-foreground: #faf9f6;
-  --sidebar-primary: #ff2e63;
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #262626;
-  --sidebar-accent-foreground: #faf9f6;
-  --sidebar-border: #262626;
-  --sidebar-ring: #faf9f6;
+  --background: #faf7f2;
+  --foreground: #1c1917;
+  --card: #ffffff;
+  --card-foreground: #1c1917;
+  --popover: #ffffff;
+  --popover-foreground: #1c1917;
+  --primary: #1c1917;
+  --primary-foreground: #faf7f2;
+  --secondary: #f3ece1;
+  --secondary-foreground: #1c1917;
+  --muted: #f3ece1;
+  --muted-foreground: #6b635b;
+  --accent: #ede4d6;
+  --accent-foreground: #1c1917;
+  --destructive: #dc2626;
+  --border: #e6dfd3;
+  --input: #e6dfd3;
+  --ring: #1c1917;
+  --chart-1: #1d4ed8;
+  --chart-2: #e11d48;
+  --chart-3: #d97706;
+  --chart-4: #0284c7;
+  --chart-5: #059669;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #1c1917;
+  --sidebar-primary: #1c1917;
+  --sidebar-primary-foreground: #faf7f2;
+  --sidebar-accent: #f3ece1;
+  --sidebar-accent-foreground: #1c1917;
+  --sidebar-border: #e6dfd3;
+  --sidebar-ring: #1c1917;
 }
 
 @layer base {
@@ -153,36 +162,36 @@
     scroll-behavior: smooth;
   }
   body {
-    /* Full olive-green canvas — the SKYORA logo olive, site-wide. */
-    @apply bg-olive-canvas text-olive-ink font-sans antialiased;
+    @apply bg-canvas text-ink font-sans antialiased;
   }
   ::selection {
-    background: #ff2e63;
-    color: #ffffff;
+    background: #1c1917;
+    color: #faf7f2;
   }
 }
 
 @layer utilities {
-  /* Brutalist card: white bg, 2px black border, hard offset shadow */
+  /* Warm cream card */
   .brutal-card {
-    @apply rounded-xl border-2 border-ink bg-white;
-    box-shadow: 6px 6px 0 0 #0a0a0a;
+    @apply rounded-2xl border border-[#e6dfd3] bg-white;
+    box-shadow: 0 4px 20px -2px rgba(44, 34, 24, 0.05), 0 1px 3px rgba(44, 34, 24, 0.03);
   }
   .brutal-card-sm {
-    @apply rounded-xl border-2 border-ink bg-white;
-    box-shadow: 3px 3px 0 0 #0a0a0a;
+    @apply rounded-xl border border-[#e6dfd3] bg-white;
+    box-shadow: 0 2px 10px -2px rgba(44, 34, 24, 0.04);
   }
-  /* Shadow-swap hover: element shifts toward its shadow */
+  /* Smooth warm hover */
   .brutal-hover {
-    @apply transition-all duration-150;
+    @apply transition-all duration-200;
   }
   .brutal-hover:hover {
-    transform: translate(2px, 2px);
-    box-shadow: 2px 2px 0 0 #0a0a0a !important;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px -4px rgba(44, 34, 24, 0.09) !important;
+    border-color: #d4c8b6 !important;
   }
   .brutal-hover:active {
-    transform: translate(6px, 6px);
-    box-shadow: 0 0 0 0 #0a0a0a !important;
+    transform: translateY(0);
+    box-shadow: 0 2px 8px -2px rgba(44, 34, 24, 0.04) !important;
   }
 
   /* ── MARQUEE (infinite recruiter strip) ── */
@@ -213,42 +222,61 @@
     }
   }
 
-  /* Dark olive panel (footer, banners, marquee) with cream text */
+  /* Deep panel (footer, banners, marquee) */
   .panel-olive {
-    @apply bg-olive-deep text-cream;
+    @apply bg-canvas-light text-ink;
   }
 
   /* ── CUSTOM SCROLLBARS ── */
   .nice-scrollbar {
     scrollbar-width: thin;
-    scrollbar-color: #141c08 #eef3d4;
+    scrollbar-color: #d1c7b7 #f3ece1;
   }
   .nice-scrollbar::-webkit-scrollbar {
     width: 8px;
     height: 8px;
   }
   .nice-scrollbar::-webkit-scrollbar-track {
-    background: #eef3d4;
+    background: #f3ece1;
     border-radius: 8px;
   }
   .nice-scrollbar::-webkit-scrollbar-thumb {
-    background: #0a0a0a;
+    background: #c8bead;
     border-radius: 8px;
-    border: 2px solid #f1eee7;
+    border: 2px solid #f3ece1;
   }
   .nice-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: #ff2e63;
+    background: #a99d8b;
   }
 
   /* Outlined display text (hero accents) */
   .text-outline {
-    -webkit-text-stroke: 2px #0a0a0a;
+    -webkit-text-stroke: 2px #1c1917;
     color: transparent;
   }
 
-  /* Dotted grid backdrop for hero */
+  /* Subtle warm grid backdrop for hero */
   .dot-grid {
-    background-image: radial-gradient(#0a0a0a 1px, transparent 1px);
-    background-size: 22px 22px;
+    background-image: radial-gradient(rgba(140, 120, 95, 0.22) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+
+  /* Warm ambient gradient mesh backdrop */
+  .gradient-mesh {
+    background-image:
+      radial-gradient(at 15% 15%, rgba(217, 119, 6, 0.08) 0%, transparent 60%),
+      radial-gradient(at 85% 25%, rgba(29, 78, 216, 0.06) 0%, transparent 60%),
+      radial-gradient(at 50% 85%, rgba(180, 83, 9, 0.06) 0%, transparent 60%);
+  }
+
+  /* Glow ring for icons */
+  .glow-blue {
+    box-shadow: 0 0 20px rgba(29, 78, 216, 0.15), 0 0 60px rgba(29, 78, 216, 0.05);
+  }
+  .glow-pink {
+    box-shadow: 0 0 20px rgba(225, 29, 72, 0.15), 0 0 60px rgba(225, 29, 72, 0.05);
+  }
+  .glow-cyan {
+    box-shadow: 0 0 20px rgba(2, 132, 199, 0.15), 0 0 60px rgba(2, 132, 199, 0.05);
   }
 }

@@ -2,7 +2,7 @@
 
 /**
  * Shared department page view for /aviation and /it.
- * Renders: hero (title + certification badge + department image) → intro →
+ * Renders: hero (title + certification badge) → intro →
  * ALL courses from the shared data store (skills, career opportunities,
  * where you can work) → opportunities band (industry growth + placement).
  *
@@ -11,7 +11,6 @@
  */
 
 import { motion, type Variants } from "framer-motion";
-import Image from "next/image";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -30,7 +29,6 @@ import { siteConfig } from "@/config/site.config";
 import { trackWhatsApp } from "@/lib/track-whatsapp";
 import type { CoursePublicDTO, EnquiryCourseOption, Track } from "@/lib/types";
 import type { DepartmentMeta } from "@/lib/departments";
-import { courseImage } from "@/lib/courses";
 import { Button } from "@/components/ui/button";
 import { SectionHeading } from "@/components/public/section-heading";
 import { EnquiryDialog } from "@/components/public/enquiry-dialog";
@@ -63,7 +61,7 @@ function Bullets({
   return (
     <ul className="space-y-1.5">
       {shown.map((item) => (
-        <li key={item} className="flex items-start gap-2 text-sm break-words text-muted-foreground">
+        <li key={item} className="flex items-start gap-2 text-sm break-words text-stone-600">
           <span
             aria-hidden
             className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full"
@@ -90,19 +88,24 @@ function CourseCard({
       variants={GRID_ITEM}
       className="brutal-card flex min-w-0 flex-col overflow-hidden"
     >
-      {/* Course image (custom upload or auto-assigned department hero) */}
-      <div className="relative h-44 w-full border-b-2 border-ink sm:h-52">
-        <Image
-          src={courseImage(course)}
-          alt={`${course.title} — ${dept.name} course at Skyora`}
-          fill
-          sizes="(max-width: 768px) 100vw, 33vw"
-          className="object-cover"
-          unoptimized={courseImage(course).startsWith("/uploads/")}
-        />
+      {/* Course header with colored accent bar (no image) */}
+      <div
+        className="relative flex h-32 w-full items-center justify-center"
+        style={{
+          background: `linear-gradient(135deg, ${dept.accent}12 0%, ${dept.accent}05 100%)`,
+        }}
+      >
+        <div className="absolute top-0 left-0 h-1 w-full" style={{ background: dept.accent }} />
         <span
           aria-hidden
-          className="absolute top-3 left-3 inline-flex items-center gap-1.5 rounded-full border-2 border-ink bg-white px-2.5 py-1 font-grotesk text-[11px] font-bold tracking-wide uppercase shadow-hard-sm"
+          className="flex h-16 w-16 items-center justify-center rounded-2xl"
+          style={{ background: `${dept.accent}18`, color: dept.accent }}
+        >
+          <GraduationCap className="h-8 w-8" />
+        </span>
+        <span
+          aria-hidden
+          className="absolute top-3 left-3 inline-flex items-center gap-1.5 rounded-full border border-[#e6dfd3] bg-white px-2.5 py-1 font-grotesk text-[11px] font-bold tracking-wide uppercase text-stone-700 shadow-xs"
         >
           <Clock className="h-3.5 w-3.5" aria-hidden />
           {course.duration}
@@ -110,17 +113,17 @@ function CourseCard({
       </div>
 
       <div className="flex min-w-0 flex-1 flex-col p-5 md:p-6">
-        <h3 className="font-grotesk text-xl leading-tight font-bold break-words">
+        <h3 className="font-grotesk text-xl leading-tight font-bold break-words text-ink">
           {course.title}
         </h3>
-        <p className="mt-2 text-sm leading-relaxed break-words text-muted-foreground">
+        <p className="mt-2 text-sm leading-relaxed break-words text-stone-600">
           {course.description}
         </p>
 
         {/* Skills you will learn */}
         {course.skills.length > 0 && (
           <div className="mt-4">
-            <p className="flex items-center gap-1.5 font-grotesk text-xs font-bold tracking-wide uppercase">
+            <p className="flex items-center gap-1.5 font-grotesk text-xs font-bold tracking-wide uppercase text-stone-800">
               <GraduationCap className="h-4 w-4" style={{ color: dept.accent }} aria-hidden />
               Skills you will learn
             </p>
@@ -133,7 +136,7 @@ function CourseCard({
         {/* Career opportunities / job roles */}
         {course.jobRoles.length > 0 && (
           <div className="mt-4">
-            <p className="flex items-center gap-1.5 font-grotesk text-xs font-bold tracking-wide uppercase">
+            <p className="flex items-center gap-1.5 font-grotesk text-xs font-bold tracking-wide uppercase text-stone-800">
               <Briefcase className="h-4 w-4" style={{ color: dept.accent }} aria-hidden />
               Career opportunities
             </p>
@@ -141,7 +144,7 @@ function CourseCard({
               {course.jobRoles.map((role) => (
                 <span
                   key={role}
-                  className="rounded-full border-2 border-ink bg-white px-2.5 py-1 font-grotesk text-[11px] font-bold break-words"
+                  className="rounded-full border border-[#e6dfd3] bg-[#f4ede3] px-2.5 py-1 font-grotesk text-[11px] font-bold break-words text-stone-700"
                 >
                   {role}
                 </span>
@@ -153,7 +156,7 @@ function CourseCard({
         {/* Where you can work */}
         {course.workplaces.length > 0 && (
           <div className="mt-4">
-            <p className="flex items-center gap-1.5 font-grotesk text-xs font-bold tracking-wide uppercase">
+            <p className="flex items-center gap-1.5 font-grotesk text-xs font-bold tracking-wide uppercase text-stone-800">
               <MapPin className="h-4 w-4" style={{ color: dept.accent }} aria-hidden />
               Where you can work
             </p>
@@ -170,14 +173,14 @@ function CourseCard({
             initialCourseId={course.id}
             source={`department:${course.slug}`}
             triggerLabel="Enquire Now"
-            triggerClassName="rounded-lg font-bold uppercase brutal-hover"
+            triggerClassName="rounded-xl bg-ink font-bold uppercase text-white hover:bg-stone-800 brutal-hover"
           />
           <a
             href={siteConfig.links.whatsapp}
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => trackWhatsApp(`department:${course.slug}`)}
-            className="inline-flex items-center gap-1.5 font-grotesk text-sm font-bold text-brand-pink uppercase hover:underline"
+            className="inline-flex items-center gap-1.5 font-grotesk text-sm font-bold text-brand-blue uppercase hover:underline"
           >
             <MessageCircle className="h-4 w-4" aria-hidden />
             WhatsApp
@@ -203,13 +206,13 @@ function OpportunityCard({
     <div className="brutal-card-sm flex min-w-0 flex-col p-5">
       <span
         aria-hidden
-        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border-2 border-ink text-white shadow-hard-sm"
-        style={{ background: accent }}
+        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl"
+        style={{ background: `${accent}18`, color: accent }}
       >
         <Icon className="h-5 w-5" />
       </span>
-      <h3 className="mt-3 font-grotesk font-bold break-words">{title}</h3>
-      <p className="mt-1 text-sm leading-relaxed break-words text-muted-foreground">
+      <h3 className="mt-3 font-grotesk font-bold break-words text-ink">{title}</h3>
+      <p className="mt-1 text-sm leading-relaxed break-words text-stone-600">
         {text}
       </p>
     </div>
@@ -222,37 +225,29 @@ export function DepartmentView({ dept, courses, enquiryOptions }: DepartmentView
   return (
     <>
       {/* ── HERO ─────────────────────────────────────────────────── */}
-      <section aria-label={`${dept.name} department hero`} className="relative overflow-hidden border-b-2 border-ink">
-        <div aria-hidden className="dot-grid absolute inset-0 opacity-[0.06]" />
+      <section aria-label={`${dept.name} department hero`} className="relative overflow-hidden border-b border-[#e6dfd3] gradient-mesh">
+        <div aria-hidden className="dot-grid absolute inset-0 opacity-[0.25]" />
         <div
           aria-hidden
-          className="absolute -top-24 -right-24 h-72 w-72 rounded-full blur-3xl"
-          style={{ background: `${dept.accent}33` }}
+          className="absolute -top-24 -right-24 h-72 w-72 rounded-full blur-[120px]"
+          style={{ background: `${dept.accent}12` }}
         />
-        <div className="relative mx-auto grid max-w-7xl items-center gap-10 px-4 py-12 md:px-6 md:py-20 lg:grid-cols-2">
-          <div className="min-w-0">
-            <p className="font-grotesk text-xs font-bold tracking-[0.3em] uppercase text-muted-foreground md:text-sm">
+        <div className="relative mx-auto max-w-7xl px-4 py-16 md:px-6 md:py-24">
+          <div className="min-w-0 max-w-3xl">
+            <p className="font-grotesk text-xs font-bold tracking-[0.3em] uppercase text-stone-500 md:text-sm">
               Skyora {dept.name} Department
             </p>
-            <h1 className="mt-3 font-display text-[clamp(2.6rem,7vw,5.5rem)] leading-[0.95] uppercase">
+            <h1 className="mt-3 font-display text-[clamp(2.6rem,7vw,5.5rem)] leading-[0.95] uppercase text-ink">
               {dept.name}
             </h1>
-            <p className="mt-4 max-w-xl font-grotesk text-base font-bold text-ink/80 md:text-lg">
+            <p className="mt-4 max-w-xl font-grotesk text-base font-bold text-stone-700 md:text-lg">
               {dept.tagline}
             </p>
 
-            {/* Certification badge — IATA PREFERRED / CERTIFICATE BY STED COUNCIL */}
-            <p className="mt-5 inline-flex max-w-full items-center gap-2.5 rounded-xl border-2 border-ink bg-white px-4 py-2.5 shadow-hard-sm">
-              <Image
-                src={cert.logo}
-                alt=""
-                aria-hidden
-                width={28}
-                height={28}
-                className="size-7 shrink-0 object-contain"
-              />
+            {/* Certification badge */}
+            <p className="mt-5 inline-flex max-w-full items-center gap-2.5 rounded-xl border border-[#e6dfd3] bg-white px-4 py-2.5 shadow-xs">
               <span className="min-w-0">
-                <span className="block font-grotesk text-sm font-bold tracking-wide uppercase">
+                <span className="block font-grotesk text-sm font-bold tracking-wide uppercase text-stone-800">
                   {cert.short}
                 </span>
               </span>
@@ -264,41 +259,23 @@ export function DepartmentView({ dept, courses, enquiryOptions }: DepartmentView
                 courses={enquiryOptions}
                 source={`department-hero:${dept.track}`}
                 triggerLabel="Enquire Now"
-                triggerClassName="rounded-lg px-6 font-bold uppercase brutal-hover"
+                triggerClassName="rounded-xl bg-ink px-6 font-bold uppercase text-white hover:bg-stone-800 brutal-hover"
               />
               <Button
                 asChild
                 size="lg"
                 variant="outline"
-                className="rounded-lg border-2 border-ink bg-white font-bold uppercase shadow-hard-sm brutal-hover"
+                className="rounded-xl border-[#dcd4c5] bg-white font-bold uppercase text-ink shadow-xs hover:bg-stone-100 brutal-hover"
               >
                 <a href="#courses">View Courses</a>
               </Button>
             </div>
-          </div>
 
-          {/* Department hero image */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, ease: "easeOut" }}
-            className="relative min-w-0"
-          >
-            <div className="brutal-card relative aspect-[16/10] overflow-hidden rounded-2xl">
-              <Image
-                src={dept.heroImage}
-                alt={`${dept.name} department at Skyora Group of Institutes`}
-                fill
-                priority
-                sizes="(max-width: 1024px) 100vw, 50vw"
-                className="object-cover"
-              />
-            </div>
-            <span className="absolute -bottom-4 left-5 inline-flex rotate-[-2deg] items-center gap-1.5 rounded-lg border-2 border-ink bg-brand-yellow px-3 py-1.5 font-grotesk text-xs font-bold tracking-wide uppercase shadow-hard-sm">
-              <Sparkles className="h-3.5 w-3.5" aria-hidden />
+            <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-[#e6dfd3] bg-white px-4 py-2 font-grotesk text-xs font-bold uppercase text-stone-700 shadow-xs">
+              <Sparkles className="h-3.5 w-3.5" style={{ color: dept.accent }} aria-hidden />
               {courses.length} career program{courses.length === 1 ? "" : "s"}
-            </span>
-          </motion.div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -311,22 +288,22 @@ export function DepartmentView({ dept, courses, enquiryOptions }: DepartmentView
           transition={{ duration: 0.5, ease: "easeOut" }}
           className="brutal-card p-6 md:p-10"
         >
-          <h2 className="font-display text-2xl leading-none uppercase md:text-3xl">
+          <h2 className="font-display text-2xl leading-none uppercase text-ink md:text-3xl">
             About the department
           </h2>
-          <p className="mt-4 max-w-4xl text-base leading-relaxed md:text-lg">
+          <p className="mt-4 max-w-4xl text-base leading-relaxed text-stone-600 md:text-lg">
             {dept.intro}
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
-            <span className="inline-flex items-center gap-2 rounded-full border-2 border-ink bg-olive-tint px-3 py-1.5 font-grotesk text-xs font-bold uppercase">
+            <span className="inline-flex items-center gap-2 rounded-full border border-[#e6dfd3] bg-[#f4ede3] px-3 py-1.5 font-grotesk text-xs font-bold uppercase text-stone-700">
               <GraduationCap className="h-4 w-4" aria-hidden />
               {cert.short}
             </span>
-            <span className="inline-flex items-center gap-2 rounded-full border-2 border-ink bg-olive-tint px-3 py-1.5 font-grotesk text-xs font-bold uppercase">
+            <span className="inline-flex items-center gap-2 rounded-full border border-[#e6dfd3] bg-[#f4ede3] px-3 py-1.5 font-grotesk text-xs font-bold uppercase text-stone-700">
               <Briefcase className="h-4 w-4" aria-hidden />
               Placement support
             </span>
-            <span className="inline-flex items-center gap-2 rounded-full border-2 border-ink bg-olive-tint px-3 py-1.5 font-grotesk text-xs font-bold uppercase">
+            <span className="inline-flex items-center gap-2 rounded-full border border-[#e6dfd3] bg-[#f4ede3] px-3 py-1.5 font-grotesk text-xs font-bold uppercase text-stone-700">
               <Building2 className="h-4 w-4" aria-hidden />
               Working industry mentors
             </span>
@@ -335,7 +312,7 @@ export function DepartmentView({ dept, courses, enquiryOptions }: DepartmentView
       </section>
 
       {/* ── COURSES ──────────────────────────────────────────────── */}
-      <section id="courses" aria-label={`${dept.name} courses`} className="scroll-mt-24 border-t-2 border-ink bg-olive-tint/60">
+      <section id="courses" aria-label={`${dept.name} courses`} className="scroll-mt-24 border-t border-[#e6dfd3] bg-[#f4ede3]">
         <div className="mx-auto max-w-7xl px-4 py-12 md:px-6 md:py-20">
           <SectionHeading
             eyebrow={`${courses.length} program${courses.length === 1 ? "" : "s"} · certification included`}
@@ -346,13 +323,13 @@ export function DepartmentView({ dept, courses, enquiryOptions }: DepartmentView
 
           {courses.length === 0 ? (
             <div className="brutal-card mx-auto mt-10 max-w-lg p-8 text-center md:p-12">
-              <p className="font-display text-xl uppercase">No courses here yet</p>
-              <p className="mt-2 text-sm text-muted-foreground">
+              <p className="font-display text-xl uppercase text-ink">No courses here yet</p>
+              <p className="mt-2 text-sm text-stone-500">
                 We&apos;re finalising the {dept.name} lineup — enquire on WhatsApp
                 and we&apos;ll send the brochure first.
               </p>
               <div className="mt-6">
-                <Button asChild className="rounded-lg font-bold uppercase brutal-hover">
+                <Button asChild className="rounded-xl bg-ink font-bold uppercase text-white hover:bg-stone-800 brutal-hover">
                   <a
                     href={siteConfig.links.whatsapp}
                     target="_blank"
@@ -386,7 +363,7 @@ export function DepartmentView({ dept, courses, enquiryOptions }: DepartmentView
       </section>
 
       {/* ── OPPORTUNITIES ────────────────────────────────────────── */}
-      <section aria-label={`${dept.name} opportunities`} className="border-t-2 border-ink">
+      <section aria-label={`${dept.name} opportunities`} className="border-t border-[#e6dfd3]">
         <div className="mx-auto max-w-7xl px-4 py-12 md:px-6 md:py-20">
           <SectionHeading
             eyebrow="Your future in this field"
@@ -436,23 +413,24 @@ export function DepartmentView({ dept, courses, enquiryOptions }: DepartmentView
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.5, ease: "easeOut" }}
-            className="relative mt-12 overflow-hidden rounded-3xl bg-olive-deep p-8 text-cream md:p-14"
+            className="relative mt-12 overflow-hidden rounded-3xl bg-ink p-8 text-white shadow-xl md:p-14"
           >
             <div
               aria-hidden
               className="absolute inset-0"
               style={{
                 backgroundImage:
-                  "radial-gradient(rgba(255,255,255,0.12) 1px, transparent 1px)",
-                backgroundSize: "22px 22px",
+                  "radial-gradient(rgba(255,255,255,0.08) 1px, transparent 1px)",
+                backgroundSize: "24px 24px",
               }}
             />
             <div className="relative flex flex-col items-start justify-between gap-6 md:flex-row md:items-center">
               <div className="min-w-0">
-                <h2 className="font-display text-3xl leading-[0.95] uppercase md:text-5xl">
-                  Start your {dept.name} <span className="text-brand-pink">career</span>
+                <h2 className="font-display text-3xl leading-[0.95] uppercase text-white md:text-5xl">
+                  Start your {dept.name}{" "}
+                  <span className="bg-gradient-to-r from-brand-blue to-brand-cyan bg-clip-text text-transparent">career</span>
                 </h2>
-                <p className="mt-3 max-w-xl text-sm text-cream/70 md:text-base">
+                <p className="mt-3 max-w-xl text-sm text-stone-300 md:text-base">
                   Talk to a counsellor today — free, no pressure. We&apos;ll map
                   the right course, duration and batch for you.
                 </p>
@@ -462,13 +440,13 @@ export function DepartmentView({ dept, courses, enquiryOptions }: DepartmentView
                   courses={enquiryOptions}
                   source={`department-cta:${dept.track}`}
                   triggerLabel="Enquire Now"
-                  triggerClassName="rounded-lg bg-brand-pink px-6 font-bold uppercase brutal-hover"
+                  triggerClassName="rounded-xl bg-brand-blue px-6 font-bold uppercase text-white hover:bg-brand-blue/90 brutal-hover"
                 />
                 <Button
                   asChild
                   size="lg"
                   variant="ghost"
-                  className="rounded-lg border-2 border-cream font-bold uppercase text-cream hover:bg-cream hover:text-ink"
+                  className="rounded-xl border border-white/20 font-bold uppercase text-white hover:bg-white/10"
                 >
                   <Link href="/mentorship">
                     Meet the mentors <ArrowRight className="h-4 w-4" aria-hidden />

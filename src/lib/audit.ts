@@ -20,6 +20,7 @@ export type AuditAction =
   | "ASSIGN_CHANGE"
   | "EXPORT"
   | "FOLLOWUP_CREATE"
+  | "FOLLOWUP_UPDATE"
   | "ENQUIRY_DELETE"
   | "ENQUIRY_IMPORT"
   | "REMINDER_RUN"

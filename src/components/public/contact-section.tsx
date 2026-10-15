@@ -43,7 +43,7 @@ const CHANNELS: {
   sub: string;
   href: string;
   Icon: LucideIcon;
-  bgClass: string;
+  color: string;
   external: boolean;
 }[] = [
   {
@@ -51,7 +51,7 @@ const CHANNELS: {
     sub: "Chat instantly — fastest reply",
     href: siteConfig.links.whatsapp,
     Icon: MessageCircle,
-    bgClass: "bg-[#16A34A]",
+    color: "#059669",
     external: true,
   },
   {
@@ -59,7 +59,7 @@ const CHANNELS: {
     sub: GMAIL_ADDRESS,
     href: siteConfig.links.gmail,
     Icon: Mail,
-    bgClass: "bg-brand-pink",
+    color: "#e11d48",
     external: false,
   },
   {
@@ -67,7 +67,7 @@ const CHANNELS: {
     sub: INSTAGRAM_HANDLE,
     href: siteConfig.links.instagram,
     Icon: Instagram,
-    bgClass: "bg-brand-orange",
+    color: "#d97706",
     external: true,
   },
   {
@@ -75,7 +75,7 @@ const CHANNELS: {
     sub: "Company news & alumni wins",
     href: siteConfig.links.linkedin,
     Icon: Linkedin,
-    bgClass: "bg-brand-blue",
+    color: "#1d4ed8",
     external: true,
   },
 ];
@@ -89,14 +89,14 @@ const PROMISES = [
 function FormSkeleton() {
   return (
     <div className="space-y-4" aria-hidden>
-      <Skeleton className="h-9 w-full rounded-lg" />
+      <Skeleton className="h-9 w-full rounded-xl" />
       <div className="grid gap-4 sm:grid-cols-2">
-        <Skeleton className="h-9 w-full rounded-lg" />
-        <Skeleton className="h-9 w-full rounded-lg" />
+        <Skeleton className="h-9 w-full rounded-xl" />
+        <Skeleton className="h-9 w-full rounded-xl" />
       </div>
-      <Skeleton className="h-9 w-full rounded-lg" />
-      <Skeleton className="h-24 w-full rounded-lg" />
-      <Skeleton className="h-11 w-full rounded-lg" />
+      <Skeleton className="h-9 w-full rounded-xl" />
+      <Skeleton className="h-24 w-full rounded-xl" />
+      <Skeleton className="h-11 w-full rounded-xl" />
     </div>
   );
 }
@@ -117,11 +117,11 @@ export function ContactSection() {
         viewport={{ once: true, margin: "-80px" }}
         transition={{ duration: 0.5, ease: "easeOut" }}
       >
-        <h2 className="font-display text-5xl leading-[0.95] uppercase sm:text-6xl lg:text-7xl">
+        <h2 className="font-display text-5xl leading-[0.95] uppercase text-ink sm:text-6xl lg:text-7xl">
           {"Let's "}
-          <span className="text-brand-pink">talk</span>.
+          <span className="bg-gradient-to-r from-brand-blue to-brand-cyan bg-clip-text text-transparent">talk</span>.
         </h2>
-        <p className="mt-4 text-base text-muted-foreground md:text-lg">
+        <p className="mt-4 text-base text-stone-600 md:text-lg">
           Pick a channel — a human always answers.
         </p>
       </motion.div>
@@ -134,7 +134,7 @@ export function ContactSection() {
         viewport={{ once: true, margin: "-60px" }}
         className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4"
       >
-        {CHANNELS.map(({ label, sub, href, Icon, bgClass, external }) => (
+        {CHANNELS.map(({ label, sub, href, Icon, color, external }) => (
           <motion.a
             key={label}
             href={href}
@@ -148,17 +148,18 @@ export function ContactSection() {
           >
             <span
               aria-hidden
-              className={`flex h-12 w-12 items-center justify-center rounded-lg border-2 border-ink text-white ${bgClass}`}
+              className="flex h-12 w-12 items-center justify-center rounded-xl"
+              style={{ background: `${color}18`, color }}
             >
               <Icon className="h-6 w-6" />
             </span>
-            <span className="mt-4 block font-display text-lg uppercase">
+            <span className="mt-4 block font-display text-lg uppercase text-ink">
               {label}
             </span>
-            <span className="mt-1 block text-sm break-words text-muted-foreground">
+            <span className="mt-1 block text-sm break-words text-stone-600">
               {sub}
             </span>
-            <span className="mt-3 inline-flex items-center gap-1 font-grotesk text-xs font-bold uppercase">
+            <span className="mt-3 inline-flex items-center gap-1 font-grotesk text-xs font-bold uppercase text-brand-blue">
               Open <ArrowUpRight className="h-3.5 w-3.5" aria-hidden />
             </span>
           </motion.a>
@@ -168,14 +169,14 @@ export function ContactSection() {
       {/* Info + form */}
       <div className="mt-12 grid gap-6 lg:grid-cols-5">
         <div className="brutal-card p-6 md:p-8 lg:col-span-2">
-          <h3 className="font-display text-2xl leading-tight uppercase">
+          <h3 className="font-display text-2xl leading-tight uppercase text-ink">
             Send an enquiry
           </h3>
           <ul className="mt-5 space-y-3">
             {PROMISES.map((promise) => (
               <li
                 key={promise}
-                className="flex items-start gap-2.5 text-sm break-words"
+                className="flex items-start gap-2.5 text-sm break-words text-stone-700"
               >
                 <CheckCircle2
                   aria-hidden
@@ -185,12 +186,12 @@ export function ContactSection() {
               </li>
             ))}
           </ul>
-          <p className="mt-6 font-grotesk text-xs font-bold tracking-[0.2em] text-muted-foreground uppercase">
+          <p className="mt-6 font-grotesk text-xs font-bold tracking-[0.2em] text-stone-500 uppercase">
             Prefer to call?
           </p>
           <a
             href={siteConfig.links.phoneHref}
-            className="mt-2 inline-block font-display text-xl break-all transition-colors hover:text-brand-pink md:text-2xl"
+            className="mt-2 inline-block font-display text-xl break-all text-ink transition-colors hover:text-brand-blue md:text-2xl"
           >
             {siteConfig.links.phoneDisplay}
           </a>
@@ -204,7 +205,7 @@ export function ContactSection() {
           ) : (
             <>
               {courses.length === 0 && (
-                <p className="mb-4 rounded-lg bg-cream px-3 py-2 text-sm text-muted-foreground">
+                <p className="mb-4 rounded-xl bg-[#f4ede3] px-3 py-2 text-sm text-stone-600">
                   The course list is updating — call or WhatsApp us in the
                   meantime.
                 </p>

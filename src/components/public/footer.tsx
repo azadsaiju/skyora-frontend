@@ -43,7 +43,7 @@ export function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="panel-olive mt-auto rounded-t-2xl border-t-2 border-ink">
+    <footer className="mt-auto border-t border-[#e6dfd3] bg-[#ece4d6]">
       <div className="mx-auto max-w-7xl px-4 pt-12 pb-40 md:px-6 md:pt-16 md:pb-8">
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr]">
           {/* Brand */}
@@ -55,7 +55,7 @@ export function Footer() {
             >
               <span
                 aria-hidden
-                className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-lg border-2 border-white/20 bg-white"
+                className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-[#e6dfd3] bg-white shadow-xs"
               >
                 <Image
                   src="/logo-mark.png"
@@ -66,16 +66,16 @@ export function Footer() {
                 />
               </span>
               <span className="min-w-0">
-                <span className="block font-display text-lg leading-none">
+                <span className="block font-display text-lg leading-none text-ink">
                   SKYORA
                 </span>
-                <span className="mt-1 block font-grotesk text-[9px] font-bold uppercase tracking-[0.3em] text-white/50">
+                <span className="mt-1 block font-grotesk text-[9px] font-bold uppercase tracking-[0.3em] text-stone-500">
                   Group of Institutes
                 </span>
               </span>
             </a>
-            <p className="mt-4 font-grotesk font-bold">{siteConfig.tagline}</p>
-            <p className="mt-2 max-w-sm text-sm leading-relaxed text-white/60">
+            <p className="mt-4 font-grotesk font-bold text-ink">{siteConfig.tagline}</p>
+            <p className="mt-2 max-w-sm text-sm leading-relaxed text-stone-600">
               {siteConfig.description}
             </p>
             {/* Socials */}
@@ -87,7 +87,7 @@ export function Footer() {
                   target={href.startsWith("http") ? "_blank" : undefined}
                   rel="noopener noreferrer"
                   aria-label={label}
-                  className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-white/30 text-white transition-colors hover:border-brand-pink hover:bg-brand-pink focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none"
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-[#d8cfbe] bg-white text-stone-700 shadow-xs transition-colors hover:border-ink hover:bg-stone-100 hover:text-ink focus-visible:ring-2 focus-visible:ring-ink focus-visible:outline-none"
                 >
                   <Icon className="h-5 w-5" aria-hidden />
                 </a>
@@ -97,7 +97,7 @@ export function Footer() {
 
           {/* Quick links */}
           <nav aria-label="Footer quick links" className="min-w-0">
-            <h3 className="font-display text-sm uppercase tracking-widest">
+            <h3 className="font-display text-sm uppercase tracking-widest text-ink">
               Quick Links
             </h3>
             <ul className="mt-4 space-y-2.5">
@@ -105,7 +105,7 @@ export function Footer() {
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm text-cream/70 transition-colors hover:text-brand-pink"
+                    className="text-sm text-stone-600 transition-colors hover:text-ink"
                   >
                     {link.label}
                   </Link>
@@ -116,14 +116,14 @@ export function Footer() {
 
           {/* Contact */}
           <div className="min-w-0">
-            <h3 className="font-display text-sm uppercase tracking-widest">
+            <h3 className="font-display text-sm uppercase tracking-widest text-ink">
               Contact
             </h3>
             <ul className="mt-4 space-y-3 text-sm">
               <li>
                 <a
                   href={siteConfig.links.phoneHref}
-                  className="flex items-center gap-2.5 text-white/60 transition-colors hover:text-brand-pink"
+                  className="flex items-center gap-2.5 text-stone-600 transition-colors hover:text-ink"
                 >
                   <Phone className="h-4 w-4 shrink-0" aria-hidden />
                   <span className="break-words">
@@ -134,7 +134,7 @@ export function Footer() {
               <li>
                 <a
                   href={siteConfig.links.gmail}
-                  className="flex items-start gap-2.5 text-white/60 transition-colors hover:text-brand-pink"
+                  className="flex items-start gap-2.5 text-stone-600 transition-colors hover:text-ink"
                 >
                   <Mail className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
                   <span className="break-all">{GMAIL_ADDRESS}</span>
@@ -146,7 +146,7 @@ export function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => trackWhatsApp("footer")}
-                  className="flex items-center gap-2.5 text-white/60 transition-colors hover:text-brand-pink"
+                  className="flex items-center gap-2.5 text-stone-600 transition-colors hover:text-ink"
                 >
                   <MessageCircle className="h-4 w-4 shrink-0" aria-hidden />
                   WhatsApp us
@@ -156,9 +156,8 @@ export function Footer() {
           </div>
         </div>
 
-        {/* Bottom bar — md:pr-24 keeps the Admin Login pill clear of the fixed
-            floating action buttons (WhatsApp/call) pinned to the bottom-right. */}
-        <div className="mt-12 flex flex-col gap-3 border-t border-white/15 pt-6 text-xs text-white/50 md:flex-row md:items-center md:justify-between md:pr-24">
+        {/* Bottom bar */}
+        <div className="mt-12 flex flex-col gap-3 border-t border-[#ded5c5] pt-6 text-xs text-stone-500 md:flex-row md:items-center md:justify-between md:pr-24">
           <p>
             © {year} {siteConfig.name}. All rights reserved.
           </p>
@@ -170,7 +169,7 @@ export function Footer() {
             <a
               href="/#/admin"
               aria-label="Admin and staff login portal"
-              className="inline-flex w-fit items-center gap-1.5 rounded-md border border-cream/30 px-2.5 py-1.5 font-grotesk text-[11px] font-bold uppercase tracking-wider text-cream/80 transition-colors hover:border-brand-pink hover:text-brand-pink focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none"
+              className="inline-flex w-fit items-center gap-1.5 rounded-lg border border-[#d8cfbe] bg-white px-2.5 py-1.5 font-grotesk text-[11px] font-bold uppercase tracking-wider text-stone-700 shadow-xs transition-colors hover:border-ink hover:text-ink focus-visible:ring-2 focus-visible:ring-ink focus-visible:outline-none"
             >
               <Lock className="h-3 w-3 shrink-0" aria-hidden />
               Admin Login

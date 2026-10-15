@@ -108,7 +108,9 @@ export function isDateOverdue(iso: string | null | undefined): boolean {
   if (!iso) return false;
   const d = parseISO(iso);
   if (Number.isNaN(d.getTime())) return false;
-  return isBefore(d, startOfToday());
+  const targetStr = format(d, "yyyy-MM-dd");
+  const todayStr = format(new Date(), "yyyy-MM-dd");
+  return targetStr < todayStr;
 }
 
 // ── PAGE HEADER ──────────────────────────────────────────────────────────────

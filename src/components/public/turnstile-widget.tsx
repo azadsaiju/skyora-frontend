@@ -134,7 +134,7 @@ export function TurnstileWidget({ onToken }: TurnstileWidgetProps) {
       <div
         id={containerId}
         ref={containerRef}
-        className={loaded ? "" : "min-h-[65px] rounded-lg bg-cream"}
+        className={loaded ? "" : "min-h-[65px] rounded-xl border border-[#e6dfd3] bg-[#f4ede3]"}
         role="group"
         aria-label="Human verification"
       />
