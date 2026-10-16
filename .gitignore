@@ -54,3 +54,9 @@ server.log
 /skills/
 .vercel
 .env*
+!.env.example
+.vercel/
+*.db
+*.db-*
+*.backup-*
+backups/
