@@ -78,12 +78,12 @@ export async function buildEnquiryWhere(
   }
 
   if (params.search) {
-    // SQLite `contains` is case-sensitive — search a few case variants.
     const s = params.search;
-    const variants = Array.from(new Set([s, s.toLowerCase(), s.toUpperCase()]));
-    where.OR = ["name", "email", "phone"].flatMap((field) =>
-      variants.map((v) => ({ [field]: { contains: v } }))
-    );
+    where.OR = [
+      { name: { contains: s, mode: "insensitive" } },
+      { email: { contains: s, mode: "insensitive" } },
+      { phone: { contains: s } },
+    ];
   }
 
   return where;

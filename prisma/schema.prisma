@@ -1,13 +1,12 @@
 // Skyora Group of Institutes — database schema
-// NOTE: SQLite does not support Prisma enums. String fields that act as enums
-// (role, status, track, type, jobType) are enforced server-side via Zod schemas.
+// String fields that act as enums (role, status, track, type, jobType) are enforced server-side via Zod schemas.
 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
