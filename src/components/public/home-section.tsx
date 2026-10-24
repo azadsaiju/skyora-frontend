@@ -218,7 +218,7 @@ const IT_COURSES: StaticCourse[] = [
       "Build intelligent systems with Python, TensorFlow and PyTorch. Master supervised learning, computer vision, natural language processing and LLM fine-tuning.",
     skills: ["Python", "TensorFlow & PyTorch", "Neural Networks", "NLP & Computer Vision", "LLMs"],
     icon: Brain,
-    deptPath: "/it",
+    deptPath: "/it/artificial-intelligence",
   },
   {
     title: "Data Science Specialization",
@@ -229,7 +229,7 @@ const IT_COURSES: StaticCourse[] = [
       "End-to-end data pipelines: statistical analysis, predictive modeling, machine learning algorithms and big data analysis on real industry datasets.",
     skills: ["Python & Pandas", "Statistics & Math", "Scikit-Learn", "Feature Engineering", "Data Modeling"],
     icon: BarChart3,
-    deptPath: "/it",
+    deptPath: "/it/data-science",
   },
   {
     title: "Data Analytics & BI",
@@ -240,7 +240,7 @@ const IT_COURSES: StaticCourse[] = [
       "Transform raw business data into actionable dashboards using advanced SQL, Microsoft Power BI, Tableau and automated Python data processing workflows.",
     skills: ["SQL (PostgreSQL)", "Power BI", "Tableau", "Excel Automation", "KPI Dashboards"],
     icon: BarChart3,
-    deptPath: "/it",
+    deptPath: "/it/data-analytics",
   },
   {
     title: "Mobile App Development (Flutter)",

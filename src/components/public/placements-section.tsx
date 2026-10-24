@@ -5,6 +5,7 @@
  * plus a live vacancies board fetched from /api/public/content.
  */
 
+import Link from "next/link";
 import { motion, type Variants } from "framer-motion";
 import { ExternalLink, MapPin } from "lucide-react";
 import { siteConfig } from "@/config/site.config";
@@ -232,7 +233,7 @@ export function PlacementsSection() {
             asChild
             className="mt-5 rounded-xl bg-ink font-bold uppercase text-white hover:bg-stone-800 brutal-hover"
           >
-            <a href="#/contact">Enquire Now</a>
+            <Link href="/contact">Enquire Now</Link>
           </Button>
         </div>
       ) : (

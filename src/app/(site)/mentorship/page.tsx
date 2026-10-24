@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { MentorshipPage } from "@/components/public/mentorship-page";
 import { getPublishedCourses } from "@/lib/courses";
 import type { EnquiryCourseOption } from "@/lib/types";
+import { JsonLdScript, breadcrumbJsonLd } from "@/lib/seo-jsonld";
 
 /**
  * /mentorship — the 1:1 mentorship program.
@@ -10,10 +11,22 @@ import type { EnquiryCourseOption } from "@/lib/types";
  */
 export const dynamic = "force-dynamic";
 
+const CANONICAL = "https://www.skyoragroup.com/mentorship";
+
 export const metadata: Metadata = {
-  title: "Mentorship — 1:1 guidance from Aviation & IT professionals",
+  title: "Career Mentorship — 1:1 Guidance from Aviation & IT Professionals",
   description:
-    "Skyora's mentorship program: 1:1 mentoring with industry mentors from Aviation and IT, mock interviews, resume preparation and a roadmap to your first offer.",
+    "Skyora's mentorship program in Kochi, Kerala: 1:1 mentoring with industry mentors from aviation and IT, mock interviews, resume preparation, career roadmap and placement guidance for freshers and graduates.",
+  alternates: {
+    canonical: CANONICAL,
+  },
+  openGraph: {
+    title: "Career Mentorship | Skyora Group of Institutes",
+    description:
+      "1:1 career mentorship with aviation and IT industry mentors — mock interviews, resume building and placement guidance in Kochi, Kerala.",
+    url: CANONICAL,
+    type: "website",
+  },
 };
 
 export default async function Mentorship() {
@@ -25,5 +38,16 @@ export default async function Mentorship() {
     duration: c.duration,
   }));
 
-  return <MentorshipPage enquiryOptions={enquiryOptions} />;
+  return (
+    <>
+      <JsonLdScript
+        data={breadcrumbJsonLd([
+          { name: "Home", url: "https://www.skyoragroup.com" },
+          { name: "Mentorship", url: CANONICAL },
+        ])}
+      />
+      <MentorshipPage enquiryOptions={enquiryOptions} />
+    </>
+  );
 }
+

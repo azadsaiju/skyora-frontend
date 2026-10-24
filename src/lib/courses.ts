@@ -38,11 +38,33 @@ export function toPublicCourse(course: Course): CoursePublicDTO {
  * (pages using this helper are force-dynamic).
  */
 export async function getPublishedCourses(track?: Track): Promise<CoursePublicDTO[]> {
-  const courses = await db.course.findMany({
-    where: { isActive: true, ...(track ? { track } : {}) },
-    orderBy: [{ sortOrder: "asc" }, { title: "asc" }],
-  });
-  return courses.map(toPublicCourse);
+  try {
+    const courses = await db.course.findMany({
+      where: { isActive: true, ...(track ? { track } : {}) },
+      orderBy: [{ sortOrder: "asc" }, { title: "asc" }],
+    });
+    return courses.map(toPublicCourse);
+  } catch (e) {
+    console.error("[courses:getPublishedCourses]", e);
+    return [];
+  }
+}
+
+/**
+ * Fetch a single published course by its unique slug.
+ * Returns null if not found or inactive.
+ */
+export async function getCourseBySlug(slug: string): Promise<CoursePublicDTO | null> {
+  try {
+    const course = await db.course.findUnique({
+      where: { slug },
+    });
+    if (!course || !course.isActive) return null;
+    return toPublicCourse(course);
+  } catch (e) {
+    console.error(`[courses:getCourseBySlug] Error fetching slug "${slug}":`, e);
+    return null;
+  }
 }
 
 /** Image for a course card: course.image if set, else the department hero. */

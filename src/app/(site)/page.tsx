@@ -21,7 +21,17 @@ export default function HomePage() {
   const router = useRouter();
 
   const redirect =
-    route === "courses" ? "/aviation" : route === "about" ? "/about" : null;
+    route === "courses"
+      ? "/aviation"
+      : route === "about"
+      ? "/about"
+      : route === "achievements"
+      ? "/achievements"
+      : route === "placements"
+      ? "/placements"
+      : route === "contact"
+      ? "/contact"
+      : null;
 
   useEffect(() => {
     if (redirect) router.replace(redirect);

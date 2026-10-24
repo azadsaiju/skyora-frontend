@@ -24,9 +24,19 @@ const QUICK_LINKS: { label: string; href: string }[] = [
   { label: "Home", href: "/" },
   { label: "Aviation", href: "/aviation" },
   { label: "IT & Software", href: "/it" },
+  { label: "Placements", href: "/placements" },
+  { label: "Achievements", href: "/achievements" },
   { label: "Mentorship", href: "/mentorship" },
   { label: "Certifications", href: "/certifications" },
   { label: "About", href: "/about" },
+  { label: "Contact", href: "/contact" },
+];
+
+const IT_LINKS: { label: string; href: string }[] = [
+  { label: "Data Science", href: "/it/data-science" },
+  { label: "Artificial Intelligence", href: "/it/artificial-intelligence" },
+  { label: "Machine Learning", href: "/it/machine-learning" },
+  { label: "Data Analytics", href: "/it/data-analytics" },
 ];
 
 const SOCIALS: { label: string; href: string; Icon: typeof Github }[] = [
@@ -45,7 +55,7 @@ export function Footer() {
   return (
     <footer className="mt-auto border-t border-[#e6dfd3] bg-[#ece4d6]">
       <div className="mx-auto max-w-7xl px-4 pt-12 pb-40 md:px-6 md:pt-16 md:pb-8">
-        <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr]">
+        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-[1.4fr_0.9fr_1fr_1fr]">
           {/* Brand */}
           <div className="min-w-0">
             <a
@@ -100,12 +110,31 @@ export function Footer() {
             <h3 className="font-display text-sm uppercase tracking-widest text-ink">
               Quick Links
             </h3>
-            <ul className="mt-4 space-y-2.5">
+            <ul className="mt-4 space-y-2 text-sm">
               {QUICK_LINKS.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm text-stone-600 transition-colors hover:text-ink"
+                    className="text-stone-600 transition-colors hover:text-ink"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          {/* IT Programs */}
+          <nav aria-label="IT Training Specializations" className="min-w-0">
+            <h3 className="font-display text-sm uppercase tracking-widest text-ink">
+              IT Programs
+            </h3>
+            <ul className="mt-4 space-y-2 text-sm">
+              {IT_LINKS.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className="text-stone-600 transition-colors hover:text-ink"
                   >
                     {link.label}
                   </Link>

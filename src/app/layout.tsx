@@ -2,20 +2,40 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import { siteConfig } from "@/config/site.config";
+import {
+  JsonLdScript,
+  organizationJsonLd,
+  websiteJsonLd,
+} from "@/lib/seo-jsonld";
+
+const CANONICAL_HOST = "https://www.skyoragroup.com";
 
 export const metadata: Metadata = {
-  title: `${siteConfig.name} | Aviation & IT Training`,
-  description: siteConfig.description,
+  metadataBase: new URL(CANONICAL_HOST),
+  title: {
+    default: "Skyora Group | Aviation, IT Training & Career Development in Kochi",
+    template: "%s | Skyora Group of Institutes",
+  },
+  description:
+    "Explore aviation and IT training, professional courses, and career development opportunities with Skyora Group of Institutes in Kochi, Kerala. IATA-preferred aviation and STED Council certified IT programs.",
   keywords: [
-    "Skyora",
-    "aviation courses",
-    "IT courses",
-    "data science training",
+    "Skyora Group",
+    "Skyora Group of Institutes",
+    "aviation courses in Kochi",
+    "IT training in Kochi",
+    "data science course in Kochi",
     "cabin crew training",
     "full stack development",
-    "placement",
+    "placement support",
+    "professional training programs",
+    "career development Kerala",
   ],
   authors: [{ name: siteConfig.name }],
+  creator: siteConfig.name,
+  publisher: siteConfig.name,
+  alternates: {
+    canonical: CANONICAL_HOST,
+  },
   icons: {
     icon: [
       { url: "/logo-mark.png", type: "image/png" },
@@ -26,24 +46,39 @@ export const metadata: Metadata = {
   },
   manifest: "/manifest.webmanifest",
   openGraph: {
-    title: `${siteConfig.name} — ${siteConfig.tagline}`,
-    description: siteConfig.description,
+    title: "Skyora Group | Aviation, IT Training & Career Development",
+    description:
+      "IATA-preferred aviation academy and STED Council certified IT training with mentor-led programs, real projects and placement support in Kochi, Kerala.",
     siteName: siteConfig.name,
     type: "website",
+    url: CANONICAL_HOST,
+    locale: "en_IN",
     images: [
       {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: `${siteConfig.name} — ${siteConfig.tagline}`,
+        alt: "Skyora Group of Institutes — Aviation & IT Training",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: `${siteConfig.name} — ${siteConfig.tagline}`,
-    description: siteConfig.description,
+    title: "Skyora Group | Aviation, IT Training & Career Development",
+    description:
+      "IATA-preferred aviation and STED Council certified IT training with mentor-led programs, real projects and placement support.",
     images: ["/og-image.png"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
   },
 };
 
@@ -71,6 +106,9 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap"
           rel="stylesheet"
         />
+        {/* Structured data: Organization + WebSite */}
+        <JsonLdScript data={organizationJsonLd()} />
+        <JsonLdScript data={websiteJsonLd()} />
       </head>
       <body className="antialiased bg-cream text-ink font-sans">
         {children}
