@@ -41,6 +41,16 @@ const NAV_LINKS: NavLink[] = [
     match: (p) => p.startsWith("/it"),
   },
   {
+    label: "Placements",
+    href: "/placements",
+    match: (p) => p.startsWith("/placements"),
+  },
+  {
+    label: "Achievements",
+    href: "/achievements",
+    match: (p) => p.startsWith("/achievements"),
+  },
+  {
     label: "Mentorship",
     href: "/mentorship",
     match: (p) => p.startsWith("/mentorship"),
@@ -54,6 +64,11 @@ const NAV_LINKS: NavLink[] = [
     label: "About",
     href: "/about",
     match: (p) => p.startsWith("/about"),
+  },
+  {
+    label: "Contact",
+    href: "/contact",
+    match: (p) => p.startsWith("/contact"),
   },
 ];
 
@@ -132,7 +147,7 @@ export function Navbar() {
         </Link>
 
         {/* Desktop links */}
-        <nav aria-label="Primary" className="hidden items-center gap-1.5 lg:flex">
+        <nav aria-label="Primary" className="hidden items-center gap-1 xl:gap-1.5 lg:flex">
           {NAV_LINKS.map((link) => {
             const active = link.match(pathname, route);
             return (
@@ -140,7 +155,7 @@ export function Navbar() {
                 key={link.label}
                 link={link}
                 active={active}
-                className={`rounded-full px-4 py-1.5 font-grotesk text-sm font-semibold transition-all duration-200 ${
+                className={`rounded-full px-2.5 py-1.5 font-grotesk text-xs xl:px-3.5 xl:text-sm font-semibold transition-all duration-200 ${
                   active
                     ? "bg-[#14281D] text-white shadow-xs"
                     : "text-[#24422D] hover:bg-stone-200/50 hover:text-[#14281D]"

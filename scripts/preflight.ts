@@ -55,6 +55,13 @@ async function main() {
   const dbUrl = process.env.DATABASE_URL;
   if (!dbUrl) {
     rows.push({ status: "FAIL", check: "DATABASE_URL", detail: "not set — the app cannot reach a database" });
+  } else if (dbUrl.startsWith("postgres:") || dbUrl.startsWith("postgresql:")) {
+    const masked = dbUrl.replace(/\/\/[^@]*@/, "//••••:••••@");
+    rows.push({
+      status: "PASS",
+      check: "DATABASE_URL (PostgreSQL)",
+      detail: `${masked} — connectivity verified below`,
+    });
   } else if (dbUrl.startsWith("file:")) {
     const rel = dbUrl.replace(/^file:/, "");
     const abs = rel.startsWith("/")
@@ -62,15 +69,15 @@ async function main() {
       : resolve(process.cwd(), rel.replace(/^\.\//, ""));
     const exists = existsSync(abs);
     rows.push({
-      status: exists ? "PASS" : "FAIL",
-      check: "DATABASE_URL (SQLite)",
-      detail: `${abs} — ${exists ? `found (${Math.round(statSync(abs).size / 1024)} KB)` : "FILE MISSING (run: bun run db:push)"}`,
+      status: isProd ? "FAIL" : "WARN",
+      check: "DATABASE_URL (Legacy SQLite)",
+      detail: `${abs} — ${exists ? `found (${Math.round(statSync(abs).size / 1024)} KB) [SQLite is deprecated; switch to PostgreSQL]` : "FILE MISSING"}`,
     });
   } else {
     rows.push({
-      status: "PASS",
-      check: "DATABASE_URL (remote)",
-      detail: `${dbUrl.replace(/\/\/[^@]*@/, "//•••@")} — connectivity verified below`,
+      status: "WARN",
+      check: "DATABASE_URL (Other/Remote)",
+      detail: `${dbUrl.replace(/\/\/[^@]*@/, "//••••@")} — connectivity verified below`,
     });
   }
 

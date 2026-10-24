@@ -29,6 +29,7 @@ import { siteConfig } from "@/config/site.config";
 import { trackWhatsApp } from "@/lib/track-whatsapp";
 import type { CoursePublicDTO, EnquiryCourseOption, Track } from "@/lib/types";
 import type { DepartmentMeta } from "@/lib/departments";
+import { IT_COURSES_DATA } from "@/lib/it-courses-data";
 import { Button } from "@/components/ui/button";
 import { SectionHeading } from "@/components/public/section-heading";
 import { EnquiryDialog } from "@/components/public/enquiry-dialog";
@@ -74,6 +75,14 @@ function Bullets({
   );
 }
 
+const DEDICATED_COURSE_ROUTES: Record<string, string> = {
+  "data-science": "/it/data-science",
+  "data-analytics": "/it/data-analytics",
+  "data-analyst-professional": "/it/data-analytics",
+  "artificial-intelligence": "/it/artificial-intelligence",
+  "machine-learning": "/it/machine-learning",
+};
+
 function CourseCard({
   course,
   dept,
@@ -83,6 +92,8 @@ function CourseCard({
   dept: DepartmentMeta;
   enquiryOptions: EnquiryCourseOption[];
 }) {
+  const dedicatedRoute = DEDICATED_COURSE_ROUTES[course.slug];
+
   return (
     <motion.article
       variants={GRID_ITEM}
@@ -175,16 +186,25 @@ function CourseCard({
             triggerLabel="Enquire Now"
             triggerClassName="rounded-xl bg-ink font-bold uppercase text-white hover:bg-stone-800 brutal-hover"
           />
-          <a
-            href={siteConfig.links.whatsapp}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => trackWhatsApp(`department:${course.slug}`)}
-            className="inline-flex items-center gap-1.5 font-grotesk text-sm font-bold text-brand-blue uppercase hover:underline"
-          >
-            <MessageCircle className="h-4 w-4" aria-hidden />
-            WhatsApp
-          </a>
+          {dedicatedRoute ? (
+            <Link
+              href={dedicatedRoute}
+              className="inline-flex items-center gap-1 font-grotesk text-xs font-bold uppercase tracking-wider text-stone-800 hover:text-ink hover:underline"
+            >
+              Full Details <ArrowRight className="h-3.5 w-3.5" aria-hidden />
+            </Link>
+          ) : (
+            <a
+              href={siteConfig.links.whatsapp}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => trackWhatsApp(`department:${course.slug}`)}
+              className="inline-flex items-center gap-1.5 font-grotesk text-sm font-bold text-brand-blue uppercase hover:underline"
+            >
+              <MessageCircle className="h-4 w-4" aria-hidden />
+              WhatsApp
+            </a>
+          )}
         </div>
       </div>
     </motion.article>
@@ -361,6 +381,55 @@ export function DepartmentView({ dept, courses, enquiryOptions }: DepartmentView
           )}
         </div>
       </section>
+
+      {/* ── FLAGSHIP IT SPECIALIZATIONS ───────────────────────────── */}
+      {dept.track === "IT" && (
+        <section
+          aria-label="Flagship IT Specializations"
+          className="border-t border-[#e6dfd3] bg-[#F2F4EB] py-12 md:py-20"
+        >
+          <div className="mx-auto max-w-7xl px-4 md:px-6">
+            <SectionHeading
+              eyebrow="Specialized Career Tracks"
+              title="FLAGSHIP IT SPECIALIZATIONS"
+              highlight="SPECIALIZATIONS"
+              description="Explore dedicated, in-depth curriculum pathways in Data Science, Artificial Intelligence, Machine Learning, and Data Analytics at our Kochi training center."
+            />
+            <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+              {Object.values(IT_COURSES_DATA).map((spec) => (
+                <div
+                  key={spec.slug}
+                  className="brutal-card-sm flex flex-col justify-between p-6 bg-white transition-all duration-300 hover:-translate-y-1 hover:shadow-md"
+                >
+                  <div>
+                    <div className="flex items-center justify-between">
+                      <span className="font-grotesk text-xs font-bold uppercase text-[#0891B2]">
+                        {spec.duration}
+                      </span>
+                      <BadgeCheck className="h-4 w-4 text-brand-green" aria-hidden />
+                    </div>
+                    <h3 className="mt-2 font-grotesk text-lg font-bold text-ink">
+                      {spec.title}
+                    </h3>
+                    <p className="mt-2 text-xs leading-relaxed text-stone-600 line-clamp-3">
+                      {spec.tagline}
+                    </p>
+                  </div>
+                  <div className="mt-6 border-t border-[#E6DFC8] pt-4">
+                    <Link
+                      href={spec.route}
+                      className="inline-flex items-center gap-1.5 font-grotesk text-xs font-bold uppercase tracking-wider text-ink hover:text-[#0891B2]"
+                    >
+                      Explore {spec.title}
+                      <ArrowRight className="h-3.5 w-3.5" aria-hidden />
+                    </Link>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* ── OPPORTUNITIES ────────────────────────────────────────── */}
       <section aria-label={`${dept.name} opportunities`} className="border-t border-[#e6dfd3]">
