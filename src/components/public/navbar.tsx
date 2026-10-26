@@ -120,19 +120,18 @@ export function Navbar() {
         {/* Logo */}
         <Link
           href="/"
-          aria-label="Skyora Group of Institutes — Home"
+          aria-label="Skyora Group of Institutions — Home"
           className="flex min-w-0 items-center gap-3"
         >
           <span
-            aria-hidden
-            className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-stone-200/90 bg-white shadow-xs"
+            className="flex h-10 w-10 sm:h-11 sm:w-11 shrink-0 items-center justify-center overflow-hidden rounded-full border border-stone-200/90 bg-white shadow-xs"
           >
             <Image
-              src="/logo-mark.png"
-              alt=""
-              width={736}
+              src="/images/skyora-logo.jpeg"
+              alt="Skyora Group of Institutions"
+              width={1024}
               height={1024}
-              className="h-full w-full object-contain p-0.5"
+              className="h-full w-full object-contain"
               priority
             />
           </span>
@@ -141,7 +140,7 @@ export function Navbar() {
               SKYORA
             </span>
             <span className="mt-0.5 hidden font-grotesk text-[9px] font-bold uppercase tracking-[0.25em] text-stone-500 sm:block">
-              Group of Institutes
+              Group of Institutions
             </span>
           </span>
         </Link>

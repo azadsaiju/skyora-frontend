@@ -60,19 +60,18 @@ export function Footer() {
           <div className="min-w-0">
             <a
               href="/"
-              aria-label="Skyora Group of Institutes — Home"
+              aria-label="Skyora Group of Institutions — Home"
               className="flex w-fit items-center gap-3"
             >
               <span
-                aria-hidden
-                className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-[#e6dfd3] bg-white shadow-xs"
+                className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full border border-[#e6dfd3] bg-white shadow-xs"
               >
                 <Image
-                  src="/logo-mark.png"
-                  alt=""
-                  width={736}
+                  src="/images/skyora-logo.jpeg"
+                  alt="Skyora Group of Institutions"
+                  width={1024}
                   height={1024}
-                  className="h-full w-full object-contain p-0.5"
+                  className="h-full w-full object-contain"
                 />
               </span>
               <span className="min-w-0">
@@ -80,7 +79,7 @@ export function Footer() {
                   SKYORA
                 </span>
                 <span className="mt-1 block font-grotesk text-[9px] font-bold uppercase tracking-[0.3em] text-stone-500">
-                  Group of Institutes
+                  Group of Institutions
                 </span>
               </span>
             </a>
