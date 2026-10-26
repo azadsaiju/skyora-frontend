@@ -146,13 +146,13 @@ export function AdminApp() {
         role="status"
         aria-label="Loading admin portal"
       >
-        <span className="flex size-16 animate-pulse items-center justify-center overflow-hidden rounded-xl border-2 border-ink bg-white shadow-hard">
+        <span className="flex size-16 animate-pulse items-center justify-center overflow-hidden rounded-full border-2 border-ink bg-white shadow-hard">
           <Image
             src="/logo-mark.png"
-            alt=""
-            width={736}
+            alt="Skyora Logo"
+            width={1024}
             height={1024}
-            className="h-full w-full object-contain p-1"
+            className="h-full w-full object-contain"
             priority
           />
         </span>
@@ -267,15 +267,15 @@ export function AdminApp() {
         <div className="flex items-center justify-between p-4 pb-2">
           <div className="flex min-w-0 items-center gap-2.5">
             <span
-              className="flex size-9 shrink-0 items-center justify-center overflow-hidden rounded-lg border-2 border-white/30 bg-white"
+              className="flex size-9 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-white/30 bg-white"
               aria-hidden="true"
             >
               <Image
                 src="/logo-mark.png"
-                alt=""
-                width={736}
+                alt="Skyora Logo"
+                width={1024}
                 height={1024}
-                className="h-full w-full object-contain p-0.5"
+                className="h-full w-full object-contain"
               />
             </span>
             <span className="truncate font-display text-sm uppercase tracking-wide">
@@ -322,15 +322,15 @@ export function AdminApp() {
       >
         <div className="flex items-center gap-2.5 px-1 pb-4">
           <span
-            className="flex size-10 items-center justify-center overflow-hidden rounded-lg border-2 border-white/30 bg-white"
+            className="flex size-10 items-center justify-center overflow-hidden rounded-full border-2 border-white/30 bg-white"
             aria-hidden="true"
           >
             <Image
               src="/logo-mark.png"
-              alt=""
-              width={736}
+              alt="Skyora Logo"
+              width={1024}
               height={1024}
-              className="h-full w-full object-contain p-0.5"
+              className="h-full w-full object-contain"
             />
           </span>
           <div>

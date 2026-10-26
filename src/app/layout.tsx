@@ -18,11 +18,15 @@ export const metadata: Metadata = {
   authors: [{ name: siteConfig.name }],
   icons: {
     icon: [
+      { url: "/favicon.ico", sizes: "any" },
       { url: "/logo-mark.png", type: "image/png" },
       { url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
       { url: "/icons/icon-512.png", sizes: "512x512", type: "image/png" },
     ],
-    apple: "/icons/apple-touch-icon.png",
+    shortcut: ["/favicon.ico"],
+    apple: [
+      { url: "/icons/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+    ],
   },
   manifest: "/manifest.webmanifest",
   openGraph: {

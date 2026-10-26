@@ -75,15 +75,15 @@ export function LoginView({
         <div className="brutal-card w-[min(420px,calc(100vw-2rem))] p-8">
           <div className="flex items-center gap-3">
             <span
-              className="flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-lg border-2 border-ink bg-white shadow-hard-sm"
+              className="flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-ink bg-white shadow-hard-sm"
               aria-hidden="true"
             >
               <Image
                 src="/logo-mark.png"
-                alt=""
-                width={736}
+                alt="Skyora Logo"
+                width={1024}
                 height={1024}
-                className="h-full w-full object-contain p-1"
+                className="h-full w-full object-contain"
                 priority
               />
             </span>

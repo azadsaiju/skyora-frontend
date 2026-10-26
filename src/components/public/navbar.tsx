@@ -110,14 +110,14 @@ export function Navbar() {
         >
           <span
             aria-hidden
-            className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-stone-200/90 bg-white shadow-xs"
+            className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full border border-stone-200/90 bg-white shadow-xs"
           >
             <Image
               src="/logo-mark.png"
-              alt=""
-              width={736}
+              alt="Skyora Logo"
+              width={1024}
               height={1024}
-              className="h-full w-full object-contain p-0.5"
+              className="h-full w-full object-contain"
               priority
             />
           </span>

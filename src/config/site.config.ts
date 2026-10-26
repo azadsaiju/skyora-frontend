@@ -16,18 +16,27 @@ export const siteConfig = {
   links: {
     // WhatsApp with pre-filled enquiry message
     whatsapp:
-      "https://wa.me/919876543210?text=Hi%2C%20I%20want%20a%20course%20enquiry",
+      "https://wa.me/918129781624?text=Hi%2C%20I%20want%20a%20course%20enquiry",
     whatsappMessage: "Hi, I want a course enquiry",
-    // Gmail
-    gmail: "mailto:youremail@gmail.com",
+    // Gmail / Contact Email
+    gmail: "mailto:info@skyora.edu.in",
     // Socials
     instagram: "https://instagram.com/skyorainstitutes",
     linkedin: "https://linkedin.com/company/skyora-group",
     // GitHub (IT section)
     github: "https://github.com/skyora-org",
     // Phone
-    phoneDisplay: "+91 98765 43210",
-    phoneHref: "tel:+919876543210",
+    phoneDisplay: "+91 8129781624",
+    phoneHref: "tel:+918129781624",
+  },
+
+  // ── CAMPUS ADDRESS ────────────────────────────────────────────────────────
+  address: {
+    institution: "Skyora group of instituions",
+    building: "3rd floor, Corner Stone Building",
+    landmark: "Near kadavanthra metro station Pillar No 783",
+    city: "Cochin, Kerala",
+    full: "Skyora group of instituions, 3rd floor, Corner Stone Building, Near kadavanthra metro station Pillar No 783, Cochin, Kerala",
   },
 
   // ── ANIMATED STAT CARDS (Home) ────────────────────────────────────────────

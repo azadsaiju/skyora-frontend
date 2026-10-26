@@ -12,8 +12,7 @@ import {
   Github,
   Instagram,
   Linkedin,
-  Lock,
-  Mail,
+  MapPin,
   MessageCircle,
   Phone,
 } from "lucide-react";
@@ -31,13 +30,10 @@ const QUICK_LINKS: { label: string; href: string }[] = [
 
 const SOCIALS: { label: string; href: string; Icon: typeof Github }[] = [
   { label: "Chat on WhatsApp", href: siteConfig.links.whatsapp, Icon: MessageCircle },
-  { label: "Email Skyora", href: siteConfig.links.gmail, Icon: Mail },
   { label: "Skyora on Instagram", href: siteConfig.links.instagram, Icon: Instagram },
   { label: "Skyora on LinkedIn", href: siteConfig.links.linkedin, Icon: Linkedin },
   { label: "Skyora on GitHub", href: siteConfig.links.github, Icon: Github },
 ];
-
-const GMAIL_ADDRESS = siteConfig.links.gmail.replace(/^mailto:/, "");
 
 export function Footer() {
   const year = new Date().getFullYear();
@@ -45,7 +41,7 @@ export function Footer() {
   return (
     <footer className="mt-auto border-t border-[#e6dfd3] bg-[#ece4d6]">
       <div className="mx-auto max-w-7xl px-4 pt-12 pb-40 md:px-6 md:pt-16 md:pb-8">
-        <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr]">
+        <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-[1.3fr_0.8fr_1.4fr]">
           {/* Brand */}
           <div className="min-w-0">
             <a
@@ -55,14 +51,14 @@ export function Footer() {
             >
               <span
                 aria-hidden
-                className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-[#e6dfd3] bg-white shadow-xs"
+                className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full border border-[#e6dfd3] bg-white shadow-xs"
               >
                 <Image
                   src="/logo-mark.png"
-                  alt=""
-                  width={736}
+                  alt="Skyora Logo"
+                  width={1024}
                   height={1024}
-                  className="h-full w-full object-contain p-0.5"
+                  className="h-full w-full object-contain"
                 />
               </span>
               <span className="min-w-0">
@@ -119,28 +115,34 @@ export function Footer() {
             <h3 className="font-display text-sm uppercase tracking-widest text-ink">
               Contact
             </h3>
-            <ul className="mt-4 space-y-3 text-sm">
-              <li>
+            <div className="mt-4 space-y-3.5 text-sm">
+              <div className="flex items-start gap-2.5 text-stone-600">
+                <MapPin className="mt-1 h-4 w-4 shrink-0 text-brand-pink" aria-hidden />
+                <address className="not-italic leading-relaxed text-stone-600">
+                  <span className="block font-semibold text-ink">
+                    Skyora group of instituions
+                  </span>
+                  <span>3rd floor, Corner Stone Building,</span>
+                  <br />
+                  <span>Near kadavanthra metro station Pillar No 783,</span>
+                  <br />
+                  <span>Cochin Kerala</span>
+                </address>
+              </div>
+
+              <div>
                 <a
                   href={siteConfig.links.phoneHref}
                   className="flex items-center gap-2.5 text-stone-600 transition-colors hover:text-ink"
                 >
-                  <Phone className="h-4 w-4 shrink-0" aria-hidden />
-                  <span className="break-words">
+                  <Phone className="h-4 w-4 shrink-0 text-brand-blue" aria-hidden />
+                  <span className="break-words font-medium">
                     {siteConfig.links.phoneDisplay}
                   </span>
                 </a>
-              </li>
-              <li>
-                <a
-                  href={siteConfig.links.gmail}
-                  className="flex items-start gap-2.5 text-stone-600 transition-colors hover:text-ink"
-                >
-                  <Mail className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
-                  <span className="break-all">{GMAIL_ADDRESS}</span>
-                </a>
-              </li>
-              <li>
+              </div>
+
+              <div>
                 <a
                   href={siteConfig.links.whatsapp}
                   target="_blank"
@@ -148,33 +150,19 @@ export function Footer() {
                   onClick={() => trackWhatsApp("footer")}
                   className="flex items-center gap-2.5 text-stone-600 transition-colors hover:text-ink"
                 >
-                  <MessageCircle className="h-4 w-4 shrink-0" aria-hidden />
-                  WhatsApp us
+                  <MessageCircle className="h-4 w-4 shrink-0 text-brand-green" aria-hidden />
+                  <span className="font-medium">WhatsApp us</span>
                 </a>
-              </li>
-            </ul>
+              </div>
+            </div>
           </div>
         </div>
 
         {/* Bottom bar */}
-        <div className="mt-12 flex flex-col gap-3 border-t border-[#ded5c5] pt-6 text-xs text-stone-500 md:flex-row md:items-center md:justify-between md:pr-24">
+        <div className="mt-12 flex flex-col items-center justify-between gap-3 border-t border-[#ded5c5] pt-6 text-xs text-stone-500 md:flex-row">
           <p>
             © {year} {siteConfig.name}. All rights reserved.
           </p>
-          <div className="flex flex-col gap-3 md:flex-row md:items-center md:gap-6">
-            <p className="max-w-md md:text-right">
-              We never share your data. Enquiries are used only for admission
-              counselling.
-            </p>
-            <a
-              href="/#/admin"
-              aria-label="Admin and staff login portal"
-              className="inline-flex w-fit items-center gap-1.5 rounded-lg border border-[#d8cfbe] bg-white px-2.5 py-1.5 font-grotesk text-[11px] font-bold uppercase tracking-wider text-stone-700 shadow-xs transition-colors hover:border-ink hover:text-ink focus-visible:ring-2 focus-visible:ring-ink focus-visible:outline-none"
-            >
-              <Lock className="h-3 w-3 shrink-0" aria-hidden />
-              Admin Login
-            </a>
-          </div>
         </div>
       </div>
     </footer>
