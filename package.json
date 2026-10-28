@@ -3,11 +3,7 @@
   "version": "0.2.1",
   "private": true,
   "scripts": {
-<<<<<<< HEAD
     "dev": "next dev --webpack -p 3000",
-=======
-    "dev": "node node_modules/next/dist/bin/next dev -p 3000",
->>>>>>> 99ca1e9 (feat: update Skyora contact details and footer)
     "build": "next build && cp -r .next/static .next/standalone/.next/ && cp -r public .next/standalone/",
     "start": "NODE_ENV=production bun .next/standalone/server.js 2>&1 | tee server.log",
     "lint": "node node_modules/eslint/bin/eslint.js .",
