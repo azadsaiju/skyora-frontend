@@ -6,28 +6,40 @@
  */
 
 export const siteConfig = {
-  name: "Skyora Group of Institutes",
+  name: "Skyora Group of Institutions",
   shortName: "Skyora",
   tagline: "Careers take flight here.",
   description:
-    "Skyora Group of Institutes — industry-focused Aviation & IT training with mentor-led programs, real projects and placement support.",
+    "Skyora Group of Institutions — industry-focused Aviation & IT training with mentor-led programs, real projects and placement support.",
+
+  // ── CAMPUS / OFFICIAL ADDRESS ─────────────────────────────────────────────
+  address: {
+    full: "3rd Floor, Corner Stone Building, near Kadavanthara Metro Station, Pillar No. 783, Kochi, Kerala",
+    line1: "3rd Floor, Corner Stone Building",
+    line2: "near Kadavanthara Metro Station, Pillar No. 783",
+    city: "Kochi",
+    state: "Kerala",
+  },
 
   // ── CONTACT LINKS (edit once, used everywhere) ────────────────────────────
   links: {
     // WhatsApp with pre-filled enquiry message
     whatsapp:
-      "https://wa.me/919876543210?text=Hi%2C%20I%20want%20a%20course%20enquiry",
+      "https://wa.me/918129781624?text=Hi%2C%20I%20want%20a%20course%20enquiry",
+    whatsappNumber: "+91 81297 81624",
+    whatsappBase: "https://wa.me/918129781624",
     whatsappMessage: "Hi, I want a course enquiry",
     // Gmail
-    gmail: "mailto:youremail@gmail.com",
+    gmail: "mailto:skyoracochin@gmail.com",
+    emailDisplay: "skyoracochin@gmail.com",
     // Socials
     instagram: "https://instagram.com/skyorainstitutes",
     linkedin: "https://linkedin.com/company/skyora-group",
     // GitHub (IT section)
     github: "https://github.com/skyora-org",
     // Phone
-    phoneDisplay: "+91 98765 43210",
-    phoneHref: "tel:+919876543210",
+    phoneDisplay: "+91 81297 81624",
+    phoneHref: "tel:+918129781624",
   },
 
   // ── ANIMATED STAT CARDS (Home) ────────────────────────────────────────────

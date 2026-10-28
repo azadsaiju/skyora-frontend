@@ -203,9 +203,9 @@ export function EnquiryForm({
             onChange={(e) => setPhone(e.target.value)}
             required
             pattern={PHONE_PATTERN}
-            title="Enter a valid phone number, e.g. +91 98765 43210"
+            title="Enter a valid phone number, e.g. +91 91234 56789"
             autoComplete="tel"
-            placeholder="+91 98765 43210"
+            placeholder="+91 91234 56789"
             className="rounded-xl border border-[#e6dfd3] bg-[#fbf9f4] text-ink placeholder:text-stone-400 focus:bg-white"
           />
         </div>

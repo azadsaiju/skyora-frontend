@@ -26,8 +26,16 @@ export function organizationJsonLd() {
       siteConfig.links.linkedin,
       siteConfig.links.github,
     ],
+    address: {
+      "@type": "PostalAddress",
+      streetAddress:
+        "3rd Floor, Corner Stone Building, near Kadavanthara Metro Station, Pillar No. 783",
+      addressLocality: "Kochi",
+      addressRegion: "Kerala",
+    },
     contactPoint: {
       "@type": "ContactPoint",
+      telephone: siteConfig.links.phoneDisplay,
       contactType: "admissions",
       availableLanguage: ["English", "Hindi", "Malayalam"],
     },

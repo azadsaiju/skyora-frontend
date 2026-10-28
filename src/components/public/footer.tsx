@@ -14,6 +14,7 @@ import {
   Linkedin,
   Lock,
   Mail,
+  MapPin,
   MessageCircle,
   Phone,
 } from "lucide-react";
@@ -55,7 +56,7 @@ export function Footer() {
   return (
     <footer className="mt-auto border-t border-[#e6dfd3] bg-[#ece4d6]">
       <div className="mx-auto max-w-7xl px-4 pt-12 pb-40 md:px-6 md:pt-16 md:pb-8">
-        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-[1.4fr_0.9fr_1fr_1fr]">
+        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-[1.3fr_0.8fr_0.9fr_1.4fr]">
           {/* Brand */}
           <div className="min-w-0">
             <a
@@ -148,24 +149,21 @@ export function Footer() {
               Contact
             </h3>
             <ul className="mt-4 space-y-3 text-sm">
+              <li className="flex items-start gap-2.5 text-stone-600">
+                <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-stone-500" aria-hidden />
+                <span className="leading-relaxed">
+                  {siteConfig.address.full}
+                </span>
+              </li>
               <li>
                 <a
                   href={siteConfig.links.phoneHref}
                   className="flex items-center gap-2.5 text-stone-600 transition-colors hover:text-ink"
                 >
-                  <Phone className="h-4 w-4 shrink-0" aria-hidden />
-                  <span className="break-words">
+                  <Phone className="h-4 w-4 shrink-0 text-stone-500" aria-hidden />
+                  <span className="break-words font-medium">
                     {siteConfig.links.phoneDisplay}
                   </span>
-                </a>
-              </li>
-              <li>
-                <a
-                  href={siteConfig.links.gmail}
-                  className="flex items-start gap-2.5 text-stone-600 transition-colors hover:text-ink"
-                >
-                  <Mail className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
-                  <span className="break-all">{GMAIL_ADDRESS}</span>
                 </a>
               </li>
               <li>
@@ -176,8 +174,19 @@ export function Footer() {
                   onClick={() => trackWhatsApp("footer")}
                   className="flex items-center gap-2.5 text-stone-600 transition-colors hover:text-ink"
                 >
-                  <MessageCircle className="h-4 w-4 shrink-0" aria-hidden />
-                  WhatsApp us
+                  <MessageCircle className="h-4 w-4 shrink-0 text-stone-500" aria-hidden />
+                  <span className="break-words">
+                    WhatsApp: {siteConfig.links.phoneDisplay}
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a
+                  href={siteConfig.links.gmail}
+                  className="flex items-start gap-2.5 text-stone-600 transition-colors hover:text-ink"
+                >
+                  <Mail className="mt-0.5 h-4 w-4 shrink-0 text-stone-500" aria-hidden />
+                  <span className="break-all">{GMAIL_ADDRESS}</span>
                 </a>
               </li>
             </ul>

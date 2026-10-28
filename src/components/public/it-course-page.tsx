@@ -56,7 +56,7 @@ export function ITCoursePageView({
   const whatsappMessage = encodeURIComponent(
     `Hi Skyora, I would like to enquire about the ${course.title} course in Kochi.`
   );
-  const whatsappUrl = `https://wa.me/919876543210?text=${whatsappMessage}`;
+  const whatsappUrl = `https://wa.me/918129781624?text=${whatsappMessage}`;
 
   return (
     <div className="bg-[#F8F9F5]">

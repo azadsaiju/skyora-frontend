@@ -13,6 +13,7 @@ import {
   Instagram,
   Linkedin,
   Mail,
+  MapPin,
   MessageCircle,
   type LucideIcon,
 } from "lucide-react";
@@ -195,6 +196,15 @@ export function ContactSection() {
           >
             {siteConfig.links.phoneDisplay}
           </a>
+          <div className="mt-6 border-t border-[#e6dfd3] pt-6">
+            <p className="font-grotesk text-xs font-bold tracking-[0.2em] text-stone-500 uppercase">
+              Visit our center
+            </p>
+            <div className="mt-2 flex items-start gap-2.5 text-sm text-stone-700">
+              <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-stone-500" aria-hidden />
+              <span className="leading-relaxed">{siteConfig.address.full}</span>
+            </div>
+          </div>
         </div>
 
         <div className="brutal-card p-6 md:p-8 lg:col-span-3">
