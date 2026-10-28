@@ -4,7 +4,8 @@
  * bundle never imports node-cron).
  */
 export async function register(): Promise<void> {
-  if (process.env.NEXT_RUNTIME !== "nodejs") return;
-  const { startReminderCron } = await import("@/lib/reminder-cron");
-  startReminderCron();
+  if (process.env.NEXT_RUNTIME === "nodejs") {
+    const { startReminderCron } = await import("./lib/reminder-cron");
+    startReminderCron();
+  }
 }

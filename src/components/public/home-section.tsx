@@ -557,7 +557,7 @@ export function HomeSection() {
                 className="inline-flex items-center gap-2 rounded-full border border-stone-300/80 bg-white/95 px-4 py-1.5 font-grotesk text-xs font-bold tracking-wider uppercase text-[#14281D] shadow-xs backdrop-blur-md transition-all hover:border-[#6EA820] hover:bg-white"
               >
                 <span className="h-2 w-2 animate-pulse rounded-full bg-[#6EA820]" />
-                Admissions Open 2025
+                Admission Starts for New Batch
                 <ArrowRight className="h-3.5 w-3.5 text-[#6EA820]" aria-hidden />
               </Link>
             </motion.div>

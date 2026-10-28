@@ -1,5 +1,6 @@
 import "server-only";
-import { createTransport, type Transporter } from "nodemailer";
+
+type Transporter = any;
 
 /**
  * SMTP mailer (Prompt 9). Optional by design: when SMTP_HOST/SMTP_PORT are
@@ -13,9 +14,13 @@ export function isMailConfigured(): boolean {
   return Boolean(process.env.SMTP_HOST && process.env.SMTP_PORT);
 }
 
-function getTransport(): Transporter | null {
+async function getTransport(): Promise<Transporter | null> {
   if (!isMailConfigured()) return null;
   if (cached) return cached;
+
+  // Use runtime require so Webpack does not trace nodemailer into Edge bundles
+  const req = eval("require");
+  const { createTransport } = req("nodemailer");
 
   cached = createTransport({
     host: process.env.SMTP_HOST,
@@ -38,7 +43,7 @@ export async function sendMail(opts: {
   text: string;
   html: string;
 }): Promise<{ sent: boolean; error?: string }> {
-  const transport = getTransport();
+  const transport = await getTransport();
   if (!transport) return { sent: false, error: "SMTP_NOT_CONFIGURED" };
   try {
     await transport.sendMail({
