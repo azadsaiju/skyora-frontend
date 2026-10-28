@@ -56,10 +56,10 @@ export const siteConfig = {
   // (files live in /public/certifications/).
   certifications: {
     AVIATION: {
-      short: "IATA Preferred",
+      short: "Aviation Academy Certificate",
       full:
-        "IATA-preferred aviation academy — curriculum aligned with International Air Transport Association (IATA) standards.",
-      logo: "/certifications/iata-preferred.png",
+        "Professional Aviation Academy Certificate — comprehensive training aligned with international airline and airport standards.",
+      logo: "/logo-mark.png",
     },
     IT: {
       short: "Certificate by STED Council",
@@ -131,7 +131,7 @@ export const siteConfig = {
 
   // ── MENTORS (About page) ──────────────────────────────────────────────────
   mentors: [
-    { name: "Capt. Rekha Menon", role: "Aviation Lead", bio: "Ex-Air India, 18 yrs flying & training experience. IATA certified instructor.", initials: "RM", color: "#FF2E63" },
+    { name: "Capt. Rekha Menon", role: "Aviation Lead", bio: "Ex-Air India, 18 yrs flying & training experience. Certified flight & ground instructor.", initials: "RM", color: "#FF2E63" },
     { name: "Arjun Deshpande", role: "Data Science Mentor", bio: "12 yrs in ML & analytics. Previously at Flipkart and Mu Sigma.", initials: "AD", color: "#2563EB" },
     { name: "Sneha Kulkarni", role: "Full Stack Mentor", bio: "10 yrs building products at startups. MERN + Flutter specialist.", initials: "SK", color: "#FF7A00" },
     { name: "Faisal Khan", role: "Placement Head", bio: "Placed 500+ students. Direct lines to 40+ hiring partners.", initials: "FK", color: "#00B8D9" },

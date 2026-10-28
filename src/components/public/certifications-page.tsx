@@ -2,7 +2,7 @@
 
 /**
  * /certifications — the certifications Skyora students earn:
- * IATA Preferred (Aviation), STED Council (IT) and the institute
+ * Aviation Academy (Aviation), STED Council (IT) and the institute
  * certificate, each displayed with key highlights.
  */
 
@@ -46,15 +46,15 @@ interface CertificationCard {
 
 const CARDS: CertificationCard[] = [
   {
-    key: "iata",
-    title: "IATA Preferred Training",
-    issuingBody: "International Air Transport Association (IATA)",
+    key: "aviation",
+    title: "Aviation Academy Certificate",
+    issuingBody: "Skyora Aviation Academy",
     dept: "AVIATION",
-    image: "/certifications/iata-preferred.png",
+    image: "/logo-mark.png",
     highlights: [
-      "Curriculum aligned with IATA international standards",
+      "Curriculum aligned with international aviation standards",
       "Recognised by airlines and airport employers worldwide",
-      "Covers safety, service, DCS and DGCA-norm ground operations",
+      "Covers safety, service, DCS and ground operations",
       "Awarded on completing any Skyora Aviation course",
     ],
     color: "#1d4ed8",
@@ -118,7 +118,7 @@ export function CertificationsPage({
             recognise
           </h1>
           <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-stone-600 md:text-lg">
-            Every Skyora program ends with a certificate — from IATA-preferred
+            Every Skyora program ends with a certificate — from professional
             aviation training to the STED Council award for IT skills — plus
             your project portfolio and interview record.
           </p>

@@ -86,6 +86,36 @@ async function main() {
       sortOrder: 2,
     },
     {
+      title: "Airport Management & Cargo",
+      track: "AVIATION",
+      duration: "6 Months",
+      description:
+        "End-to-end air cargo handling, dangerous goods regulations (DGR), ramp safety coordination, and terminal management operations for international carriers.",
+      skills:
+        "Air Cargo Logistics & Documentation\nDangerous Goods Regulations (DGR) Awareness\nRamp Coordination & Turnaround Management\nTerminal Operations & Airport Flow Management\nAir Waybill (AWB) Processing\nCustoms & Freight Handling Procedures",
+      jobRoles:
+        "Air Cargo Operations Officer\nAirport Terminal Manager\nRamp Safety Officer\nAir Freight & Logistics Executive\nDGR Compliance Specialist",
+      workplaces:
+        "International airport cargo terminals\nAir cargo freighters (Blue Dart Aviation, FedEx, DHL)\nAviation logistics & supply chain companies\nAirport management authorities (AAI, Adani Airports, GMR)",
+      image: null,
+      sortOrder: 3,
+    },
+    {
+      title: "Airline Ticketing & GDS",
+      track: "AVIATION",
+      duration: "3 Months",
+      description:
+        "Practical mastery of global distribution systems (Amadeus & Galileo), fare calculations, PNR creation, and flight reservations across global airlines.",
+      skills:
+        "Amadeus GDS Software Practical Training\nGalileo Reservation System\nFare Construction & Mileage Rules\nPNR Creation & Modification\nE-Ticketing, Reissuance & Refunds\nVisa, Passport & TIMATIC Regulations",
+      jobRoles:
+        "Airline Ticketing Officer\nGDS Reservation Specialist\nTravel Consultant / Corporate Travel Executive\nAirline Sales & Booking Coordinator\nAirport Customer Helpdesk Agent",
+      workplaces:
+        "International & domestic airline booking desks\nGlobal travel management companies (MakeMyTrip, Thomas Cook)\nCorporate business travel agencies\nAirport customer support centres",
+      image: null,
+      sortOrder: 4,
+    },
+    {
       title: "Data Science",
       track: "IT",
       duration: "6 Months",

@@ -16,11 +16,11 @@ const DOT_COLORS = siteConfig.stats.map((stat) => stat.color);
 export function RecruiterMarquee() {
   return (
     <section
-      aria-label="Our recruiters and hiring partners"
+      aria-label="Your future in"
       className="marquee-hover-pause overflow-hidden border-y border-[#e6dfd3] bg-[#f4ede3] py-5"
     >
       <p className="mb-4 px-4 text-center font-grotesk text-[11px] font-bold tracking-[0.3em] text-stone-500 uppercase">
-        Our Recruiters &amp; Hiring Partners
+        Your Future In
       </p>
       <div className="overflow-hidden">
         <div className="marquee-fallback flex w-max animate-marquee">

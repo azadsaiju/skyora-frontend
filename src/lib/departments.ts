@@ -36,14 +36,14 @@ export const DEPARTMENTS: Record<Track, DepartmentMeta> = {
     heroImage: "/departments/aviation-hero.png",
     tagline: "From check-in desk to cruising altitude.",
     intro:
-      "The Skyora Aviation department trains the people who keep an airport moving — cabin crew, ground staff and airport operations teams. Every program is built with working airline professionals, drilled in mock panels and real scenarios, and aligned with IATA standards, so you walk into airline interviews already doing the job.",
+      "The Skyora Aviation department trains the people who keep an airport moving — cabin crew, ground staff and airport operations teams. Every program is built with working airline professionals, drilled in mock panels and real scenarios, and aligned with global aviation standards, so you walk into airline interviews already doing the job.",
     metaDescription:
-      "Skyora Aviation department — IATA-preferred cabin crew, ground staff and airport operations courses with mock interviews and placement support.",
+      "Skyora Aviation department — professional cabin crew, ground staff and airport operations courses with mock interviews and placement support.",
   },
   IT: {
     track: "IT",
     name: "IT & Software",
-    navLabel: "IT & Software",
+    navLabel: "IT",
     path: "/it",
     accent: "#0891B2",
     heroImage: "/departments/it-hero.png",

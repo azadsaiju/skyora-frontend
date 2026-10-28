@@ -36,7 +36,7 @@ const NAV_LINKS: NavLink[] = [
     match: (p) => p.startsWith("/aviation"),
   },
   {
-    label: "IT & Software",
+    label: "IT",
     href: "/it",
     match: (p) => p.startsWith("/it"),
   },

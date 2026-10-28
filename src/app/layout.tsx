@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     template: "%s | Skyora Group of Institutes",
   },
   description:
-    "Explore aviation and IT training, professional courses, and career development opportunities with Skyora Group of Institutes in Kochi, Kerala. IATA-preferred aviation and STED Council certified IT programs.",
+    "Explore aviation and IT training, professional courses, and career development opportunities with Skyora Group of Institutes in Kochi, Kerala. Professional aviation and STED Council certified IT programs.",
   keywords: [
     "Skyora Group",
     "Skyora Group of Institutes",
@@ -48,7 +48,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Skyora Group | Aviation, IT Training & Career Development",
     description:
-      "IATA-preferred aviation academy and STED Council certified IT training with mentor-led programs, real projects and placement support in Kochi, Kerala.",
+      "Professional aviation academy and STED Council certified IT training with mentor-led programs, real projects and placement support in Kochi, Kerala.",
     siteName: siteConfig.name,
     type: "website",
     url: CANONICAL_HOST,
@@ -66,7 +66,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Skyora Group | Aviation, IT Training & Career Development",
     description:
-      "IATA-preferred aviation and STED Council certified IT training with mentor-led programs, real projects and placement support.",
+      "Professional aviation and STED Council certified IT training with mentor-led programs, real projects and placement support.",
     images: ["/og-image.png"],
   },
   robots: {

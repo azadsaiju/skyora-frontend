@@ -19,14 +19,14 @@ const CANONICAL = "https://www.skyoragroup.com/aviation";
 export const metadata: Metadata = {
   title: "Aviation Courses in Kochi — Cabin Crew, Ground Staff & Airport Ops Training",
   description:
-    "IATA-preferred aviation courses in Kochi, Kerala — cabin crew training, ground staff and airport operations programs with mock interviews, grooming drills and placement support at Skyora Group.",
+    "Professional aviation courses in Kochi, Kerala — cabin crew training, ground staff and airport operations programs with mock interviews, grooming drills and placement support at Skyora Group.",
   alternates: {
     canonical: CANONICAL,
   },
   openGraph: {
     title: "Aviation Courses in Kochi | Skyora Group of Institutes",
     description:
-      "IATA-preferred cabin crew, ground staff and airport operations training with placement support in Kochi, Kerala.",
+      "Professional cabin crew, ground staff and airport operations training with placement support in Kochi, Kerala.",
     url: CANONICAL,
     type: "website",
   },

@@ -9,7 +9,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: "Skyora Group of Institutes | Aviation & IT Training",
     short_name: "Skyora",
     description:
-      "Careers take flight — IATA-preferred aviation academy and STED Council certified IT training with placements.",
+      "Careers take flight — professional aviation academy and STED Council certified IT training with placements.",
     start_url: "/",
     display: "standalone",
     background_color: "#6E9622",

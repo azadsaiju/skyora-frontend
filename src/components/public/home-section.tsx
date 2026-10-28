@@ -5,7 +5,7 @@
  * - Premium daylight cream & olive green design system
  * - Hero inspired by the Skyora campus + ascending flight visual
  * - 4 interactive category cards (Aviation, Full Stack, AI & ML, Data Science & Analytics)
- * - IATA & STED official certifications strip
+ * - Industry accreditations & STED certifications strip
  * - Recruiter marquee with hiring partners
  * - Dual runway department highlight cards
  * - Aviation courses syllabus grid
@@ -446,12 +446,25 @@ function TrackCard({
     <div className="flex flex-col justify-between rounded-3xl border border-[#E4DEC3] bg-white p-7 shadow-[0_8px_30px_rgb(0,0,0,0.04)] md:p-9">
       <div>
         <div className="flex items-center justify-between gap-4">
-          <span
-            aria-hidden
-            className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-[#14281D] text-[#6EA820] shadow-xs"
-          >
-            <Icon className="h-7 w-7" />
-          </span>
+          {track === "IT" ? (
+            <div className="relative flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-[#E4DEC3] bg-white p-1 shadow-xs">
+              <Image
+                src="/images/skyora-coding-logo.png"
+                alt="Skyora — The School of Coding"
+                fill
+                className="object-contain p-1"
+              />
+            </div>
+          ) : (
+            <div className="relative flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-[#E4DEC3] bg-white p-1 shadow-xs">
+              <Image
+                src="/images/skyora-aviation-logo.png"
+                alt="Skyora — School of Aviation"
+                fill
+                className="object-contain p-1"
+              />
+            </div>
+          )}
           <span className="rounded-full bg-[#F4F6EE] px-3 py-1 font-grotesk text-[11px] font-bold uppercase tracking-wider text-[#24422D]">
             {siteConfig.certifications[track].short}
           </span>
@@ -618,7 +631,7 @@ export function HomeSection() {
               className="mt-6 flex items-center gap-2 font-grotesk text-xs font-semibold uppercase tracking-wider text-stone-500"
             >
               <CheckCircle2 className="h-4 w-4 text-[#6EA820]" />
-              500+ Placements · 40+ Hiring Partners · 1:1 Faculty Mentorship
+              500+ Placements · 40+ Career Opportunities · 1:1 Faculty Mentorship
             </motion.p>
           </motion.div>
 
@@ -699,9 +712,9 @@ export function HomeSection() {
         <StatCards />
       </section>
 
-      {/* ── IATA & STED CERTIFICATIONS SECTION ────────────────────── */}
+      {/* ── INDUSTRY ACCREDITATIONS & STED CERTIFICATIONS SECTION ────────────────────── */}
       <section
-        aria-label="Certifications — IATA and STED Council"
+        aria-label="Certifications — Aviation Academy and STED Council"
         className="border-y border-[#E6DFC8] bg-[#F2F4EC]"
       >
         <motion.div
@@ -727,20 +740,20 @@ export function HomeSection() {
               </p>
             </div>
 
-            {/* Right: IATA + STED Council badges */}
+            {/* Right: Accreditations & STED Council badges */}
             <div className="grid grid-cols-2 gap-4 sm:gap-6">
-              {/* IATA Badge */}
+              {/* Aviation Academy Badge */}
               <div className="flex flex-col items-center justify-center rounded-2xl border border-[#E4DEC3] bg-white p-5 text-center shadow-xs transition-transform hover:-translate-y-0.5 sm:p-6">
                 <div className="relative h-14 w-28 sm:h-16 sm:w-32">
                   <Image
-                    src="/certifications/iata-preferred.png"
-                    alt="IATA — International Air Transport Association Authorized Training Center"
+                    src="/logo-mark.png"
+                    alt="Skyora Aviation Academy — Professional Aviation Certification"
                     fill
                     className="object-contain"
                   />
                 </div>
                 <h4 className="mt-3 font-grotesk text-xs font-bold uppercase tracking-wider text-[#14281D] sm:text-sm">
-                  IATA Authorized
+                  Aviation Academy
                 </h4>
                 <p className="mt-1 text-[11px] text-stone-500">
                   Global Aviation Standard
@@ -1110,7 +1123,7 @@ export function HomeSection() {
                 role: "Airport Ops Specialist · Indigo",
                 program: "Aviation Academy",
                 quote:
-                  "The IATA-aligned curriculum and Amadeus software training made me feel at home at Cochin International Airport from day one. SKYORA's placement team is incredible.",
+                  "The industry-aligned curriculum and Amadeus software training made me feel at home at Cochin International Airport from day one. SKYORA's placement team is incredible.",
               },
             ].map((t) => (
               <div

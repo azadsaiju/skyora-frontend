@@ -7,7 +7,7 @@
 
 import Link from "next/link";
 import { motion, type Variants } from "framer-motion";
-import { ExternalLink, MapPin } from "lucide-react";
+import { CheckCircle2, ExternalLink, MapPin } from "lucide-react";
 import { siteConfig } from "@/config/site.config";
 import type { JobType } from "@/lib/types";
 import { Badge } from "@/components/ui/badge";
@@ -29,8 +29,8 @@ const GRID_CONTAINER: Variants = {
   show: { transition: { staggerChildren: 0.06 } },
 };
 const GRID_ITEM: Variants = {
-  hidden: { opacity: 0, y: 16 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: "easeOut" } },
+  hidden: { opacity: 0, y: 20, scale: 0.97 },
+  show: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.45, ease: [0.16, 1, 0.3, 1] } },
 };
 
 function initialsOf(name: string): string {
@@ -55,32 +55,55 @@ function PlacedCard({ name, course, company, role, color }: PlacedStudent) {
   return (
     <motion.div
       variants={GRID_ITEM}
-      className="brutal-card-sm flex min-w-0 gap-3 p-4"
+      whileHover={{ y: -5, scale: 1.02 }}
+      transition={{ type: "spring", stiffness: 350, damping: 25 }}
+      className="group relative flex min-w-0 flex-col justify-between overflow-hidden rounded-2xl border border-[#e6dfd3] bg-white p-4.5 shadow-xs transition-all duration-300 hover:border-[#6EA820]/60 hover:shadow-lg"
     >
-      <span
-        aria-hidden
-        className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full font-display text-sm"
-        style={{ background: `${color}18`, color }}
-      >
-        {initialsOf(name)}
-      </span>
-      <span className="min-w-0 flex-1">
-        <span className="block font-grotesk text-sm font-bold break-words text-ink">
-          {name}
-        </span>
-        <span className="block text-xs break-words text-stone-500">
-          {course}
-        </span>
-        <span className="mt-1.5 flex flex-wrap items-center gap-1.5">
-          <span className="text-sm font-bold break-words text-stone-800">{company}</span>
-          <Badge
-            variant="outline"
-            className="rounded-full border-[#e6dfd3] bg-[#f4ede3] text-[10px] font-bold uppercase text-stone-700"
+      {/* Top subtle hover accent line */}
+      <div className="absolute top-0 left-0 h-1 w-0 bg-gradient-to-r from-[#6EA820] to-[#88c92a] transition-all duration-300 group-hover:w-full" />
+
+      <div className="flex items-start gap-3">
+        {/* Animated Avatar with badge */}
+        <div className="relative">
+          <span
+            aria-hidden
+            className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl font-display text-sm font-bold shadow-xs transition-transform duration-300 group-hover:scale-105 group-hover:rotate-3"
+            style={{
+              background: `linear-gradient(135deg, ${color}22 0%, ${color}0c 100%)`,
+              color,
+              border: `1.5px solid ${color}35`,
+            }}
           >
-            {role}
-          </Badge>
+            {initialsOf(name)}
+          </span>
+          <span
+            aria-hidden
+            className="absolute -bottom-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-white shadow-xs"
+          >
+            <CheckCircle2 className="h-3.5 w-3.5 text-[#6EA820]" />
+          </span>
+        </div>
+
+        {/* Student Name & Course */}
+        <div className="min-w-0 flex-1">
+          <p className="font-grotesk text-sm font-bold text-[#14281D] transition-colors group-hover:text-[#24422D]">
+            {name}
+          </p>
+          <p className="mt-0.5 text-xs text-stone-500 font-medium truncate">
+            {course}
+          </p>
+        </div>
+      </div>
+
+      {/* Company & Role Badge */}
+      <div className="mt-3.5 flex items-center justify-between gap-2 border-t border-stone-100 pt-3">
+        <span className="font-grotesk text-sm font-extrabold text-[#14281D]">
+          {company}
         </span>
-      </span>
+        <span className="inline-flex items-center rounded-full border border-[#6EA820]/30 bg-[#6EA820]/10 px-2.5 py-0.5 font-grotesk text-[10px] font-bold uppercase tracking-wide text-[#476e15] transition-colors group-hover:border-[#6EA820] group-hover:bg-[#6EA820] group-hover:text-white">
+          {role}
+        </span>
+      </div>
     </motion.div>
   );
 }
@@ -102,39 +125,39 @@ function VacancyCard({
   return (
     <motion.article
       variants={GRID_ITEM}
-      className="brutal-card flex min-w-0 flex-col p-5"
+      whileHover={{ y: -4, scale: 1.01 }}
+      transition={{ type: "spring", stiffness: 350, damping: 25 }}
+      className="group relative flex min-w-0 flex-col overflow-hidden rounded-2xl border border-[#e6dfd3] bg-white p-5 shadow-xs transition-all duration-300 hover:border-[#6EA820]/60 hover:shadow-lg"
     >
+      <div className="absolute top-0 left-0 h-1 w-0 bg-gradient-to-r from-[#6EA820] to-[#88c92a] transition-all duration-300 group-hover:w-full" />
       <h4 className="font-grotesk text-base font-bold break-words text-ink md:text-lg">
         {vacancy.title}
       </h4>
-      <p className="mt-0.5 text-sm font-medium text-brand-blue">
+      <p className="mt-0.5 text-sm font-semibold text-[#6EA820]">
         {vacancy.company}
       </p>
       <p className="mt-1 flex items-center gap-1.5 text-xs text-stone-500">
-        <MapPin className="h-3.5 w-3.5 shrink-0" aria-hidden />
+        <MapPin className="h-3.5 w-3.5 shrink-0 text-[#6EA820]" aria-hidden />
         <span className="break-words">{vacancy.location}</span>
       </p>
-      <Badge
-        variant="outline"
-        className="mt-2 w-fit rounded-full border-[#e6dfd3] bg-[#f4ede3] text-[11px] font-bold uppercase text-stone-700"
-      >
+      <span className="mt-2.5 w-fit rounded-full border border-[#6EA820]/30 bg-[#6EA820]/10 px-2.5 py-0.5 font-grotesk text-[10px] font-bold uppercase tracking-wider text-[#476e15]">
         {JOB_TYPE_LABELS[vacancy.jobType] ?? vacancy.jobType}
-      </Badge>
-      <p className="mt-2 line-clamp-2 text-sm break-words text-stone-600">
+      </span>
+      <p className="mt-3 line-clamp-2 text-sm break-words text-stone-600">
         {vacancy.description}
       </p>
       <div className="flex-1" />
       <Button
         asChild
         variant="outline"
-        className="mt-4 w-full rounded-xl border-[#dcd4c5] bg-white font-bold uppercase text-ink shadow-xs hover:bg-stone-100 brutal-hover"
+        className="mt-4 w-full rounded-xl border-[#dcd4c5] bg-white font-bold uppercase text-ink shadow-xs hover:border-[#6EA820] hover:bg-[#6EA820] hover:text-white transition-all duration-200"
       >
         <a
           href={vacancy.applyLink}
           target="_blank"
           rel="noopener noreferrer"
         >
-          Apply Now <ExternalLink className="h-4 w-4" aria-hidden />
+          Apply Now <ExternalLink className="h-4 w-4 ml-1" aria-hidden />
         </a>
       </Button>
     </motion.article>

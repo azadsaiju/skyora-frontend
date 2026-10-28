@@ -10,17 +10,22 @@
  * force-dynamic so admin edits appear on the next request.
  */
 
-import { motion, type Variants } from "framer-motion";
+import { useState } from "react";
+import { AnimatePresence, motion, type Variants } from "framer-motion";
 import Link from "next/link";
 import {
   ArrowRight,
   BadgeCheck,
+  BookOpen,
   Briefcase,
   Building2,
+  ChevronDown,
   Clock,
   GraduationCap,
+  Layers,
   MapPin,
   MessageCircle,
+  Plane,
   Sparkles,
   TrendingUp,
 } from "lucide-react";
@@ -75,6 +80,14 @@ function Bullets({
   );
 }
 
+
+const AVIATION_CATEGORY_META: Record<string, { label: string; Icon: LucideIcon }> = {
+  "cabin-crew-training": { label: "In-Flight Hospitality", Icon: Plane },
+  "ground-staff-airport-operations": { label: "Ground Operations", Icon: Briefcase },
+  "airport-management-cargo": { label: "Logistics & Cargo", Icon: Layers },
+  "airline-ticketing-gds": { label: "Travel Commerce", Icon: BookOpen },
+};
+
 const DEDICATED_COURSE_ROUTES: Record<string, string> = {
   "data-science": "/it/data-science",
   "data-analytics": "/it/data-analytics",
@@ -92,119 +105,150 @@ function CourseCard({
   dept: DepartmentMeta;
   enquiryOptions: EnquiryCourseOption[];
 }) {
+  const [isExpanded, setIsExpanded] = useState(false);
   const dedicatedRoute = DEDICATED_COURSE_ROUTES[course.slug];
+  const aviationMeta = AVIATION_CATEGORY_META[course.slug];
+  const Icon = aviationMeta?.Icon ?? GraduationCap;
 
   return (
     <motion.article
       variants={GRID_ITEM}
-      className="brutal-card flex min-w-0 flex-col overflow-hidden"
+      className="brutal-card flex min-w-0 flex-col overflow-hidden transition-all duration-300 hover:shadow-lg h-fit self-start"
     >
-      {/* Course header with colored accent bar (no image) */}
-      <div
-        className="relative flex h-32 w-full items-center justify-center"
-        style={{
-          background: `linear-gradient(135deg, ${dept.accent}12 0%, ${dept.accent}05 100%)`,
-        }}
-      >
-        <div className="absolute top-0 left-0 h-1 w-full" style={{ background: dept.accent }} />
-        <span
-          aria-hidden
-          className="flex h-16 w-16 items-center justify-center rounded-2xl"
-          style={{ background: `${dept.accent}18`, color: dept.accent }}
-        >
-          <GraduationCap className="h-8 w-8" />
-        </span>
-        <span
-          aria-hidden
-          className="absolute top-3 left-3 inline-flex items-center gap-1.5 rounded-full border border-[#e6dfd3] bg-white px-2.5 py-1 font-grotesk text-[11px] font-bold tracking-wide uppercase text-stone-700 shadow-xs"
-        >
-          <Clock className="h-3.5 w-3.5" aria-hidden />
-          {course.duration}
-        </span>
-      </div>
-
       <div className="flex min-w-0 flex-1 flex-col p-5 md:p-6">
-        <h3 className="font-grotesk text-xl leading-tight font-bold break-words text-ink">
+        {/* Top bar: Icon on left, category pill on right */}
+        <div className="flex items-center justify-between gap-2">
+          <span
+            aria-hidden
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#14281D] text-[#6EA820] shadow-xs"
+          >
+            <Icon className="h-5 w-5" />
+          </span>
+          <span className="rounded-full border border-[#e6dfd3] bg-[#f4ede3] px-3 py-1 font-grotesk text-[10px] font-bold tracking-wider uppercase text-stone-700">
+            {aviationMeta?.label ?? (course.duration ? `Duration: ${course.duration}` : "Certified Course")}
+          </span>
+        </div>
+
+        {/* Title & Duration */}
+        <h3 className="mt-4 font-grotesk text-xl leading-tight font-bold break-words text-ink">
           {course.title}
         </h3>
-        <p className="mt-2 text-sm leading-relaxed break-words text-stone-600">
+        <p className="mt-1 text-xs font-semibold text-stone-500">
+          Duration: {course.duration}
+        </p>
+
+        {/* Description */}
+        <p className="mt-2.5 text-xs leading-relaxed break-words text-stone-600 line-clamp-3 md:text-sm">
           {course.description}
         </p>
 
-        {/* Skills you will learn */}
+        {/* Highlighted skill pills preview (like ss1) */}
         {course.skills.length > 0 && (
-          <div className="mt-4">
-            <p className="flex items-center gap-1.5 font-grotesk text-xs font-bold tracking-wide uppercase text-stone-800">
-              <GraduationCap className="h-4 w-4" style={{ color: dept.accent }} aria-hidden />
-              Skills you will learn
-            </p>
-            <div className="mt-2">
-              <Bullets items={course.skills} color={dept.accent} max={6} />
-            </div>
+          <div className="mt-3.5 flex flex-wrap gap-1.5">
+            {course.skills.slice(0, 4).map((skill) => (
+              <span
+                key={skill}
+                className="rounded-full border border-[#e6dfd3] bg-white px-2.5 py-1 font-grotesk text-[10px] font-medium text-stone-700 shadow-2xs"
+              >
+                {skill}
+              </span>
+            ))}
           </div>
         )}
 
-        {/* Career opportunities / job roles */}
-        {course.jobRoles.length > 0 && (
-          <div className="mt-4">
-            <p className="flex items-center gap-1.5 font-grotesk text-xs font-bold tracking-wide uppercase text-stone-800">
-              <Briefcase className="h-4 w-4" style={{ color: dept.accent }} aria-hidden />
-              Career opportunities
-            </p>
-            <div className="mt-2 flex flex-wrap gap-1.5">
-              {course.jobRoles.map((role) => (
-                <span
-                  key={role}
-                  className="rounded-full border border-[#e6dfd3] bg-[#f4ede3] px-2.5 py-1 font-grotesk text-[11px] font-bold break-words text-stone-700"
-                >
-                  {role}
-                </span>
-              ))}
-            </div>
-          </div>
-        )}
+        {/* Animated Read More / View Curriculum Button in Olive Green */}
+        <div className="mt-3.5">
+          <button
+            type="button"
+            onClick={() => setIsExpanded(!isExpanded)}
+            aria-expanded={isExpanded}
+            className="group inline-flex items-center gap-1.5 rounded-full border border-[#6EA820]/40 bg-[#6EA820]/10 px-3.5 py-1.5 font-grotesk text-xs font-bold tracking-wider uppercase text-[#476e15] shadow-xs transition-all duration-300 hover:border-[#6EA820] hover:bg-[#6EA820] hover:text-white hover:shadow-sm active:scale-95"
+          >
+            <span>{isExpanded ? "Close Details" : "View Curriculum"}</span>
+            <motion.span
+              animate={{ rotate: isExpanded ? 180 : 0 }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
+              className="inline-flex text-[#6EA820] transition-colors group-hover:text-white"
+            >
+              <ChevronDown className="h-3.5 w-3.5 stroke-[2.5]" aria-hidden />
+            </motion.span>
+          </button>
+        </div>
 
-        {/* Where you can work */}
-        {course.workplaces.length > 0 && (
-          <div className="mt-4">
-            <p className="flex items-center gap-1.5 font-grotesk text-xs font-bold tracking-wide uppercase text-stone-800">
-              <MapPin className="h-4 w-4" style={{ color: dept.accent }} aria-hidden />
-              Where you can work
-            </p>
-            <div className="mt-2">
-              <Bullets items={course.workplaces} color={dept.accent} />
-            </div>
-          </div>
-        )}
+        {/* Expandable details with smooth accordion animation */}
+        <AnimatePresence initial={false}>
+          {isExpanded && (
+            <motion.div
+              key="content"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.35, ease: [0.04, 0.62, 0.23, 0.98] }}
+              className="overflow-hidden"
+            >
+              <div className="space-y-4 pt-3 pb-1 border-t border-stone-100 mt-3">
+                {/* Full Skills list */}
+                {course.skills.length > 0 && (
+                  <div>
+                    <p className="flex items-center gap-1.5 font-grotesk text-xs font-bold tracking-wide uppercase text-stone-800">
+                      <GraduationCap className="h-4 w-4 text-[#6EA820]" aria-hidden />
+                      All Modules & Skills
+                    </p>
+                    <div className="mt-2">
+                      <Bullets items={course.skills} color="#6EA820" />
+                    </div>
+                  </div>
+                )}
 
-        <div className="flex-1" />
-        <div className="mt-6 flex flex-wrap items-center gap-3">
+                {/* Career opportunities / job roles */}
+                {course.jobRoles.length > 0 && (
+                  <div>
+                    <p className="flex items-center gap-1.5 font-grotesk text-xs font-bold tracking-wide uppercase text-stone-800">
+                      <Briefcase className="h-4 w-4 text-[#6EA820]" aria-hidden />
+                      Career Opportunities
+                    </p>
+                    <div className="mt-2 flex flex-wrap gap-1.5">
+                      {course.jobRoles.map((role) => (
+                        <span
+                          key={role}
+                          className="rounded-full border border-[#e6dfd3] bg-[#f4ede3] px-2.5 py-1 font-grotesk text-[11px] font-bold break-words text-stone-700"
+                        >
+                          {role}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Where you can work */}
+                {course.workplaces.length > 0 && (
+                  <div>
+                    <p className="flex items-center gap-1.5 font-grotesk text-xs font-bold tracking-wide uppercase text-stone-800">
+                      <MapPin className="h-4 w-4 text-[#6EA820]" aria-hidden />
+                      Where You Can Work
+                    </p>
+                    <div className="mt-2">
+                      <Bullets items={course.workplaces} color="#6EA820" />
+                    </div>
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <div className="mt-5 flex items-center justify-between border-t border-stone-100 pt-3.5">
           <EnquiryDialog
             courses={enquiryOptions}
             initialCourseId={course.id}
             source={`department:${course.slug}`}
             triggerLabel="Enquire Now"
-            triggerClassName="rounded-xl bg-ink font-bold uppercase text-white hover:bg-stone-800 brutal-hover"
+            triggerClassName="rounded-xl bg-ink px-4 py-2 text-xs font-bold uppercase text-white hover:bg-stone-800 brutal-hover"
           />
-          {dedicatedRoute ? (
-            <Link
-              href={dedicatedRoute}
-              className="inline-flex items-center gap-1 font-grotesk text-xs font-bold uppercase tracking-wider text-stone-800 hover:text-ink hover:underline"
-            >
-              Full Details <ArrowRight className="h-3.5 w-3.5" aria-hidden />
-            </Link>
-          ) : (
-            <a
-              href={siteConfig.links.whatsapp}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => trackWhatsApp(`department:${course.slug}`)}
-              className="inline-flex items-center gap-1.5 font-grotesk text-sm font-bold text-brand-blue uppercase hover:underline"
-            >
-              <MessageCircle className="h-4 w-4" aria-hidden />
-              WhatsApp
-            </a>
-          )}
+          <span className="inline-flex items-center gap-1 font-grotesk text-[11px] font-bold uppercase tracking-wider text-[#6EA820]">
+            <span className="h-2 w-2 rounded-full bg-[#6EA820] animate-pulse" />
+            Batches Open
+          </span>
         </div>
       </div>
     </motion.article>
@@ -223,15 +267,17 @@ function OpportunityCard({
   accent: string;
 }) {
   return (
-    <div className="brutal-card-sm flex min-w-0 flex-col p-5">
+    <div className="brutal-card flex min-w-0 flex-col p-6">
       <span
         aria-hidden
-        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl"
+        className="flex h-12 w-12 items-center justify-center rounded-2xl"
         style={{ background: `${accent}18`, color: accent }}
       >
-        <Icon className="h-5 w-5" />
+        <Icon className="h-6 w-6" />
       </span>
-      <h3 className="mt-3 font-grotesk font-bold break-words text-ink">{title}</h3>
+      <h3 className="mt-4 font-grotesk text-lg leading-tight font-bold break-words text-ink">
+        {title}
+      </h3>
       <p className="mt-1 text-sm leading-relaxed break-words text-stone-600">
         {text}
       </p>
@@ -367,7 +413,7 @@ export function DepartmentView({ dept, courses, enquiryOptions }: DepartmentView
               initial="hidden"
               whileInView="show"
               viewport={{ once: true, margin: "-60px" }}
-              className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3"
+              className={`mt-10 grid items-start gap-6 md:grid-cols-2 ${courses.length === 4 ? "lg:grid-cols-4" : "lg:grid-cols-3"}`}
             >
               {courses.map((course) => (
                 <CourseCard

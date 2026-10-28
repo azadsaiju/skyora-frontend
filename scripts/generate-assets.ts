@@ -74,7 +74,7 @@ async function main() {
   <rect x="208" y="440" width="10" height="10" rx="5" fill="${INK}"/>
 
   <text x="84" y="512" font-family="DejaVu Sans" font-size="33" fill="${INK}" opacity="0.82">Careers take flight — Aviation &amp; IT training with placements.</text>
-  <text x="84" y="562" font-family="DejaVu Sans" font-size="25" fill="${INK}" opacity="0.55">IATA-preferred aviation academy  ·  STED Council certified IT programmes</text>
+  <text x="84" y="562" font-family="DejaVu Sans" font-size="25" fill="${INK}" opacity="0.55">Professional aviation academy  ·  STED Council certified IT programmes</text>
 </svg>`);
 
   const plate = Buffer.from(

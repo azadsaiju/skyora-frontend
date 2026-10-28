@@ -5,7 +5,7 @@ import type { EnquiryCourseOption } from "@/lib/types";
 import { JsonLdScript, breadcrumbJsonLd } from "@/lib/seo-jsonld";
 
 /**
- * /certifications — IATA Preferred, STED Council and institute certificates.
+ * /certifications — Aviation Academy, STED Council and institute certificates.
  * force-dynamic: the enquiry course list reads the same shared store the
  * admin manages, so new courses are selectable immediately.
  */
@@ -14,16 +14,16 @@ export const dynamic = "force-dynamic";
 const CANONICAL = "https://www.skyoragroup.com/certifications";
 
 export const metadata: Metadata = {
-  title: "Certifications — IATA Preferred & STED Council Certified Courses",
+  title: "Certifications — Aviation Academy & STED Council Certified Courses",
   description:
-    "Certifications Skyora students earn: IATA-preferred aviation training, STED Council certificates for IT courses and the Skyora institute certificate with project and interview records. Industry-recognised credentials in Kochi, Kerala.",
+    "Certifications Skyora students earn: professional aviation training, STED Council certificates for IT courses and the Skyora institute certificate with project and interview records. Industry-recognised credentials in Kochi, Kerala.",
   alternates: {
     canonical: CANONICAL,
   },
   openGraph: {
     title: "Certifications | Skyora Group of Institutes",
     description:
-      "IATA-preferred aviation certification and STED Council IT certificates — industry-recognised credentials from Skyora Group in Kochi.",
+      "Professional aviation certification and STED Council IT certificates — industry-recognised credentials from Skyora Group in Kochi.",
     url: CANONICAL,
     type: "website",
   },
